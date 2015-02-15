@@ -73,23 +73,7 @@ public class SyntaxTreeTest extends AbstractTest {
 				Operators.ADD, var("d"), var("c"), var("b"), var("a"), func("f", 4),
 				Operators.SUB);
 		final SyntaxTree tree = new SyntaxTree(queue);
-		//  '-'
-		//  - '+'
-		//   -- '*'
-		//    --- '/'
-		//     ---- 'a'
-		//     ---- 'b'
-		//    --- 'c'
-		//   -- '^'
-		//    --- 'a'
-		//    --- '^'
-		//     ---- 'b'
-		//     ---- 'c'
-		//  - 'f'
-		//   -- 'd'
-		//   -- 'c'
-		//   -- 'b'
-		//   -- 'a'
+
 		assertNotNull(tree);
 		assertSame(Operators.SUB, token(tree));
 		assertSame(Operators.ADD, token(tree, 0));
