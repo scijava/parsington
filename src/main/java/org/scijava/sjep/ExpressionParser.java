@@ -102,11 +102,41 @@ public class ExpressionParser {
 	/** A stateful parsing operation. */
 	private class ParseOperation {
 
+		/**
+		 * Whether the next token may legally be a unary prefix operator.
+		 *
+		 * @see #state
+		 */
+		private static final int PREFIX_OK = 1;
+
+		/**
+		 * Whether the next token may legally be a unary postfix operator.
+		 *
+		 * @see #state
+		 */
+		private static final int POSTFIX_OK = 2;
+
+		/**
+		 * Whether the next token may legally be a binary infix operator.
+		 *
+		 * @see #state
+		 */
+		private static final int INFIX_OK = 4;
+
 		private final String expression;
 		private final NumberFormat numberFormat;
 		private final ParsePosition pos;
 		private final Deque<Object> stack = new ArrayDeque<Object>();
 		private final LinkedList<Object> outputQueue = new LinkedList<Object>();
+
+		/**
+		 * State flags for operator context.
+		 *
+		 * @see #PREFIX_OK
+		 * @see #POSTFIX_OK
+		 * @see #INFIX_OK
+		 */
+		private int state = PREFIX_OK;
 
 		public ParseOperation(final String expression) {
 			this.expression = expression;
@@ -133,6 +163,8 @@ public class ExpressionParser {
 				final Number num = parseNumber();
 				if (num != null) {
 					outputQueue.add(num);
+					// Update the state flags.
+					state = PREFIX_OK;
 					continue;
 				}
 
@@ -140,6 +172,8 @@ public class ExpressionParser {
 				final Function func = parseFunction();
 				if (func != null) {
 					stack.push(func);
+					// Update the state flags.
+					state = PREFIX_OK;
 					continue;
 				}
 
@@ -158,6 +192,8 @@ public class ExpressionParser {
 						}
 						outputQueue.add(stack.pop());
 					}
+					// Update the state flags.
+					state = PREFIX_OK;
 					continue;
 				}
 
@@ -180,6 +216,10 @@ public class ExpressionParser {
 					}
 					// Push o1 onto the stack.
 					stack.push(o1);
+					// Update the state flags.
+					if (o1.isPrefix() || o1.isInfix()) state = PREFIX_OK;
+					else if (o1.isPostfix()) state = POSTFIX_OK | INFIX_OK;
+					else fail("Impenetrable operator '" + o1 + "'");
 					continue;
 				}
 
@@ -187,6 +227,8 @@ public class ExpressionParser {
 				final Character leftParen = parseLeftParen();
 				if (leftParen != null) {
 					stack.push(leftParen);
+					// Update the state flags.
+					state = PREFIX_OK;
 					continue;
 				}
 
@@ -214,6 +256,8 @@ public class ExpressionParser {
 						}
 						outputQueue.add(stack.pop());
 					}
+					// Update the state flags.
+					state = POSTFIX_OK | INFIX_OK;
 					continue;
 				}
 
@@ -221,6 +265,8 @@ public class ExpressionParser {
 				final Variable variable = parseVariable();
 				if (variable != null) {
 					outputQueue.add(variable);
+					// Update the state flags.
+					state = POSTFIX_OK | INFIX_OK;
 					continue;
 				}
 
@@ -255,6 +301,20 @@ public class ExpressionParser {
 
 		public void incIndex(final int count) {
 			pos.setIndex(pos.getIndex() + count);
+		}
+
+		// -- State methods --
+
+		public boolean isPrefixOK() {
+			return (state & PREFIX_OK) != 0;
+		}
+
+		public boolean isPostfixOK() {
+			return (state & POSTFIX_OK) != 0;
+		}
+
+		public boolean isInfixOK() {
+			return (state & INFIX_OK) != 0;
 		}
 
 		// -- Parsing methods --
