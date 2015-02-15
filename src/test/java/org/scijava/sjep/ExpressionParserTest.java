@@ -62,13 +62,13 @@ public class ExpressionParserTest extends AbstractTest {
 	@Test
 	public void testParseBinaryOperator() {
 		final ExpressionParser parser = new ExpressionParser();
-		final LinkedList<Object> queue = parser.parsePostfix("a+b");
+		final LinkedList<Object> queue = parser.parsePostfix("a-b");
 
 		assertNotNull(queue);
-		// [a, b, +]
+		// [a, b, -]
 		assertVariable("a", queue.get(0));
 		assertVariable("b", queue.get(1));
-		assertSame(Operators.ADD, queue.get(2));
+		assertSame(Operators.SUB, queue.get(2));
 	}
 
 	@Test
