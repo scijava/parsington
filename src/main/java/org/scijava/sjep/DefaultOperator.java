@@ -72,6 +72,21 @@ public class DefaultOperator extends AbstractToken implements Operator {
 	}
 
 	@Override
+	public boolean isInfix() {
+		return getArity() > 1;
+	}
+
+	@Override
+	public boolean isPrefix() {
+		return getArity() == 1 && isRightAssociative();
+	}
+
+	@Override
+	public boolean isPostfix() {
+		return getArity() == 1 && isLeftAssociative();
+	}
+
+	@Override
 	public double getPrecedence() {
 		return precedence;
 	}

@@ -51,6 +51,15 @@ public interface Operator extends Verb, Comparable<Operator> {
 
 	boolean isRightAssociative();
 
+	/** True iff the operator is an infix operator (e.g., {@code a-b}). */
+	boolean isInfix();
+
+	/** True iff the operator is a prefix operator (e.g., {@code -a}). */
+	boolean isPrefix();
+
+	/** True iff the operator is a postfix operator (e.g., {@code a'}). */
+	boolean isPostfix();
+
 	double getPrecedence();
 
 }
