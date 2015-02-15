@@ -76,7 +76,8 @@ public class ExpressionParser {
 	 * 
 	 * @param expression The mathematical expression to parse.
 	 * @return Parsed hierarchy of tokens.
-	 * @throws IllegalArgumentException if the syntax of the expression is incorrect.
+	 * @throws IllegalArgumentException if the syntax of the expression is
+	 *           incorrect.
 	 */
 	public SyntaxTree parseTree(final String expression) {
 		return new ParseOperation(expression).parseTree();
@@ -101,11 +102,41 @@ public class ExpressionParser {
 	/** A stateful parsing operation. */
 	private class ParseOperation {
 
+		/**
+		 * Whether the next token may legally be a unary prefix operator.
+		 *
+		 * @see #state
+		 */
+		private static final int PREFIX_OK = 1;
+
+		/**
+		 * Whether the next token may legally be a unary postfix operator.
+		 *
+		 * @see #state
+		 */
+		private static final int POSTFIX_OK = 2;
+
+		/**
+		 * Whether the next token may legally be a binary infix operator.
+		 *
+		 * @see #state
+		 */
+		private static final int INFIX_OK = 4;
+
 		private final String expression;
 		private final NumberFormat numberFormat;
 		private final ParsePosition pos;
 		private final Deque<Object> stack = new ArrayDeque<Object>();
 		private final LinkedList<Object> outputQueue = new LinkedList<Object>();
+
+		/**
+		 * State flags for operator context.
+		 *
+		 * @see #PREFIX_OK
+		 * @see #POSTFIX_OK
+		 * @see #INFIX_OK
+		 */
+		private int state = PREFIX_OK;
 
 		public ParseOperation(final String expression) {
 			this.expression = expression;
@@ -132,6 +163,8 @@ public class ExpressionParser {
 				final Number num = parseNumber();
 				if (num != null) {
 					outputQueue.add(num);
+					// Update the state flags.
+					state = PREFIX_OK;
 					continue;
 				}
 
@@ -139,6 +172,8 @@ public class ExpressionParser {
 				final Function func = parseFunction();
 				if (func != null) {
 					stack.push(func);
+					// Update the state flags.
+					state = PREFIX_OK;
 					continue;
 				}
 
@@ -157,6 +192,8 @@ public class ExpressionParser {
 						}
 						outputQueue.add(stack.pop());
 					}
+					// Update the state flags.
+					state = PREFIX_OK;
 					continue;
 				}
 
@@ -169,7 +206,7 @@ public class ExpressionParser {
 						final Operator o2 = (Operator) stack.peek();
 						final double p2 = o2.getPrecedence();
 						// ...and o1 has lower precedence than o2...
-						if (o1.isLeftAssociative() && p1 <= p2 ||
+						if (o1.isLeftAssociative() && p1 <= p2 || //
 							o1.isRightAssociative() && p1 < p2)
 						{
 							// Pop o2 off the stack, onto the output queue.
@@ -179,6 +216,10 @@ public class ExpressionParser {
 					}
 					// Push o1 onto the stack.
 					stack.push(o1);
+					// Update the state flags.
+					if (o1.isPrefix() || o1.isInfix()) state = PREFIX_OK;
+					else if (o1.isPostfix()) state = POSTFIX_OK | INFIX_OK;
+					else fail("Impenetrable operator '" + o1 + "'");
 					continue;
 				}
 
@@ -186,6 +227,8 @@ public class ExpressionParser {
 				final Character leftParen = parseLeftParen();
 				if (leftParen != null) {
 					stack.push(leftParen);
+					// Update the state flags.
+					state = PREFIX_OK;
 					continue;
 				}
 
@@ -194,7 +237,7 @@ public class ExpressionParser {
 				if (rightParen != null) {
 					// Pop from stack to output queue until left parenthesis found.
 					while (true) {
-						if (stack.isEmpty()){
+						if (stack.isEmpty()) {
 							// No left parenthesis found: mismatched parentheses!
 							die("Mismatched parentheses");
 						}
@@ -213,6 +256,8 @@ public class ExpressionParser {
 						}
 						outputQueue.add(stack.pop());
 					}
+					// Update the state flags.
+					state = POSTFIX_OK | INFIX_OK;
 					continue;
 				}
 
@@ -220,6 +265,8 @@ public class ExpressionParser {
 				final Variable variable = parseVariable();
 				if (variable != null) {
 					outputQueue.add(variable);
+					// Update the state flags.
+					state = POSTFIX_OK | INFIX_OK;
 					continue;
 				}
 
@@ -252,15 +299,30 @@ public class ExpressionParser {
 			incIndex(1);
 		}
 
-		public void incIndex(int count) {
+		public void incIndex(final int count) {
 			pos.setIndex(pos.getIndex() + count);
+		}
+
+		// -- State methods --
+
+		public boolean isPrefixOK() {
+			return (state & PREFIX_OK) != 0;
+		}
+
+		public boolean isPostfixOK() {
+			return (state & POSTFIX_OK) != 0;
+		}
+
+		public boolean isInfixOK() {
+			return (state & INFIX_OK) != 0;
 		}
 
 		// -- Parsing methods --
 
 		/** Skips past any whitespace to the next interesting character. */
 		public void parseWhitespace() {
-			while (Character.isWhitespace(currentChar())) incIndex();
+			while (Character.isWhitespace(currentChar()))
+				incIndex();
 		}
 
 		/**
@@ -295,7 +357,8 @@ public class ExpressionParser {
 
 			// Skip any intervening whitespace.
 			int offset = length;
-			while (Character.isWhitespace(futureChar(offset))) offset++;
+			while (Character.isWhitespace(futureChar(offset)))
+				offset++;
 
 			// NB: Token is considered a function _iff_ it is
 			// an identifier followed by a left parenthesis.
@@ -335,7 +398,7 @@ public class ExpressionParser {
 			if (!Character.isUnicodeIdentifierStart(currentChar())) return 0;
 			int length = 0;
 			while (true) {
-				char next = futureChar(length);
+				final char next = futureChar(length);
 				if (next == '\0') break;
 				if (!Character.isUnicodeIdentifierPart(next)) break;
 				length++;
@@ -351,7 +414,12 @@ public class ExpressionParser {
 		public Operator parseOperator() {
 			for (final Operator operator : operators) {
 				final String symbol = operator.getToken();
-				if (expression.startsWith(symbol, pos.getIndex())) {
+				if (!expression.startsWith(symbol, pos.getIndex())) continue;
+				// Ensure the operator is appropriate to the current context.
+				if (isPrefixOK() && operator.isPrefix() || //
+					isPostfixOK() && operator.isPostfix() || //
+					isInfixOK() && operator.isInfix())
+				{
 					incIndex(symbol.length());
 					return operator;
 				}
@@ -418,7 +486,7 @@ public class ExpressionParser {
 			final StringBuilder sb = new StringBuilder();
 			sb.append(expression);
 			sb.append("\n");
-			for (int i=0; i<pos.getIndex(); i++) {
+			for (int i = 0; i < pos.getIndex(); i++) {
 				sb.append(" ");
 			}
 			sb.append("^");
@@ -435,6 +503,11 @@ public class ExpressionParser {
 		/** Throws {@link IllegalStateException} if something goes wrong. */
 		private void assertThat(final boolean condition, final String message) {
 			if (condition) return;
+			fail(message);
+		}
+
+		/** Throws {@link IllegalStateException} when something is wrong. */
+		private void fail(final String message) {
 			throw new IllegalStateException(messageWithDetails(message));
 		}
 
