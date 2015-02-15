@@ -438,6 +438,11 @@ public class ExpressionParser {
 		/** Throws {@link IllegalStateException} if something goes wrong. */
 		private void assertThat(final boolean condition, final String message) {
 			if (condition) return;
+			fail(message);
+		}
+
+		/** Throws {@link IllegalStateException} when something is wrong. */
+		private void fail(final String message) {
 			throw new IllegalStateException(messageWithDetails(message));
 		}
 
