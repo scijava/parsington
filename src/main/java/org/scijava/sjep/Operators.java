@@ -42,6 +42,9 @@ import org.scijava.sjep.Operator.Associativity;
  */
 public final class Operators {
 
+	public static final Operator NEG = new DefaultOperator("-", "neg", 1,
+		Associativity.RIGHT, 2);
+
 	public static final Operator ADD = new DefaultOperator("+", "add", 2,
 		Associativity.EITHER, 2);
 	public static final Operator SUB = new DefaultOperator("-", "sub", 2,
@@ -59,8 +62,8 @@ public final class Operators {
 
 	/** Gets the standard list of operators. */
 	public static List<Operator> standardList() {
-		return Arrays.asList(Operators.ADD, Operators.SUB, Operators.MUL,
-			Operators.DIV, Operators.POW);
+		return Arrays.asList(Operators.NEG, Operators.ADD, Operators.SUB,
+			Operators.MUL, Operators.DIV, Operators.POW);
 	}
 
 }
