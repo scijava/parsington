@@ -414,7 +414,12 @@ public class ExpressionParser {
 		public Operator parseOperator() {
 			for (final Operator operator : operators) {
 				final String symbol = operator.getToken();
-				if (expression.startsWith(symbol, pos.getIndex())) {
+				if (!expression.startsWith(symbol, pos.getIndex())) continue;
+				// Ensure the operator is appropriate to the current context.
+				if (isPrefixOK() && operator.isPrefix() || //
+					isPostfixOK() && operator.isPostfix() || //
+					isInfixOK() && operator.isInfix())
+				{
 					incIndex(symbol.length());
 					return operator;
 				}
