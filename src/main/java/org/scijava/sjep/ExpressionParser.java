@@ -76,7 +76,8 @@ public class ExpressionParser {
 	 * 
 	 * @param expression The mathematical expression to parse.
 	 * @return Parsed hierarchy of tokens.
-	 * @throws IllegalArgumentException if the syntax of the expression is incorrect.
+	 * @throws IllegalArgumentException if the syntax of the expression is
+	 *           incorrect.
 	 */
 	public SyntaxTree parseTree(final String expression) {
 		return new ParseOperation(expression).parseTree();
@@ -169,7 +170,7 @@ public class ExpressionParser {
 						final Operator o2 = (Operator) stack.peek();
 						final double p2 = o2.getPrecedence();
 						// ...and o1 has lower precedence than o2...
-						if (o1.isLeftAssociative() && p1 <= p2 ||
+						if (o1.isLeftAssociative() && p1 <= p2 || //
 							o1.isRightAssociative() && p1 < p2)
 						{
 							// Pop o2 off the stack, onto the output queue.
@@ -194,7 +195,7 @@ public class ExpressionParser {
 				if (rightParen != null) {
 					// Pop from stack to output queue until left parenthesis found.
 					while (true) {
-						if (stack.isEmpty()){
+						if (stack.isEmpty()) {
 							// No left parenthesis found: mismatched parentheses!
 							die("Mismatched parentheses");
 						}
@@ -252,7 +253,7 @@ public class ExpressionParser {
 			incIndex(1);
 		}
 
-		public void incIndex(int count) {
+		public void incIndex(final int count) {
 			pos.setIndex(pos.getIndex() + count);
 		}
 
@@ -260,7 +261,8 @@ public class ExpressionParser {
 
 		/** Skips past any whitespace to the next interesting character. */
 		public void parseWhitespace() {
-			while (Character.isWhitespace(currentChar())) incIndex();
+			while (Character.isWhitespace(currentChar()))
+				incIndex();
 		}
 
 		/**
@@ -295,7 +297,8 @@ public class ExpressionParser {
 
 			// Skip any intervening whitespace.
 			int offset = length;
-			while (Character.isWhitespace(futureChar(offset))) offset++;
+			while (Character.isWhitespace(futureChar(offset)))
+				offset++;
 
 			// NB: Token is considered a function _iff_ it is
 			// an identifier followed by a left parenthesis.
@@ -335,7 +338,7 @@ public class ExpressionParser {
 			if (!Character.isUnicodeIdentifierStart(currentChar())) return 0;
 			int length = 0;
 			while (true) {
-				char next = futureChar(length);
+				final char next = futureChar(length);
 				if (next == '\0') break;
 				if (!Character.isUnicodeIdentifierPart(next)) break;
 				length++;
@@ -418,7 +421,7 @@ public class ExpressionParser {
 			final StringBuilder sb = new StringBuilder();
 			sb.append(expression);
 			sb.append("\n");
-			for (int i=0; i<pos.getIndex(); i++) {
+			for (int i = 0; i < pos.getIndex(); i++) {
 				sb.append(" ");
 			}
 			sb.append("^");
