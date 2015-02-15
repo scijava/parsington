@@ -60,6 +60,72 @@ public class ExpressionParserTest extends AbstractTest {
 	}
 
 	@Test
+	public void testParseUnaryOperator1() {
+		final ExpressionParser parser = new ExpressionParser();
+		final LinkedList<Object> queue = parser.parsePostfix("-a");
+
+		assertNotNull(queue);
+		// [a, -]
+		assertVariable("a", queue.get(0));
+		assertSame(Operators.NEG, queue.get(1));
+	}
+
+	@Test
+	public void testParseUnaryOperator2() {
+		final ExpressionParser parser = new ExpressionParser();
+		final LinkedList<Object> queue = parser.parsePostfix("--a");
+
+		assertNotNull(queue);
+		// [a, -, -]
+		assertVariable("a", queue.get(0));
+		assertSame(Operators.NEG, queue.get(1));
+		assertSame(Operators.NEG, queue.get(2));
+	}
+
+	@Test
+	public void testParseUnaryOperator3() {
+		final ExpressionParser parser = new ExpressionParser();
+		final LinkedList<Object> queue = parser.parsePostfix("a--b");
+
+		assertNotNull(queue);
+		// [a, b, -, -]
+		assertVariable("a", queue.get(0));
+		assertVariable("b", queue.get(1));
+		assertSame(Operators.NEG, queue.get(2));
+		assertSame(Operators.SUB, queue.get(3));
+	}
+
+	@Test
+	public void testParseUnaryOperator4() {
+		final ExpressionParser parser = new ExpressionParser();
+		final LinkedList<Object> queue = parser.parsePostfix("a---b");
+
+		assertNotNull(queue);
+		// [a, b, -, -, -]
+		assertVariable("a", queue.get(0));
+		assertVariable("b", queue.get(1));
+		assertSame(Operators.NEG, queue.get(2));
+		assertSame(Operators.NEG, queue.get(3));
+		assertSame(Operators.SUB, queue.get(4));
+	}
+
+	@Test
+	public void testParseUnaryOperator5() {
+		final ExpressionParser parser = new ExpressionParser();
+		final LinkedList<Object> queue = parser.parsePostfix("--a---b");
+
+		assertNotNull(queue);
+		// [a, b, -, -, -]
+		assertVariable("a", queue.get(0));
+		assertSame(Operators.NEG, queue.get(1));
+		assertSame(Operators.NEG, queue.get(2));
+		assertVariable("b", queue.get(3));
+		assertSame(Operators.NEG, queue.get(4));
+		assertSame(Operators.NEG, queue.get(5));
+		assertSame(Operators.SUB, queue.get(6));
+	}
+
+	@Test
 	public void testParseBinaryOperator() {
 		final ExpressionParser parser = new ExpressionParser();
 		final LinkedList<Object> queue = parser.parsePostfix("a-b");
