@@ -61,6 +61,21 @@ public final class Literals {
 	}
 
 	/**
+	 * Parses a string literal which is enclosed in double quotes.
+	 * <p>
+	 * This parsing mechanism is intended to be as close as possible to the
+	 * numeric literals supported by the Java programming language itself.
+	 * </p>
+	 *
+	 * @param s The string from which the string literal should be parsed.
+	 * @return The parsed string value, unescaped according to Java conventions.
+	 *         Returns null if the string does not begin with a double quote.
+	 */
+	public static String parseString(final CharSequence s) {
+		return parseString(s, new Position());
+	}
+
+	/**
 	 * Parses a hexidecimal literal (e.g., {@code 0xfedcba9876543210}).
 	 * 
 	 * @param s The string from which the numeric literal should be parsed.
@@ -130,6 +145,93 @@ public final class Literals {
 	 */
 	public static Number parseNumber(final CharSequence s) {
 		return parseNumber(s, new Position());
+	}
+
+	/**
+	 * Parses a string literal which is enclosed in single or double quotes.
+	 * <p>
+	 * For literals in double quotes, this parsing mechanism is intended to be as
+	 * close as possible to the numeric literals supported by the Java programming
+	 * language itself. Literals in single quotes are completely verbatim, with
+	 * no escaping performed.
+	 * </p>
+	 *
+	 * @param s The string from which the string literal should be parsed.
+	 * @param pos The offset from which the literal should be parsed. If parsing
+	 *          is successful, the position will be advanced to the next index
+	 *          after the parsed literal.
+	 * @return The parsed string value, unescaped according to Java conventions.
+	 *         Returns null if the string does not begin with a single or double
+	 *         quote.
+	 */
+	public static String parseString(final CharSequence s, final Position pos) {
+		final char quote = pos.ch(s);
+		if (quote != '"' && quote != '\'') return null;
+		int index = pos.get() + 1;
+
+		boolean escaped = false;
+		final StringBuilder sb = new StringBuilder();
+		while (true) {
+			if (index >= s.length()) pos.die("Unclosed string literal");
+			final char c = s.charAt(index);
+
+			if (escaped) {
+				escaped = false;
+				if (isOctal(c)) { // octal sequence
+					String octal = "" + c;
+					final char c1 = pos.ch(s, index + 1);
+					if (isOctal(c1)) {
+						octal += c1;
+						if (c >= '0' && c <= '3') {
+							final char c2 = pos.ch(s, index + 2);
+							if (isOctal(c2)) octal += c2;
+						}
+					}
+					sb.append((char) Integer.parseInt(octal, 8));
+					index += octal.length();
+					continue;
+				}
+				switch (c) {
+					case 'b': // backspace
+						sb.append('\b');
+						break;
+					case 't': // tab
+						sb.append('\t');
+						break;
+					case 'n': // linefeed
+						sb.append('\n');
+						break;
+					case 'f': // form feed
+						sb.append('\f');
+						break;
+					case 'r': // carriage return
+						sb.append('\r');
+						break;
+					case '"': // double quote
+						sb.append('"');
+						break;
+					case '\\': // backslash
+						sb.append('\\');
+						break;
+					case 'u': // unicode sequence
+						final char u1 = hex(s, pos, index + 1);
+						final char u2 = hex(s, pos, index + 2);
+						final char u3 = hex(s, pos, index + 3);
+						final char u4 = hex(s, pos, index + 4);
+						sb.append((char) Integer.parseInt("" + u1 + u2 + u3 + u4, 16));
+						index += 5;
+						break;
+					default: // invalid escape
+						pos.die("Invalid escape sequence");
+				}
+			}
+			else if (c == '\\' && quote == '"') escaped = true;
+			else if (c == quote) break;
+			else sb.append(c);
+			index++;
+		}
+		pos.set(index + 1);
+		return sb.toString();
 	}
 
 	/**
@@ -250,6 +352,19 @@ public final class Literals {
 	}
 
 	// -- Helper methods --
+
+	private static boolean isOctal(char c) {
+		return c >= '0' && c <= '7';
+	}
+
+	private static char hex(final CharSequence s, final Position pos, int index) {
+		final char c = pos.ch(s, index);
+		if (c >= '0' && c <= '9') return c;
+		if (c >= 'a' && c <= 'f') return c;
+		if (c >= 'A' && c <= 'F') return c;
+		pos.die("Invalid unicode sequence");
+		return '\0'; // NB: Unreachable.
+	}
 
 	private static boolean
 		isNumberSyntax(final CharSequence s, final Position pos)
