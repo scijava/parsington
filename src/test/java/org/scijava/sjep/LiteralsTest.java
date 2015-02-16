@@ -31,7 +31,6 @@
 package org.scijava.sjep;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
 
 import java.math.BigInteger;
 
@@ -42,7 +41,7 @@ import org.junit.Test;
  *
  * @author Curtis Rueden
  */
-public class LiteralsTest {
+public class LiteralsTest extends AbstractTest {
 
 	@Test
 	public void testParseHex() {
@@ -194,13 +193,6 @@ public class LiteralsTest {
 		pos.set(3);
 		assertNumber(0x123L, Literals.parseNumber("ccc0x123Lccc", pos));
 		assertEquals(9, pos.get());
-	}
-
-	// -- Helper methods --
-
-	private void assertNumber(final Number expected, final Number actual) {
-		assertSame(expected.getClass(), actual.getClass());
-		assertEquals(expected, actual);
 	}
 
 }

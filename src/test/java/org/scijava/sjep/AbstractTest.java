@@ -31,6 +31,7 @@
 package org.scijava.sjep;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -41,6 +42,11 @@ import static org.junit.Assert.assertTrue;
 public class AbstractTest {
 
 	// -- Helper methods --
+
+	protected void assertNumber(final Number expected, final Number actual) {
+		assertSame(expected.getClass(), actual.getClass());
+		assertEquals(expected, actual);
+	}
 
 	protected void assertFunction(final String expected, final int arity,
 		final Object token)
