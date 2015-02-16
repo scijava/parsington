@@ -159,7 +159,7 @@ public class ExpressionParser {
 				if (num != null) {
 					outputQueue.add(num);
 					// Update the state flags.
-					state = PREFIX_OK;
+					state = POSTFIX_OK | INFIX_OK;
 					continue;
 				}
 
