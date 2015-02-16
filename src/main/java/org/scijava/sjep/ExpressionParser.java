@@ -286,8 +286,7 @@ public class ExpressionParser {
 		}
 
 		public char futureChar(final int offset) {
-			final int index = pos.get() + offset;
-			return index >= expression.length() ? '\0' : expression.charAt(index);
+			return pos.ch(expression, offset);
 		}
 
 		// -- State methods --
