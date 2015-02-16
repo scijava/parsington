@@ -56,6 +56,15 @@ public class Position {
 		index += count;
 	}
 
+	public char ch(final CharSequence s) {
+		return ch(s, 0);
+	}
+
+	public char ch(final CharSequence s, final int offset) {
+		final int i = get() + offset;
+		return i < s.length() ? s.charAt(i) : '\0';
+	}
+
 	/** Throws {@link IllegalArgumentException} when syntax is incorrect. */
 	public void die(final String message) {
 		throw new IllegalArgumentException(messageWithDetails(message));

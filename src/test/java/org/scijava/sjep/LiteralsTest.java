@@ -31,6 +31,8 @@
 package org.scijava.sjep;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 import java.math.BigInteger;
 
@@ -42,6 +44,48 @@ import org.junit.Test;
  * @author Curtis Rueden
  */
 public class LiteralsTest extends AbstractTest {
+
+	@Test
+	public void testParseString() {
+		assertEquals("hello world", Literals.parseString("'hello world'"));
+		// Test escape sequences.
+		assertEquals("a\b\t\n\f\r\"\\z", Literals
+			.parseString("\"a\\b\\t\\n\\f\\r\\\"\\\\z\""));
+		assertEquals("\t\\\t\\\\\t", Literals
+			.parseString("\"\\t\\\\\\t\\\\\\\\\\t\""));
+		// Test Unicode escape sequences.
+		// TODO
+		// Test octal escape sequences.
+		assertEquals("\0", Literals.parseString("\"\\0\""));
+		assertEquals("\00", Literals.parseString("\"\\00\""));
+		assertEquals("\000", Literals.parseString("\"\\000\""));
+		assertEquals("\12", Literals.parseString("\"\\12\""));
+		assertEquals("\123", Literals.parseString("\"\\123\""));
+		assertEquals("\377", Literals.parseString("\"\\377\""));
+		assertEquals("\1234", Literals.parseString("\"\\1234\""));
+		// Test position
+		final Position pos = new Position();
+		pos.set(2);
+		assertEquals("cde", Literals.parseString("ab'cde'fg", pos));
+		assertEquals(7, pos.get());
+	}
+
+	@Test
+	public void testParseStringInvalid() {
+		// Test non-string tokens.
+		assertNull(Literals.parseString(""));
+		assertNull(Literals.parseString("1234"));
+		assertNull(Literals.parseString("foo"));
+		assertNull(Literals.parseString("a'b'c"));
+		// Test malformed string literals.
+		try {
+			Literals.parseString("'");
+			fail("IllegalArgumentException expected");
+		}
+		catch (final IllegalArgumentException exc) {
+			assertEquals("Unclosed string literal at index 0", exc.getMessage());
+		}
+	}
 
 	@Test
 	public void testParseHex() {
@@ -113,7 +157,7 @@ public class LiteralsTest extends AbstractTest {
 		final Number bigNum = Literals.parseOctal("0" + big);
 		assertNumber(new BigInteger(big, 8), bigNum);
 	}
-	
+
 	@Test
 	public void testParseOctalNegative() {
 		assertNumber(-01234567, Literals.parseOctal("-01234567"));
