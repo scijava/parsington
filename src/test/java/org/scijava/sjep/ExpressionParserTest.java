@@ -45,18 +45,20 @@ import org.junit.Test;
  */
 public class ExpressionParserTest extends AbstractTest {
 
-	// NB: Disabled until number parsing stops sucking.
-	//@Test
+	@Test
 	public void testNumbers() {
 		final ExpressionParser parser = new ExpressionParser();
-		final LinkedList<Object> queue = parser.parsePostfix("1.1+2L+3f+4");
+		final LinkedList<Object> queue = parser.parsePostfix("1.1+2L+3f+4--5d-6");
 
 		assertNotNull(queue);
-		assertSame(7, queue.size());
-		assertSame(1.1, queue.get(0));
-		assertSame(2L, queue.get(1));
-		assertSame(3f, queue.get(3));
-		assertSame(4, queue.get(5));
+		// [1.1, 2L, +, 3f, +, 4, +, -5d, -, 6, -]
+		assertEquals(11, queue.size());
+		assertNumber(1.1, queue.get(0));
+		assertNumber(2L, queue.get(1));
+		assertNumber(3f, queue.get(3));
+		assertNumber(4, queue.get(5));
+		assertNumber(-5d, queue.get(7));
+		assertNumber(6, queue.get(9));
 	}
 
 	@Test
