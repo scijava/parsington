@@ -31,11 +31,11 @@
 package org.scijava.sjep;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Deque;
-import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.Set;
+import java.util.List;
 
 /**
  * A parser for mathematical expressions, using Dijkstra's famous <a
@@ -51,7 +51,7 @@ import java.util.Set;
  */
 public class ExpressionParser {
 
-	private final Set<Operator> operators;
+	private final List<Operator> operators;
 
 	/** Creates an expression parser with the default set of operators. */
 	public ExpressionParser() {
@@ -63,8 +63,8 @@ public class ExpressionParser {
 	 * 
 	 * @param operators The collection of operators available to expressions.
 	 */
-	public ExpressionParser(final Collection<Operator> operators) {
-		this.operators = new HashSet<Operator>(operators);
+	public ExpressionParser(final Collection<? extends Operator> operators) {
+		this.operators = new ArrayList<Operator>(operators);
 	}
 
 	// -- ExpressionParser methods --
