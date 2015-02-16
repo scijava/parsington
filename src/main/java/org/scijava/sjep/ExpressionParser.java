@@ -154,6 +154,15 @@ public class ExpressionParser {
 			while (pos.get() < expression.length()) {
 				parseWhitespace();
 
+				// If next token is a string literal, add it to the output queue.
+				final String s = parseString();
+				if (s != null) {
+					outputQueue.add(s);
+					// Update the state flags.
+					state = POSTFIX_OK | INFIX_OK;
+					continue;
+				}
+
 				// If next token is a number, add it to the output queue.
 				final Number num = parseNumber();
 				if (num != null) {
@@ -309,6 +318,15 @@ public class ExpressionParser {
 		public void parseWhitespace() {
 			while (Character.isWhitespace(currentChar()))
 				pos.inc();
+		}
+
+		/**
+		 * Attempts to parse a string literal.
+		 *
+		 * @return The parsed string, or null if the next token is not one.
+		 */
+		public String parseString() {
+			return Literals.parseString(expression, pos);
 		}
 
 		/**
