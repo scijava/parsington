@@ -30,8 +30,6 @@
 
 package org.scijava.sjep;
 
-import java.text.NumberFormat;
-import java.text.ParsePosition;
 import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Deque;
@@ -124,8 +122,7 @@ public class ExpressionParser {
 		private static final int INFIX_OK = 4;
 
 		private final String expression;
-		private final NumberFormat numberFormat;
-		private final ParsePosition pos;
+		private final Position pos = new Position();
 		private final Deque<Object> stack = new ArrayDeque<Object>();
 		private final LinkedList<Object> outputQueue = new LinkedList<Object>();
 
@@ -140,8 +137,6 @@ public class ExpressionParser {
 
 		public ParseOperation(final String expression) {
 			this.expression = expression;
-			numberFormat = NumberFormat.getInstance();
-			pos = new ParsePosition(0);
 		}
 
 		/** Parses the expression into a syntax tree. */
@@ -156,7 +151,7 @@ public class ExpressionParser {
 		 */
 		public LinkedList<Object> parsePostfix() {
 			// While there are tokens to be read...
-			while (pos.getIndex() < expression.length()) {
+			while (pos.get() < expression.length()) {
 				parseWhitespace();
 
 				// If next token is a number, add it to the output queue.
@@ -183,7 +178,7 @@ public class ExpressionParser {
 					// Pop from stack to output queue until function found.
 					while (true) {
 						if (stack.isEmpty()) {
-							die("Misplaced separator or mismatched parentheses");
+							pos.die("Misplaced separator or mismatched parentheses");
 						}
 						if (Tokens.isFunction(stack.peek())) {
 							// Count the completed function argument in the function's arity.
@@ -219,7 +214,7 @@ public class ExpressionParser {
 					// Update the state flags.
 					if (o1.isPrefix() || o1.isInfix()) state = PREFIX_OK;
 					else if (o1.isPostfix()) state = POSTFIX_OK | INFIX_OK;
-					else fail("Impenetrable operator '" + o1 + "'");
+					else pos.fail("Impenetrable operator '" + o1 + "'");
 					continue;
 				}
 
@@ -239,7 +234,7 @@ public class ExpressionParser {
 					while (true) {
 						if (stack.isEmpty()) {
 							// No left parenthesis found: mismatched parentheses!
-							die("Mismatched parentheses");
+							pos.die("Mismatched parentheses");
 						}
 						if (Tokens.isLeftParen(stack.peek())) {
 							// Pop the left parenthesis, but not onto the output queue.
@@ -270,7 +265,7 @@ public class ExpressionParser {
 					continue;
 				}
 
-				die("Invalid character");
+				pos.die("Invalid character");
 			}
 			// No more tokens to read!
 
@@ -278,7 +273,7 @@ public class ExpressionParser {
 			while (!stack.isEmpty()) {
 				final Object token = stack.pop();
 				// There shouldn't be any parentheses left.
-				if (Tokens.isParen(token)) die("Mismatched parentheses");
+				if (Tokens.isParen(token)) pos.die("Mismatched parentheses");
 				// Pop the operator onto the output queue.
 				outputQueue.add(token);
 			}
@@ -291,16 +286,8 @@ public class ExpressionParser {
 		}
 
 		public char futureChar(final int offset) {
-			final int index = pos.getIndex() + offset;
+			final int index = pos.get() + offset;
 			return index >= expression.length() ? '\0' : expression.charAt(index);
-		}
-
-		public void incIndex() {
-			incIndex(1);
-		}
-
-		public void incIndex(final int count) {
-			pos.setIndex(pos.getIndex() + count);
 		}
 
 		// -- State methods --
@@ -322,28 +309,20 @@ public class ExpressionParser {
 		/** Skips past any whitespace to the next interesting character. */
 		public void parseWhitespace() {
 			while (Character.isWhitespace(currentChar()))
-				incIndex();
+				pos.inc();
 		}
 
 		/**
-		 * Attempts to parse a number.
+		 * Attempts to parse a numeric literal.
 		 *
 		 * @return The parsed number, or null if the next token is not one.
 		 */
 		public Number parseNumber() {
-			// TODO: Write a better number parser than DecimalFormat.
-			// We want to support all the cases that Java source code does:
-			// - 1.234e56 scientific notation
-			// - 0, 0L, 0.0 and 0f with proper types.
-			// - automatic BigInteger and BigDecimal as appropriate.
-			// - 0xcafebabe hex integers
-			// - 0xbeefbabedeadcafeL hex longs
-			// - 0b1001010 binary integers
-			// - 0b101001010101010011010L binary longs
-			// - 01234567 octal integers
-			// - 012345677654321L octal longs
-			// And let's add this logic to a dedicated Numbers utility class.
-			return numberFormat.parse(expression, pos);
+			// Only accept a numeric literal in the appropriate context.
+			// This avoids confusing the negative sign with binary minus operator.
+			if (!isPrefixOK()) return null;
+
+			return Literals.parseNumber(expression, pos);
 		}
 
 		/**
@@ -369,7 +348,7 @@ public class ExpressionParser {
 
 			// Consume the following whitespace and associated left parenthesis.
 			parseWhitespace();
-			assertThat(Tokens.isLeftParen(parseLeftParen()),
+			pos.assertThat(Tokens.isLeftParen(parseLeftParen()),
 				"Left parenthesis expected after function");
 
 			return new Function(token);
@@ -414,13 +393,13 @@ public class ExpressionParser {
 		public Operator parseOperator() {
 			for (final Operator operator : operators) {
 				final String symbol = operator.getToken();
-				if (!expression.startsWith(symbol, pos.getIndex())) continue;
+				if (!expression.startsWith(symbol, pos.get())) continue;
 				// Ensure the operator is appropriate to the current context.
 				if (isPrefixOK() && operator.isPrefix() || //
 					isPostfixOK() && operator.isPostfix() || //
 					isInfixOK() && operator.isInfix())
 				{
-					incIndex(symbol.length());
+					pos.inc(symbol.length());
 					return operator;
 				}
 			}
@@ -461,7 +440,7 @@ public class ExpressionParser {
 		 */
 		public Character parseChar(final char c) {
 			if (currentChar() == c) {
-				incIndex();
+				pos.inc();
 				return c;
 			}
 			return null;
@@ -473,9 +452,9 @@ public class ExpressionParser {
 		 * @return The parsed token.
 		 */
 		public String parseToken(final int length) {
-			final int offset = pos.getIndex();
+			final int offset = pos.get();
 			final String token = expression.substring(offset, offset + length);
-			incIndex(length);
+			pos.inc(length);
 			return token;
 		}
 
@@ -486,33 +465,11 @@ public class ExpressionParser {
 			final StringBuilder sb = new StringBuilder();
 			sb.append(expression);
 			sb.append("\n");
-			for (int i = 0; i < pos.getIndex(); i++) {
+			for (int i = 0; i < pos.get(); i++) {
 				sb.append(" ");
 			}
 			sb.append("^");
 			return sb.toString();
-		}
-
-		// -- Helper methods --
-
-		/** Throws {@link IllegalArgumentException} when syntax is incorrect. */
-		private void die(final String message) {
-			throw new IllegalArgumentException(messageWithDetails(message));
-		}
-
-		/** Throws {@link IllegalStateException} if something goes wrong. */
-		private void assertThat(final boolean condition, final String message) {
-			if (condition) return;
-			fail(message);
-		}
-
-		/** Throws {@link IllegalStateException} when something is wrong. */
-		private void fail(final String message) {
-			throw new IllegalStateException(messageWithDetails(message));
-		}
-
-		private String messageWithDetails(final String message) {
-			return message + " at index " + pos.getIndex();
 		}
 
 	}
