@@ -199,6 +199,24 @@ public class ExpressionParserTest extends AbstractTest {
 	}
 
 	@Test
+	public void testNestedFunctions() {
+		final ExpressionParser parser = new ExpressionParser();
+		final LinkedList<Object> queue =
+			parser.parsePostfix("f(g(),a,h(b),i(c,d))");
+
+		assertNotNull(queue);
+		// [g, a, b, h, c, d, i, f]
+		assertFunction("g", 0, queue.get(0));
+		assertVariable("a", queue.get(1));
+		assertVariable("b", queue.get(2));
+		assertFunction("h", 1, queue.get(3));
+		assertVariable("c", queue.get(4));
+		assertVariable("d", queue.get(5));
+		assertFunction("i", 2, queue.get(6));
+		assertFunction("f", 4, queue.get(7));
+	}
+
+	@Test
 	public void testOperatorPrecedence() {
 		final ExpressionParser parser = new ExpressionParser();
 		final LinkedList<Object> queue = parser.parsePostfix("a+b*c");
