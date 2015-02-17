@@ -100,40 +100,20 @@ public class ExpressionParser {
 	/** A stateful parsing operation. */
 	private class ParseOperation {
 
-		/**
-		 * Whether the next token may legally be a unary prefix operator.
-		 *
-		 * @see #state
-		 */
-		private static final int PREFIX_OK = 1;
-
-		/**
-		 * Whether the next token may legally be a unary postfix operator.
-		 *
-		 * @see #state
-		 */
-		private static final int POSTFIX_OK = 2;
-
-		/**
-		 * Whether the next token may legally be a binary infix operator.
-		 *
-		 * @see #state
-		 */
-		private static final int INFIX_OK = 4;
-
 		private final String expression;
 		private final Position pos = new Position();
 		private final Deque<Object> stack = new ArrayDeque<Object>();
 		private final LinkedList<Object> outputQueue = new LinkedList<Object>();
 
 		/**
-		 * State flags for operator context.
-		 *
-		 * @see #PREFIX_OK
-		 * @see #POSTFIX_OK
-		 * @see #INFIX_OK
+		 * State flag for parsing context.
+		 * <ul>
+		 * <li>If true, we are expecting an infix or postfix operator next.</li>
+		 * <li>If false, we are expecting a prefix operator or non-operator token
+		 * (e.g., variable, literal or function) next.</li>
+		 * </ul>
 		 */
-		private int state = PREFIX_OK;
+		private boolean infix;
 
 		public ParseOperation(final String expression) {
 			this.expression = expression;
@@ -158,8 +138,8 @@ public class ExpressionParser {
 				final String s = parseString();
 				if (s != null) {
 					outputQueue.add(s);
-					// Update the state flags.
-					state = POSTFIX_OK | INFIX_OK;
+					// Update the state flag.
+					infix = true;
 					continue;
 				}
 
@@ -167,8 +147,8 @@ public class ExpressionParser {
 				final Number num = parseNumber();
 				if (num != null) {
 					outputQueue.add(num);
-					// Update the state flags.
-					state = POSTFIX_OK | INFIX_OK;
+					// Update the state flag.
+					infix = true;
 					continue;
 				}
 
@@ -176,8 +156,8 @@ public class ExpressionParser {
 				final Function func = parseFunction();
 				if (func != null) {
 					stack.push(func);
-					// Update the state flags.
-					state = PREFIX_OK;
+					// Update the state flag.
+					infix = false;
 					continue;
 				}
 
@@ -196,8 +176,8 @@ public class ExpressionParser {
 						}
 						outputQueue.add(stack.pop());
 					}
-					// Update the state flags.
-					state = PREFIX_OK;
+					// Update the state flag.
+					infix = false;
 					continue;
 				}
 
@@ -220,9 +200,9 @@ public class ExpressionParser {
 					}
 					// Push o1 onto the stack.
 					stack.push(o1);
-					// Update the state flags.
-					if (o1.isPrefix() || o1.isInfix()) state = PREFIX_OK;
-					else if (o1.isPostfix()) state = POSTFIX_OK | INFIX_OK;
+					// Update the state flag.
+					if (o1.isPrefix() || o1.isInfix()) infix = false;
+					else if (o1.isPostfix()) infix = true;
 					else pos.fail("Impenetrable operator '" + o1 + "'");
 					continue;
 				}
@@ -231,8 +211,8 @@ public class ExpressionParser {
 				final Character leftParen = parseLeftParen();
 				if (leftParen != null) {
 					stack.push(leftParen);
-					// Update the state flags.
-					state = PREFIX_OK;
+					// Update the state flag.
+					infix = false;
 					continue;
 				}
 
@@ -260,8 +240,8 @@ public class ExpressionParser {
 						}
 						outputQueue.add(stack.pop());
 					}
-					// Update the state flags.
-					state = POSTFIX_OK | INFIX_OK;
+					// Update the state flag.
+					infix = true;
 					continue;
 				}
 
@@ -269,8 +249,8 @@ public class ExpressionParser {
 				final Variable variable = parseVariable();
 				if (variable != null) {
 					outputQueue.add(variable);
-					// Update the state flags.
-					state = POSTFIX_OK | INFIX_OK;
+					// Update the state flag.
+					infix = true;
 					continue;
 				}
 
@@ -301,15 +281,15 @@ public class ExpressionParser {
 		// -- State methods --
 
 		public boolean isPrefixOK() {
-			return (state & PREFIX_OK) != 0;
+			return !infix;
 		}
 
 		public boolean isPostfixOK() {
-			return (state & POSTFIX_OK) != 0;
+			return infix;
 		}
 
 		public boolean isInfixOK() {
-			return (state & INFIX_OK) != 0;
+			return infix;
 		}
 
 		// -- Parsing methods --
