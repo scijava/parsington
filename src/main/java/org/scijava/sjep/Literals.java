@@ -61,15 +61,18 @@ public final class Literals {
 	}
 
 	/**
-	 * Parses a string literal which is enclosed in double quotes.
+	 * Parses a string literal which is enclosed in single or double quotes.
 	 * <p>
-	 * This parsing mechanism is intended to be as close as possible to the
-	 * numeric literals supported by the Java programming language itself.
+	 * For literals in double quotes, this parsing mechanism is intended to be as
+	 * close as possible to the numeric literals supported by the Java programming
+	 * language itself. Literals in single quotes are completely verbatim, with
+	 * no escaping performed.
 	 * </p>
 	 *
 	 * @param s The string from which the string literal should be parsed.
 	 * @return The parsed string value, unescaped according to Java conventions.
-	 *         Returns null if the string does not begin with a double quote.
+	 *         Returns null if the string does not begin with a single or double
+	 *         quote.
 	 */
 	public static String parseString(final CharSequence s) {
 		return parseString(s, new Position());
