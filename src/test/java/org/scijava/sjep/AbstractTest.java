@@ -34,6 +34,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
+
 /**
  * Base class for unit test classes.
  *
@@ -72,6 +74,13 @@ public class AbstractTest {
 
 	protected void assertToken(final String expected, final Object token) {
 		assertEquals(expected, token.toString());
+	}
+
+	protected void assertSameLists(final List<?> expected, final List<?> actual) {
+		assertEquals(expected.size(), actual.size());
+		for (int i = 0; i < expected.size(); i++) {
+			assertSame("Non-matching index: " + i, expected.get(i), actual.get(i));
+		}
 	}
 
 }

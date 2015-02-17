@@ -75,6 +75,13 @@ public class SyntaxTree implements Iterable<SyntaxTree> {
 		return children == null ? 0 : children.length;
 	}
 
+	/** Converts the syntax tree into a token queue in postfix order. */
+	public LinkedList<Object> postfix() {
+		final LinkedList<Object> queue = new LinkedList<Object>();
+		postfix(queue);
+		return queue;
+	}
+
 	// -- Object methods --
 
 	@Override
@@ -107,6 +114,13 @@ public class SyntaxTree implements Iterable<SyntaxTree> {
 	}
 
 	// -- Helper methods --
+
+	private void postfix(LinkedList<Object> queue) {
+		for (final SyntaxTree child : this) {
+			child.postfix(queue);
+		}
+		queue.add(token());
+	}
 
 	private String toString(final String prefix) {
 		final StringBuilder sb = new StringBuilder();

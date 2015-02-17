@@ -51,6 +51,10 @@ public class SyntaxTreeTest extends AbstractTest {
 		// postfix: [a, b, c, *, +]
 		final LinkedList<Object> queue =
 			queue(var("a"), var("b"), var("c"), Operators.MUL, Operators.ADD);
+
+		// NB: SyntaxTree constructor consumes the queue, so save a copy.
+		final LinkedList<Object> expected = new LinkedList<Object>(queue);
+
 		final SyntaxTree tree = new SyntaxTree(queue);
 
 		assertNotNull(tree);
@@ -61,6 +65,8 @@ public class SyntaxTreeTest extends AbstractTest {
 		assertCount(2, tree.child(1));
 		assertVariable("b", tree.child(1).child(0).token());
 		assertVariable("c", tree.child(1).child(1).token());
+
+		assertSameLists(expected, tree.postfix());
 	}
 
 	@Test
@@ -72,6 +78,10 @@ public class SyntaxTreeTest extends AbstractTest {
 				var("a"), var("b"), var("c"), Operators.POW, Operators.POW,
 				Operators.ADD, var("d"), var("c"), var("b"), var("a"), func("f", 4),
 				Operators.SUB);
+
+		// NB: SyntaxTree constructor consumes the queue, so save a copy.
+		final LinkedList<Object> expected = new LinkedList<Object>(queue);
+
 		final SyntaxTree tree = new SyntaxTree(queue);
 
 		assertNotNull(tree);
@@ -92,6 +102,8 @@ public class SyntaxTreeTest extends AbstractTest {
 		assertVariable("c", token(tree, 1, 1));
 		assertVariable("b", token(tree, 1, 2));
 		assertVariable("a", token(tree, 1, 3));
+
+		assertSameLists(expected, tree.postfix());
 	}
 
 	// -- Helper methods --
