@@ -35,7 +35,6 @@ import java.util.List;
 
 import org.scijava.sjep.Operator.Associativity;
 
-import static org.scijava.sjep.Operator.Associativity.EITHER;
 import static org.scijava.sjep.Operator.Associativity.LEFT;
 import static org.scijava.sjep.Operator.Associativity.RIGHT;
 
@@ -52,12 +51,12 @@ public final class Operators {
 
 	// -- multiplicative --
 
-	public static final Operator MUL = op("*", 2, EITHER, 3);
+	public static final Operator MUL = op("*", 2, LEFT, 3);
 	public static final Operator DIV = op("/", 2, LEFT, 3);
 
 	// -- additive --
 
-	public static final Operator ADD = op("+", 2, EITHER, 2);
+	public static final Operator ADD = op("+", 2, LEFT, 2);
 	public static final Operator SUB = op("-", 2, LEFT, 2);
 
 	// -- extra --
