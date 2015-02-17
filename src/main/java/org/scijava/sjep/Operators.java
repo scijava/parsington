@@ -42,18 +42,18 @@ import org.scijava.sjep.Operator.Associativity;
  */
 public final class Operators {
 
-	public static final Operator NEG = new DefaultOperator("-", "neg", 1,
+	public static final Operator NEG = new DefaultOperator("-", 1,
 		Associativity.RIGHT, 2);
 
-	public static final Operator ADD = new DefaultOperator("+", "add", 2,
+	public static final Operator ADD = new DefaultOperator("+", 2,
 		Associativity.EITHER, 2);
-	public static final Operator SUB = new DefaultOperator("-", "sub", 2,
+	public static final Operator SUB = new DefaultOperator("-", 2,
 		Associativity.LEFT, 2);
-	public static final Operator MUL = new DefaultOperator("*", "mul", 2,
+	public static final Operator MUL = new DefaultOperator("*", 2,
 		Associativity.EITHER, 3);
-	public static final Operator DIV = new DefaultOperator("/", "div", 2,
+	public static final Operator DIV = new DefaultOperator("/", 2,
 		Associativity.LEFT, 3);
-	public static final Operator POW = new DefaultOperator("^", "pow", 2,
+	public static final Operator POW = new DefaultOperator("^", 2,
 		Associativity.RIGHT, 4);
 
 	private Operators() {

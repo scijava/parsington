@@ -37,16 +37,14 @@ package org.scijava.sjep;
  */
 public class DefaultOperator extends AbstractToken implements Operator {
 
-	private final String function;
 	private final int arity;
 	private final Associativity associativity;
 	private final double precedence;
 
-	public DefaultOperator(final String symbol, final String function,
-		final int arity, final Associativity associativity, final double precedence)
+	public DefaultOperator(final String symbol, final int arity,
+		final Associativity associativity, final double precedence)
 	{
 		super(symbol);
-		this.function = function;
 		this.arity = arity;
 		this.associativity = associativity;
 		this.precedence = precedence;
@@ -92,11 +90,6 @@ public class DefaultOperator extends AbstractToken implements Operator {
 	}
 
 	// -- Verb methods --
-
-	@Override
-	public String getName() {
-		return function;
-	}
 
 	@Override
 	public int getArity() {
