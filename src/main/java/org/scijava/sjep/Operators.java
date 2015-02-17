@@ -35,6 +35,9 @@ import java.util.List;
 
 import org.scijava.sjep.Operator.Associativity;
 
+import static org.scijava.sjep.Operator.Associativity.LEFT;
+import static org.scijava.sjep.Operator.Associativity.RIGHT;
+
 /**
  * A collection of standard {@link Operator}s.
  *
@@ -42,19 +45,23 @@ import org.scijava.sjep.Operator.Associativity;
  */
 public final class Operators {
 
-	public static final Operator NEG = new DefaultOperator("-", "neg", 1,
-		Associativity.RIGHT, 2);
+	// -- unary --
 
-	public static final Operator ADD = new DefaultOperator("+", "add", 2,
-		Associativity.EITHER, 2);
-	public static final Operator SUB = new DefaultOperator("-", "sub", 2,
-		Associativity.LEFT, 2);
-	public static final Operator MUL = new DefaultOperator("*", "mul", 2,
-		Associativity.EITHER, 3);
-	public static final Operator DIV = new DefaultOperator("/", "div", 2,
-		Associativity.LEFT, 3);
-	public static final Operator POW = new DefaultOperator("^", "pow", 2,
-		Associativity.RIGHT, 4);
+	public static final Operator NEG = op("-", 1, RIGHT, 2);
+
+	// -- multiplicative --
+
+	public static final Operator MUL = op("*", 2, LEFT, 3);
+	public static final Operator DIV = op("/", 2, LEFT, 3);
+
+	// -- additive --
+
+	public static final Operator ADD = op("+", 2, LEFT, 2);
+	public static final Operator SUB = op("-", 2, LEFT, 2);
+
+	// -- extra --
+
+	public static final Operator POW = op("^", 2, RIGHT, 4);
 
 	private Operators() {
 		// NB: Prevent instantiation of utility class.
@@ -64,6 +71,14 @@ public final class Operators {
 	public static List<Operator> standardList() {
 		return Arrays.asList(Operators.NEG, Operators.ADD, Operators.SUB,
 			Operators.MUL, Operators.DIV, Operators.POW);
+	}
+
+	// -- Helper methods --
+
+	private static Operator op(final String symbol, final int arity,
+		final Associativity associativity, final double precedence)
+	{
+		return new DefaultOperator(symbol, arity, associativity, precedence);
 	}
 
 }

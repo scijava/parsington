@@ -88,8 +88,11 @@ public class Evaluator {
 		final Deque<Double> stack = new ArrayDeque<Double>();
 		while (!queue.isEmpty()) {
 			final Object token = queue.removeFirst();
-			if (Tokens.isVerb(token)) {
-				execute((Verb) token, stack);
+			if (Tokens.isOperator(token)) {
+				execute((Operator) token, stack);
+			}
+			else if (Tokens.isFunction(token)) {
+				throw new IllegalArgumentException("Unsupported function: " + token);
 			}
 			else if (Tokens.isNumber(token)) {
 				final double value = ((Number) token).doubleValue();
@@ -118,28 +121,27 @@ public class Evaluator {
 		return result;
 	}
 
-	private void execute(final Verb verb, final Deque<Double> stack) {
-		final String name = verb.getName();
-		final int arity = verb.getArity();
+	private void execute(final Operator operator, final Deque<Double> stack) {
+		final int arity = operator.getArity();
 
 		Double result = null;
 		if (arity == 1) {
 			final double a = stack.pop();
-			if ("neg".equals(name)) result = -a;
+			if (operator == Operators.NEG) result = -a;
 		}
 		else if (arity == 2) {
 			final double b = stack.pop();
 			final double a = stack.pop();
-			if ("add".equals(name)) result = a + b;
-			else if ("sub".equals(name)) result = a - b;
-			else if ("mul".equals(name)) result = a * b;
-			else if ("div".equals(name)) result = a / b;
-			else if ("pow".equals(name)) result = Math.pow(a, b);
+			if (operator == Operators.ADD) result = a + b;
+			else if (operator == Operators.SUB) result = a - b;
+			else if (operator == Operators.MUL) result = a * b;
+			else if (operator == Operators.DIV) result = a / b;
+			else if (operator == Operators.POW) result = Math.pow(a, b);
 		}
 		if (result == null) {
-			final String verbType = verb.getClass().getSimpleName().toLowerCase();
+			final String opType = operator.getClass().getSimpleName().toLowerCase();
 			throw new IllegalArgumentException("Unsupported " + ary(arity) + " " +
-				verbType + ": " + verb.getToken());
+				opType + ": " + operator.getToken());
 		}
 		stack.push(result);
 	}

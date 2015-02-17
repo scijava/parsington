@@ -62,11 +62,6 @@ public final class Function extends AbstractToken implements Verb {
 	// -- Verb methods --
 
 	@Override
-	public String getName() {
-		return getToken();
-	}
-
-	@Override
 	public int getArity() {
 		return arity;
 	}

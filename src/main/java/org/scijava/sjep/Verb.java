@@ -39,8 +39,6 @@ package org.scijava.sjep;
  */
 public interface Verb extends Token {
 
-	String getName();
-
 	/** 1 for unary, 2 for binary, etc. */
 	int getArity();
 
