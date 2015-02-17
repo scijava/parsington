@@ -46,6 +46,18 @@ import org.junit.Test;
 public class ExpressionParserTest extends AbstractTest {
 
 	@Test
+	public void testStrings() {
+		final ExpressionParser parser = new ExpressionParser();
+		final LinkedList<Object> queue = parser.parsePostfix("'hello'*\"world\"");
+
+		assertNotNull(queue);
+		// ["hello", "world", *]
+		assertEquals(3, queue.size());
+		assertString("hello", queue.get(0));
+		assertString("world", queue.get(1));
+	}
+
+	@Test
 	public void testNumbers() {
 		final ExpressionParser parser = new ExpressionParser();
 		final LinkedList<Object> queue = parser.parsePostfix("1.1+2L+3f+4--5d-6");
