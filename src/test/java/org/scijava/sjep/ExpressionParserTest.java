@@ -153,6 +153,16 @@ public class ExpressionParserTest extends AbstractTest {
 	}
 
 	@Test
+	public void testParseNullaryFunction() {
+		final ExpressionParser parser = new ExpressionParser();
+		final LinkedList<Object> queue = parser.parsePostfix("f()");
+
+		assertNotNull(queue);
+		// [f]
+		assertFunction("f", 0, queue.get(0));
+	}
+
+	@Test
 	public void testParseUnaryFunction() {
 		final ExpressionParser parser = new ExpressionParser();
 		final LinkedList<Object> queue = parser.parsePostfix("f(a)");
