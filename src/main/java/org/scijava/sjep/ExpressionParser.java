@@ -233,7 +233,7 @@ public class ExpressionParser {
 						// If token is a function, it implicitly has a left parenthesis.
 						if (Tokens.isFunction(stack.peek())) {
 							// Count the completed function argument in the function's arity.
-							((Function) stack.peek()).incArity();
+							if (infix) ((Function) stack.peek()).incArity();
 							// Pop the function onto the output queue.
 							outputQueue.add(stack.pop());
 							break;
