@@ -278,6 +278,15 @@ public class ExpressionParserTest extends AbstractTest {
 		assertSame(Operators.SUB, queue.get(15));
 	}
 
+	/** Tests empty expressions. */
+	@Test
+	public void testEmpty() {
+		final ExpressionParser parser = new ExpressionParser();
+		assertEquals(0, parser.parsePostfix("").size());
+		assertEquals(0, parser.parsePostfix("()").size());
+		assertEquals(0, parser.parsePostfix("(())").size());
+	}
+
 	/** Tests that parsing an invalid expression fails appropriately. */
 	@Test
 	public void testParseInvalid() {
