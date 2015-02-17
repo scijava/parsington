@@ -33,6 +33,7 @@ package org.scijava.sjep;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
 
 import java.util.LinkedList;
 
@@ -247,6 +248,34 @@ public class ExpressionParserTest extends AbstractTest {
 		assertSame(Operators.POW, queue.get(13));
 		assertSame(Operators.DIV, queue.get(14));
 		assertSame(Operators.SUB, queue.get(15));
+	}
+
+	/** Tests that parsing an invalid expression fails appropriately. */
+	@Test
+	public void testParseInvalid() {
+		final ExpressionParser parser = new ExpressionParser();
+		assertInvalid(parser, "a a", "Invalid character at index 2");
+		assertInvalid(parser, "func(,)", "Invalid character at index 5");
+		assertInvalid(parser, "foo,bar",
+			"Misplaced separator or mismatched parentheses at index 4");
+		assertInvalid(parser, "(", "Mismatched parentheses at index 1");
+		assertInvalid(parser, ")", "Mismatched parentheses at index 1");
+		assertInvalid(parser, ")(", "Mismatched parentheses at index 1");
+		assertInvalid(parser, "(()", "Mismatched parentheses at index 3");
+	}
+
+	// -- Helper
+
+	private void assertInvalid(final ExpressionParser parser,
+		final String expression, final String message)
+	{
+		try {
+			parser.parsePostfix(expression);
+			fail("Expected IllegalArgumentException");
+		}
+		catch (final IllegalArgumentException exc) {
+			assertEquals(message, exc.getMessage());
+		}
 	}
 
 }
