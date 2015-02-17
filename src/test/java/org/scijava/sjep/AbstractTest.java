@@ -45,6 +45,11 @@ public class AbstractTest {
 
 	// -- Helper methods --
 
+	protected void assertString(final String expected, final Object actual) {
+		assertSame(expected.getClass(), actual.getClass());
+		assertEquals(expected, actual);
+	}
+
 	protected void assertNumber(final Number expected, final Object actual) {
 		assertSame(expected.getClass(), actual.getClass());
 		assertEquals(expected, actual);

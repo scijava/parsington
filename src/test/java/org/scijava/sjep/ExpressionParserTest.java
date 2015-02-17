@@ -33,6 +33,7 @@ package org.scijava.sjep;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
 
 import java.util.LinkedList;
 
@@ -44,6 +45,18 @@ import org.junit.Test;
  * @author Curtis Rueden
  */
 public class ExpressionParserTest extends AbstractTest {
+
+	@Test
+	public void testStrings() {
+		final ExpressionParser parser = new ExpressionParser();
+		final LinkedList<Object> queue = parser.parsePostfix("'hello'*\"world\"");
+
+		assertNotNull(queue);
+		// ["hello", "world", *]
+		assertEquals(3, queue.size());
+		assertString("hello", queue.get(0));
+		assertString("world", queue.get(1));
+	}
 
 	@Test
 	public void testNumbers() {
@@ -140,6 +153,16 @@ public class ExpressionParserTest extends AbstractTest {
 	}
 
 	@Test
+	public void testParseNullaryFunction() {
+		final ExpressionParser parser = new ExpressionParser();
+		final LinkedList<Object> queue = parser.parsePostfix("f()");
+
+		assertNotNull(queue);
+		// [f]
+		assertFunction("f", 0, queue.get(0));
+	}
+
+	@Test
 	public void testParseUnaryFunction() {
 		final ExpressionParser parser = new ExpressionParser();
 		final LinkedList<Object> queue = parser.parsePostfix("f(a)");
@@ -173,6 +196,24 @@ public class ExpressionParserTest extends AbstractTest {
 		assertVariable("b", queue.get(1));
 		assertVariable("c", queue.get(2));
 		assertFunction("f", 3, queue.get(3));
+	}
+
+	@Test
+	public void testNestedFunctions() {
+		final ExpressionParser parser = new ExpressionParser();
+		final LinkedList<Object> queue =
+			parser.parsePostfix("f(g(),a,h(b),i(c,d))");
+
+		assertNotNull(queue);
+		// [g, a, b, h, c, d, i, f]
+		assertFunction("g", 0, queue.get(0));
+		assertVariable("a", queue.get(1));
+		assertVariable("b", queue.get(2));
+		assertFunction("h", 1, queue.get(3));
+		assertVariable("c", queue.get(4));
+		assertVariable("d", queue.get(5));
+		assertFunction("i", 2, queue.get(6));
+		assertFunction("f", 4, queue.get(7));
 	}
 
 	@Test
@@ -235,6 +276,43 @@ public class ExpressionParserTest extends AbstractTest {
 		assertSame(Operators.POW, queue.get(13));
 		assertSame(Operators.DIV, queue.get(14));
 		assertSame(Operators.SUB, queue.get(15));
+	}
+
+	/** Tests empty expressions. */
+	@Test
+	public void testEmpty() {
+		final ExpressionParser parser = new ExpressionParser();
+		assertEquals(0, parser.parsePostfix("").size());
+		assertEquals(0, parser.parsePostfix("()").size());
+		assertEquals(0, parser.parsePostfix("(())").size());
+	}
+
+	/** Tests that parsing an invalid expression fails appropriately. */
+	@Test
+	public void testParseInvalid() {
+		final ExpressionParser parser = new ExpressionParser();
+		assertInvalid(parser, "a a", "Invalid character at index 2");
+		assertInvalid(parser, "func(,)", "Invalid character at index 5");
+		assertInvalid(parser, "foo,bar",
+			"Misplaced separator or mismatched parentheses at index 4");
+		assertInvalid(parser, "(", "Mismatched parentheses at index 1");
+		assertInvalid(parser, ")", "Mismatched parentheses at index 1");
+		assertInvalid(parser, ")(", "Mismatched parentheses at index 1");
+		assertInvalid(parser, "(()", "Mismatched parentheses at index 3");
+	}
+
+	// -- Helper
+
+	private void assertInvalid(final ExpressionParser parser,
+		final String expression, final String message)
+	{
+		try {
+			parser.parsePostfix(expression);
+			fail("Expected IllegalArgumentException");
+		}
+		catch (final IllegalArgumentException exc) {
+			assertEquals(message, exc.getMessage());
+		}
 	}
 
 }
