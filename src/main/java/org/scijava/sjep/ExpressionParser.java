@@ -306,6 +306,10 @@ public class ExpressionParser {
 		 * @return The parsed string, or null if the next token is not one.
 		 */
 		public String parseString() {
+			// Only accept a string literal in the appropriate context.
+			// This avoids confusing e.g. a quoted string with a quote operator.
+			if (infix) return null;
+
 			return Literals.parseString(expression, pos);
 		}
 
@@ -316,8 +320,8 @@ public class ExpressionParser {
 		 */
 		public Number parseNumber() {
 			// Only accept a numeric literal in the appropriate context.
-			// This avoids confusing the negative sign with binary minus operator.
-			if (!isPrefixOK()) return null;
+			// This avoids confusing e.g. the unary and binary minus operators.
+			if (infix) return null;
 
 			return Literals.parseNumber(expression, pos);
 		}
@@ -371,6 +375,9 @@ public class ExpressionParser {
 		 *         token is not one.
 		 */
 		public int parseIdentifier() {
+			// Only accept an identifier in the appropriate context.
+			if (infix) return 0;
+
 			if (!Character.isUnicodeIdentifierStart(currentChar())) return 0;
 			int length = 0;
 			while (true) {
@@ -409,6 +416,9 @@ public class ExpressionParser {
 		 * @return The comma, or null if the next token is not one.
 		 */
 		public Character parseComma() {
+			// Only accept a comma in the appropriate context.
+			if (!infix) return null;
+
 			return parseChar(',');
 		}
 
