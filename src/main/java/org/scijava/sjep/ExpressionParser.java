@@ -33,6 +33,8 @@ package org.scijava.sjep;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
@@ -65,6 +67,22 @@ public class ExpressionParser {
 	 */
 	public ExpressionParser(final Collection<? extends Operator> operators) {
 		this.operators = new ArrayList<Operator>(operators);
+
+		// NB: Ensure operators with longer symbols come first.
+		// This prevents e.g. '-' from being matched before '-=' and '--'.
+		Collections.sort(this.operators, new Comparator<Operator>() {
+
+			@Override
+			public int compare(final Operator o1, final Operator o2) {
+				final String t1 = o1.getToken();
+				final String t2 = o2.getToken();
+				final int len1 = t1.length();
+				final int len2 = t2.length();
+				if (len1 > len2) return -1; // o1 is longer, so o1 comes first.
+				if (len1 < len2) return 1; // o2 is longer, so o2 comes first.
+				return t1.compareTo(t2);
+			}
+		});
 	}
 
 	// -- ExpressionParser methods --
