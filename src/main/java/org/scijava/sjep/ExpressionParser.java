@@ -60,7 +60,7 @@ public class ExpressionParser {
 
 	/**
 	 * Creates an expression parser with the given set of operators.
-	 * 
+	 *
 	 * @param operators The collection of operators available to expressions.
 	 */
 	public ExpressionParser(final Collection<? extends Operator> operators) {
@@ -71,7 +71,7 @@ public class ExpressionParser {
 
 	/**
 	 * Parses the given mathematical expression into a syntax tree.
-	 * 
+	 *
 	 * @param expression The mathematical expression to parse.
 	 * @return Parsed hierarchy of tokens.
 	 * @throws IllegalArgumentException if the syntax of the expression is
@@ -85,7 +85,7 @@ public class ExpressionParser {
 	 * Parses the given mathematical expression into a queue in <a
 	 * href="https://en.wikipedia.org/wiki/Reverse_Polish_notation">Reverse Polish
 	 * notation</a> (i.e., postfix notation).
-	 * 
+	 *
 	 * @param expression The mathematical expression to parse.
 	 * @return Parsed queue of tokens in postfix notation.
 	 * @throws IllegalArgumentException if the syntax of the expression is
@@ -370,7 +370,7 @@ public class ExpressionParser {
 		 * Attempts to parse an identifier, as defined by
 		 * {@link Character#isUnicodeIdentifierStart(char)} and
 		 * {@link Character#isUnicodeIdentifierPart(char)}.
-		 * 
+		 *
 		 * @return The <em>length</em> of the parsed identifier, or 0 if the next
 		 *         token is not one.
 		 */

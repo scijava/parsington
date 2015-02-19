@@ -34,7 +34,7 @@ package org.scijava.sjep;
  * A "verb" here is a token that acts a fixed number of "noun" tokens (e.g.,
  * constants or variables). A verb may be either an {@link Operator} or a
  * {@link Function}.
- * 
+ *
  * @author Curtis Rueden
  */
 public interface Verb extends Token {

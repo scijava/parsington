@@ -7,13 +7,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *
+ * 
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -47,7 +47,7 @@ public class SyntaxTreeTest extends AbstractTest {
 
 	@Test
 	public void testSimple() {
-		// infix:   a + b * c
+		// infix: a + b * c
 		// postfix: [a, b, c, *, +]
 		final LinkedList<Object> queue =
 			queue(var("a"), var("b"), var("c"), Operators.MUL, Operators.ADD);
@@ -120,7 +120,7 @@ public class SyntaxTreeTest extends AbstractTest {
 		return new Function(token, arity);
 	}
 
-	private Object token(final SyntaxTree tree, int... indices) {
+	private Object token(final SyntaxTree tree, final int... indices) {
 		if (indices.length == 0) return tree.token();
 		final int[] subIndices = new int[indices.length - 1];
 		System.arraycopy(indices, 1, subIndices, 0, subIndices.length);
