@@ -130,7 +130,7 @@ public class ExpressionParserTest extends AbstractTest {
 		final LinkedList<Object> queue = parser.parsePostfix("--a---b");
 
 		assertNotNull(queue);
-		// [a, b, -, -, -]
+		// [a, -, -, b, -, -, -]
 		assertVariable("a", queue.get(0));
 		assertSame(Operators.NEG, queue.get(1));
 		assertSame(Operators.NEG, queue.get(2));
