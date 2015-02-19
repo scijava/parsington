@@ -41,30 +41,119 @@ import java.util.List;
 import org.scijava.sjep.Operator.Associativity;
 
 /**
- * A collection of standard {@link Operator}s.
+ * A collection of standard {@link Operator}s. This set of operators was
+ * synthesized by combining <a href=
+ * "http://docs.oracle.com/javase/tutorial/java/nutsandbolts/operators.html"
+ * >Java standard operators</a> and <a href=
+ * "http://www.mathworks.com/help/matlab/matlab_prog/operator-precedence.html"
+ * >MATLAB standard operators</a>.
  *
  * @author Curtis Rueden
  */
 public final class Operators {
 
+	// -- transpose, power --
+
+	public static final Operator TRANSPOSE = op("'", 1, LEFT, 15);
+	public static final Operator DOT_TRANSPOSE = op(".'", 1, LEFT, 15);
+	public static final Operator POW = op("^", 2, RIGHT, 15);
+	public static final Operator DOT_POW = op(".^", 2, RIGHT, 15);
+
+	// -- postfix --
+
+	public static final Operator POST_INC = op("++", 1, LEFT, 14);
+	public static final Operator POST_DEC = op("--", 1, LEFT, 14);
+
 	// -- unary --
 
-	public static final Operator POS = op("+", 1, RIGHT, 2);
-	public static final Operator NEG = op("-", 1, RIGHT, 2);
+	public static final Operator PRE_INC = op("++", 1, RIGHT, 13);
+	public static final Operator PRE_DEC = op("--", 1, RIGHT, 13);
+	public static final Operator POS = op("+", 1, RIGHT, 13);
+	public static final Operator NEG = op("-", 1, RIGHT, 13);
+	public static final Operator COMPLEMENT = op("~", 1, RIGHT, 13);
+	public static final Operator NOT = op("!", 1, RIGHT, 13);
 
 	// -- multiplicative --
 
-	public static final Operator MUL = op("*", 2, LEFT, 3);
-	public static final Operator DIV = op("/", 2, LEFT, 3);
+	public static final Operator MUL = op("*", 2, LEFT, 12);
+	public static final Operator DIV = op("/", 2, LEFT, 12);
+	public static final Operator MOD = op("%", 2, LEFT, 12);
+	public static final Operator RIGHT_DIV = op("\\", 2, LEFT, 12);
+	public static final Operator DOT_DIV = op("./", 2, LEFT, 12);
+	public static final Operator DOT_RIGHT_DIV = op(".\\", 2, LEFT, 12);
 
 	// -- additive --
 
-	public static final Operator ADD = op("+", 2, LEFT, 2);
-	public static final Operator SUB = op("-", 2, LEFT, 2);
+	public static final Operator ADD = op("+", 2, LEFT, 11);
+	public static final Operator SUB = op("-", 2, LEFT, 11);
 
-	// -- extra --
+	// -- shift --
 
-	public static final Operator POW = op("^", 2, RIGHT, 4);
+	public static final Operator LEFT_SHIFT = op("<<", 2, LEFT, 10);
+	public static final Operator RIGHT_SHIFT = op(">>", 2, LEFT, 10);
+	public static final Operator UNSIGNED_RIGHT_SHIFT = op(">>>", 2, LEFT, 10);
+
+	// -- colon --
+
+	public static final Operator COLON = op(":", 2, LEFT, 9);
+
+	// -- relational --
+
+	public static final Operator LESS_THAN = op("<", 2, LEFT, 8);
+	public static final Operator GREATER_THAN = op(">", 2, LEFT, 8);
+	public static final Operator LESS_THAN_OR_EQUAL = op("<=", 2, LEFT, 8);
+	public static final Operator GREATER_THAN_OR_EQUAL = op(">=", 2, LEFT, 8);
+	public static final Operator INSTANCEOF = op("instanceof", 2, LEFT, 8);
+
+	// -- equality --
+
+	public static final Operator EQUAL = op("==", 2, LEFT, 7);
+	public static final Operator NOT_EQUAL = op("!=", 2, LEFT, 7);
+
+	// -- bitwise AND --
+
+	public static final Operator BITWISE_AND = op("&", 2, LEFT, 6);
+
+	// -- bitwise exclusive OR --
+
+	// NB: No bitwise XOR operator, because '^' is reserved for POW above.
+	//public static final Operator BITWISE_XOR = op("^", 2, LEFT, 5);
+
+	// -- bitwise inclusive OR --
+
+	public static final Operator BITWISE_OR = op("|", 2, LEFT, 4);
+
+	// -- logical AND --
+
+	public static final Operator LOGICAL_AND = op("&&", 2, LEFT, 3);
+
+	// -- logical OR --
+
+	public static final Operator LOGICAL_OR = op("||", 2, LEFT, 2);
+
+	// -- ternary --
+
+	// NB: Ternary (? :) operator is not currently supported.
+
+	// -- assignment --
+
+	public static final Operator ASSIGN = op("=", 2, LEFT, 0);
+	public static final Operator POW_ASSIGN = op("^=", 2, LEFT, 0);
+	public static final Operator DOT_POW_ASSIGN = op(".^=", 2, LEFT, 0);
+	public static final Operator MUL_ASSIGN = op("*=", 2, LEFT, 0);
+	public static final Operator DIV_ASSIGN = op("/=", 2, LEFT, 0);
+	public static final Operator MOD_ASSIGN = op("%=", 2, LEFT, 0);
+	public static final Operator RIGHT_DIV_ASSIGN = op("\\=", 2, LEFT, 0);
+	public static final Operator DOT_DIV_ASSIGN = op("./=", 2, LEFT, 0);
+	public static final Operator DOT_RIGHT_DIV_ASSIGN = op(".\\=", 2, LEFT, 0);
+	public static final Operator ADD_ASSIGN = op("+=", 2, LEFT, 0);
+	public static final Operator SUB_ASSIGN = op("-=", 2, LEFT, 0);
+	public static final Operator AND_ASSIGN = op("&=", 2, LEFT, 0);
+	public static final Operator OR_ASSIGN = op("|=", 2, LEFT, 0);
+	public static final Operator LEFT_SHIFT_ASSIGN = op("<<=", 2, LEFT, 0);
+	public static final Operator RIGHT_SHIFT_ASSIGN = op(">>=", 2, LEFT, 0);
+	public static final Operator UNSIGNED_RIGHT_SHIFT_ASSIGN = op(">>>=", 2,
+		LEFT, 0);
 
 	private Operators() {
 		// NB: Prevent instantiation of utility class.
