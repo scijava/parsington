@@ -61,16 +61,16 @@ public class ExpressionParserTest extends AbstractTest {
 	@Test
 	public void testNumbers() {
 		final ExpressionParser parser = new ExpressionParser();
-		final LinkedList<Object> queue = parser.parsePostfix("1.1+2L+3f+4--5d-6");
+		final LinkedList<Object> queue = parser.parsePostfix("1.1+2L+3f+4-+5d-6");
 
 		assertNotNull(queue);
-		// [1.1, 2L, +, 3f, +, 4, +, -5d, -, 6, -]
+		// [1.1, 2L, +, 3f, +, 4, +, +5d, -, 6, -]
 		assertEquals(11, queue.size());
 		assertNumber(1.1, queue.get(0));
 		assertNumber(2L, queue.get(1));
 		assertNumber(3f, queue.get(3));
 		assertNumber(4, queue.get(5));
-		assertNumber(-5d, queue.get(7));
+		assertNumber(+5d, queue.get(7));
 		assertNumber(6, queue.get(9));
 	}
 
@@ -88,55 +88,55 @@ public class ExpressionParserTest extends AbstractTest {
 	@Test
 	public void testParseUnaryOperator2() {
 		final ExpressionParser parser = new ExpressionParser();
-		final LinkedList<Object> queue = parser.parsePostfix("--a");
+		final LinkedList<Object> queue = parser.parsePostfix("-+a");
 
 		assertNotNull(queue);
-		// [a, -, -]
+		// [a, +, -]
 		assertVariable("a", queue.get(0));
-		assertSame(Operators.NEG, queue.get(1));
+		assertSame(Operators.POS, queue.get(1));
 		assertSame(Operators.NEG, queue.get(2));
 	}
 
 	@Test
 	public void testParseUnaryOperator3() {
 		final ExpressionParser parser = new ExpressionParser();
-		final LinkedList<Object> queue = parser.parsePostfix("a--b");
+		final LinkedList<Object> queue = parser.parsePostfix("a+-b");
 
 		assertNotNull(queue);
-		// [a, b, -, -]
+		// [a, b, -, +]
 		assertVariable("a", queue.get(0));
 		assertVariable("b", queue.get(1));
 		assertSame(Operators.NEG, queue.get(2));
-		assertSame(Operators.SUB, queue.get(3));
+		assertSame(Operators.ADD, queue.get(3));
 	}
 
 	@Test
 	public void testParseUnaryOperator4() {
 		final ExpressionParser parser = new ExpressionParser();
-		final LinkedList<Object> queue = parser.parsePostfix("a---b");
+		final LinkedList<Object> queue = parser.parsePostfix("a-+-b");
 
 		assertNotNull(queue);
-		// [a, b, -, -, -]
+		// [a, b, -, +, -]
 		assertVariable("a", queue.get(0));
 		assertVariable("b", queue.get(1));
 		assertSame(Operators.NEG, queue.get(2));
-		assertSame(Operators.NEG, queue.get(3));
+		assertSame(Operators.POS, queue.get(3));
 		assertSame(Operators.SUB, queue.get(4));
 	}
 
 	@Test
 	public void testParseUnaryOperator5() {
 		final ExpressionParser parser = new ExpressionParser();
-		final LinkedList<Object> queue = parser.parsePostfix("--a---b");
+		final LinkedList<Object> queue = parser.parsePostfix("-+a-+-b");
 
 		assertNotNull(queue);
-		// [a, -, -, b, -, -, -]
+		// [a, +, -, b, -, +, -]
 		assertVariable("a", queue.get(0));
-		assertSame(Operators.NEG, queue.get(1));
+		assertSame(Operators.POS, queue.get(1));
 		assertSame(Operators.NEG, queue.get(2));
 		assertVariable("b", queue.get(3));
 		assertSame(Operators.NEG, queue.get(4));
-		assertSame(Operators.NEG, queue.get(5));
+		assertSame(Operators.POS, queue.get(5));
 		assertSame(Operators.SUB, queue.get(6));
 	}
 
