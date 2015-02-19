@@ -49,6 +49,7 @@ public final class Operators {
 
 	// -- unary --
 
+	public static final Operator POS = op("+", 1, RIGHT, 2);
 	public static final Operator NEG = op("-", 1, RIGHT, 2);
 
 	// -- multiplicative --
