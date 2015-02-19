@@ -33,7 +33,9 @@ package org.scijava.sjep;
 import static org.scijava.sjep.Operator.Associativity.LEFT;
 import static org.scijava.sjep.Operator.Associativity.RIGHT;
 
-import java.util.Arrays;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.scijava.sjep.Operator.Associativity;
@@ -69,8 +71,19 @@ public final class Operators {
 
 	/** Gets the standard list of operators. */
 	public static List<Operator> standardList() {
-		return Arrays.asList(Operators.NEG, Operators.ADD, Operators.SUB,
-			Operators.MUL, Operators.DIV, Operators.POW);
+		// Build the standard list from all available Operator constants.
+		final ArrayList<Operator> ops = new ArrayList<Operator>();
+		for (final Field f : Operators.class.getFields()) {
+			if (!isOperator(f)) continue;
+			try {
+				ops.add((Operator) f.get(null));
+			}
+			catch (final IllegalAccessException exc) {
+				// This should never happen.
+				throw new IllegalStateException(exc);
+			}
+		}
+		return ops;
 	}
 
 	// -- Helper methods --
@@ -79,6 +92,12 @@ public final class Operators {
 		final Associativity associativity, final double precedence)
 	{
 		return new DefaultOperator(symbol, arity, associativity, precedence);
+	}
+
+	private static boolean isOperator(final Field f) {
+		final int mods = f.getModifiers();
+		return Modifier.isStatic(mods) && Modifier.isFinal(mods) &&
+			f.getType() == Operator.class;
 	}
 
 }
