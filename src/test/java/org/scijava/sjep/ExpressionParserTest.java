@@ -387,15 +387,21 @@ public class ExpressionParserTest extends AbstractTest {
 	@Test
 	public void testOperatorPrecedence() {
 		final ExpressionParser parser = new ExpressionParser();
-		final LinkedList<Object> queue = parser.parsePostfix("a+b*c");
+		final LinkedList<Object> queue = parser.parsePostfix("a+b*c^d.^e'");
 
 		assertNotNull(queue);
-		// [a, b, c, *, +]
+		// [a, b, c, d, e, .^, ^, ', *, +]
+		assertEquals(10, queue.size());
 		assertVariable("a", queue.get(0));
 		assertVariable("b", queue.get(1));
 		assertVariable("c", queue.get(2));
-		assertSame(Operators.MUL, queue.get(3));
-		assertSame(Operators.ADD, queue.get(4));
+		assertVariable("d", queue.get(3));
+		assertVariable("e", queue.get(4));
+		assertSame(Operators.DOT_POW, queue.get(5));
+		assertSame(Operators.POW, queue.get(6));
+		assertSame(Operators.TRANSPOSE, queue.get(7));
+		assertSame(Operators.MUL, queue.get(8));
+		assertSame(Operators.ADD, queue.get(9));
 	}
 
 	@Test
