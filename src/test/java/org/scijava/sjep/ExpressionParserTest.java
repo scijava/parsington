@@ -128,6 +128,143 @@ public class ExpressionParserTest extends AbstractTest {
 		assertBinary(p, "a", Operators.UNSIGNED_RIGHT_SHIFT_ASSIGN, "b", "a>>>=b");
 	}
 
+	/** Tests all the numeric operators in a single expression. */
+	@Test
+	public void testMathOperators() {
+		final String expression =
+			"(a|=b)|(c&=d)&(e>>>=f)>>>(g>>=h)>>(i<<=j)<<(k-=l)-(m+=n)"
+				+ "+(o.\\=p).\\(q./=r)./(s\\=t)\\(u%=v)%(w/=x)/(y*=z)"
+				+ "*(aa.^=bb).^(cc^=dd)^f(~ee--,-ff++,+--gg',++hh.')";
+		final ExpressionParser parser = new ExpressionParser();
+		final LinkedList<Object> queue = parser.parsePostfix(expression);
+		assertNotNull(queue);
+
+		// [a, b, |=, c, d, &=, e, f, >>>=, g, h, >>=, >>>, i, j, <<=, >>, k,
+		// l, -=, m, n, +=, -, o, p, .\=, q, r, ./=, .\, s, t, \=, ./, u, v,
+		// %=, \, w, x, /=, %, y, z, *=, /, aa, bb, .^=, cc, dd, ^=, ee, --,
+		// ~, ff, ++, -, gg, ', --, +, hh, .', ++, f, ^, .^, *, +, <<, &, |]
+		assertEquals(74, queue.size());
+		assertVariable("a", queue.get(0));
+		assertVariable("b", queue.get(1));
+		assertSame(Operators.OR_ASSIGN, queue.get(2));
+		assertVariable("c", queue.get(3));
+		assertVariable("d", queue.get(4));
+		assertSame(Operators.AND_ASSIGN, queue.get(5));
+		assertVariable("e", queue.get(6));
+		assertVariable("f", queue.get(7));
+		assertSame(Operators.UNSIGNED_RIGHT_SHIFT_ASSIGN, queue.get(8));
+		assertVariable("g", queue.get(9));
+		assertVariable("h", queue.get(10));
+		assertSame(Operators.RIGHT_SHIFT_ASSIGN, queue.get(11));
+		assertSame(Operators.UNSIGNED_RIGHT_SHIFT, queue.get(12));
+		assertVariable("i", queue.get(13));
+		assertVariable("j", queue.get(14));
+		assertSame(Operators.LEFT_SHIFT_ASSIGN, queue.get(15));
+		assertSame(Operators.RIGHT_SHIFT, queue.get(16));
+		assertVariable("k", queue.get(17));
+		assertVariable("l", queue.get(18));
+		assertSame(Operators.SUB_ASSIGN, queue.get(19));
+		assertVariable("m", queue.get(20));
+		assertVariable("n", queue.get(21));
+		assertSame(Operators.ADD_ASSIGN, queue.get(22));
+		assertSame(Operators.SUB, queue.get(23));
+		assertVariable("o", queue.get(24));
+		assertVariable("p", queue.get(25));
+		assertSame(Operators.DOT_RIGHT_DIV_ASSIGN, queue.get(26));
+		assertVariable("q", queue.get(27));
+		assertVariable("r", queue.get(28));
+		assertSame(Operators.DOT_DIV_ASSIGN, queue.get(29));
+		assertSame(Operators.DOT_RIGHT_DIV, queue.get(30));
+		assertVariable("s", queue.get(31));
+		assertVariable("t", queue.get(32));
+		assertSame(Operators.RIGHT_DIV_ASSIGN, queue.get(33));
+		assertSame(Operators.DOT_DIV, queue.get(34));
+		assertVariable("u", queue.get(35));
+		assertVariable("v", queue.get(36));
+		assertSame(Operators.MOD_ASSIGN, queue.get(37));
+		assertSame(Operators.RIGHT_DIV, queue.get(38));
+		assertVariable("w", queue.get(39));
+		assertVariable("x", queue.get(40));
+		assertSame(Operators.DIV_ASSIGN, queue.get(41));
+		assertSame(Operators.MOD, queue.get(42));
+		assertVariable("y", queue.get(43));
+		assertVariable("z", queue.get(44));
+		assertSame(Operators.MUL_ASSIGN, queue.get(45));
+		assertSame(Operators.DIV, queue.get(46));
+		assertVariable("aa", queue.get(47));
+		assertVariable("bb", queue.get(48));
+		assertSame(Operators.DOT_POW_ASSIGN, queue.get(49));
+		assertVariable("cc", queue.get(50));
+		assertVariable("dd", queue.get(51));
+		assertSame(Operators.POW_ASSIGN, queue.get(52));
+		assertVariable("ee", queue.get(53));
+		assertSame(Operators.POST_DEC, queue.get(54));
+		assertSame(Operators.COMPLEMENT, queue.get(55));
+		assertVariable("ff", queue.get(56));
+		assertSame(Operators.POST_INC, queue.get(57));
+		assertSame(Operators.NEG, queue.get(58));
+		assertVariable("gg", queue.get(59));
+		assertSame(Operators.TRANSPOSE, queue.get(60));
+		assertSame(Operators.PRE_DEC, queue.get(61));
+		assertSame(Operators.POS, queue.get(62));
+		assertVariable("hh", queue.get(63));
+		assertSame(Operators.DOT_TRANSPOSE, queue.get(64));
+		assertSame(Operators.PRE_INC, queue.get(65));
+		assertFunction("f", 4, queue.get(66));
+		assertSame(Operators.POW, queue.get(67));
+		assertSame(Operators.DOT_POW, queue.get(68));
+		assertSame(Operators.MUL, queue.get(69));
+		assertSame(Operators.ADD, queue.get(70));
+		assertSame(Operators.LEFT_SHIFT, queue.get(71));
+		assertSame(Operators.BITWISE_AND, queue.get(72));
+		assertSame(Operators.BITWISE_OR, queue.get(73));
+	}
+
+	/** Tests all the boolean operators in a single expression. */
+	public void testLogicOperators() {
+		final String expression =
+			"a<b || c>d && e<=f || g>=h && i==j || k!=l && m instanceof n || !o";
+		final ExpressionParser parser = new ExpressionParser();
+		final LinkedList<Object> queue = parser.parsePostfix(expression);
+		assertNotNull(queue);
+
+		// [a, b, |=, c, d, &=, e, f, >>>=, g, h, >>=, >>>, i, j, <<=, >>, k,
+		// l, -=, m, n, +=, -, o, p, .\=, q, r, ./=, .\, s, t, \=, ./, u, v,
+		// %=, \, w, x, /=, %, y, z, *=, /, aa, bb, .^=, cc, dd, ^=, ee, --,
+		// ~, ff, ++, -, gg, ', --, +, hh, .', ++, f, ^, .^, *, +, <<, &, |]
+		assertEquals(30, queue.size());
+		assertVariable("a", queue.get(0));
+		assertVariable("b", queue.get(1));
+		assertSame(Operators.LESS_THAN, queue.get(2));
+		assertVariable("c", queue.get(3));
+		assertVariable("d", queue.get(4));
+		assertSame(Operators.GREATER_THAN, queue.get(5));
+		assertVariable("e", queue.get(6));
+		assertVariable("f", queue.get(7));
+		assertSame(Operators.LESS_THAN_OR_EQUAL, queue.get(8));
+		assertSame(Operators.LOGICAL_AND, queue.get(9));
+		assertSame(Operators.LOGICAL_OR, queue.get(10));
+		assertVariable("g", queue.get(11));
+		assertVariable("h", queue.get(12));
+		assertSame(Operators.GREATER_THAN_OR_EQUAL, queue.get(13));
+		assertVariable("i", queue.get(14));
+		assertVariable("j", queue.get(15));
+		assertSame(Operators.EQUAL, queue.get(16));
+		assertSame(Operators.LOGICAL_AND, queue.get(17));
+		assertSame(Operators.LOGICAL_OR, queue.get(18));
+		assertVariable("k", queue.get(19));
+		assertVariable("l", queue.get(20));
+		assertSame(Operators.NOT_EQUAL, queue.get(21));
+		assertVariable("m", queue.get(22));
+		assertVariable("n", queue.get(23));
+		assertSame(Operators.INSTANCEOF, queue.get(24));
+		assertSame(Operators.LOGICAL_AND, queue.get(25));
+		assertSame(Operators.LOGICAL_OR, queue.get(26));
+		assertVariable("0", queue.get(27));
+		assertSame(Operators.NOT, queue.get(28));
+		assertSame(Operators.LOGICAL_OR, queue.get(29));
+	}
+
 	@Test
 	public void testUnaryOperators1() {
 		final ExpressionParser parser = new ExpressionParser();
