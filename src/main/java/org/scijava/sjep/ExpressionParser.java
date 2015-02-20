@@ -33,6 +33,8 @@ package org.scijava.sjep;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
@@ -60,18 +62,34 @@ public class ExpressionParser {
 
 	/**
 	 * Creates an expression parser with the given set of operators.
-	 * 
+	 *
 	 * @param operators The collection of operators available to expressions.
 	 */
 	public ExpressionParser(final Collection<? extends Operator> operators) {
 		this.operators = new ArrayList<Operator>(operators);
+
+		// NB: Ensure operators with longer symbols come first.
+		// This prevents e.g. '-' from being matched before '-=' and '--'.
+		Collections.sort(this.operators, new Comparator<Operator>() {
+
+			@Override
+			public int compare(final Operator o1, final Operator o2) {
+				final String t1 = o1.getToken();
+				final String t2 = o2.getToken();
+				final int len1 = t1.length();
+				final int len2 = t2.length();
+				if (len1 > len2) return -1; // o1 is longer, so o1 comes first.
+				if (len1 < len2) return 1; // o2 is longer, so o2 comes first.
+				return t1.compareTo(t2);
+			}
+		});
 	}
 
 	// -- ExpressionParser methods --
 
 	/**
 	 * Parses the given mathematical expression into a syntax tree.
-	 * 
+	 *
 	 * @param expression The mathematical expression to parse.
 	 * @return Parsed hierarchy of tokens.
 	 * @throws IllegalArgumentException if the syntax of the expression is
@@ -85,7 +103,7 @@ public class ExpressionParser {
 	 * Parses the given mathematical expression into a queue in <a
 	 * href="https://en.wikipedia.org/wiki/Reverse_Polish_notation">Reverse Polish
 	 * notation</a> (i.e., postfix notation).
-	 * 
+	 *
 	 * @param expression The mathematical expression to parse.
 	 * @return Parsed queue of tokens in postfix notation.
 	 * @throws IllegalArgumentException if the syntax of the expression is
@@ -370,7 +388,7 @@ public class ExpressionParser {
 		 * Attempts to parse an identifier, as defined by
 		 * {@link Character#isUnicodeIdentifierStart(char)} and
 		 * {@link Character#isUnicodeIdentifierPart(char)}.
-		 * 
+		 *
 		 * @return The <em>length</em> of the parsed identifier, or 0 if the next
 		 *         token is not one.
 		 */

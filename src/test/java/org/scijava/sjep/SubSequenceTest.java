@@ -7,13 +7,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *
+ * 
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -58,7 +58,7 @@ public class SubSequenceTest {
 	public void testCharAt() {
 		for (int off = 0; off < PHRASE.length(); off++) {
 			for (int len = 0; len < PHRASE.length() - off; len++) {
-				SubSequence sub = sub(off, len);
+				final SubSequence sub = sub(off, len);
 				for (int c = 0; c < sub.length(); c++) {
 					assertEquals(PHRASE.charAt(off + c), sub.charAt(c));
 				}
@@ -107,8 +107,8 @@ public class SubSequenceTest {
 
 	@Test
 	public void testOffsetTooLarge() {
-		int len = PHRASE.length();
-		int off = len + 1;
+		final int len = PHRASE.length();
+		final int off = len + 1;
 		try {
 			sub(off, 1);
 			fail("Expected IndexOutOfBoundsException");
@@ -120,7 +120,7 @@ public class SubSequenceTest {
 
 	@Test
 	public void testLengthTooLong() {
-		int len = PHRASE.length();
+		final int len = PHRASE.length();
 		try {
 			sub(1, len);
 			fail("Expected IndexOutOfBoundsException");

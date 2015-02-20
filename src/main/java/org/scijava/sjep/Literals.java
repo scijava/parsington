@@ -7,13 +7,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *
+ * 
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -45,16 +45,16 @@ import java.util.regex.Pattern;
 public final class Literals {
 
 	private static final Pattern HEX = Pattern
-		.compile("((-?)0[Xx]([0-9a-fA-F]+)([Ll]?)).*");
+		.compile("(([-+]?)0[Xx]([0-9a-fA-F]+)([Ll]?)).*");
 
 	private static final Pattern BINARY = Pattern
-		.compile("((-?)0[Bb]([01]+)([Ll]?)).*");
+		.compile("(([-+]?)0[Bb]([01]+)([Ll]?)).*");
 
 	private static final Pattern OCTAL = Pattern
-		.compile("((-?)0([0-7]+)([Ll]?)).*");
+		.compile("(([-+]?)0([0-7]+)([Ll]?)).*");
 
 	private static final Pattern DECIMAL = Pattern
-		.compile("((-?[0-9]+(\\.[0-9]*)?([Ee][0-9]+)?)([Dd]|[Ff]|[Ll])?).*");
+		.compile("(([-+]?[0-9]+(\\.[0-9]*)?([Ee][0-9]+)?)([Dd]|[Ff]|[Ll])?).*");
 
 	private Literals() {
 		// NB: Prevent instantiation of utility class.
@@ -65,8 +65,8 @@ public final class Literals {
 	 * <p>
 	 * For literals in double quotes, this parsing mechanism is intended to be as
 	 * close as possible to the numeric literals supported by the Java programming
-	 * language itself. Literals in single quotes are completely verbatim, with
-	 * no escaping performed.
+	 * language itself. Literals in single quotes are completely verbatim, with no
+	 * escaping performed.
 	 * </p>
 	 *
 	 * @param s The string from which the string literal should be parsed.
@@ -80,7 +80,7 @@ public final class Literals {
 
 	/**
 	 * Parses a hexidecimal literal (e.g., {@code 0xfedcba9876543210}).
-	 * 
+	 *
 	 * @param s The string from which the numeric literal should be parsed.
 	 * @return The parsed numeric value&mdash;an {@link Integer} if sufficiently
 	 *         small, or a {@link Long} if needed or if the {@code L} suffix is
@@ -93,7 +93,7 @@ public final class Literals {
 
 	/**
 	 * Parses a binary literal (e.g., {@code 0b010101000011}).
-	 * 
+	 *
 	 * @param s The string from which the numeric literal should be parsed.
 	 * @return The parsed numeric value&mdash;an {@link Integer} if sufficiently
 	 *         small, or a {@link Long} if needed or if the {@code L} suffix is
@@ -106,7 +106,7 @@ public final class Literals {
 
 	/**
 	 * Parses an octal literal (e.g., {@code 01234567}).
-	 * 
+	 *
 	 * @param s The string from which the numeric literal should be parsed.
 	 * @return The parsed numeric value&mdash;an {@link Integer} if sufficiently
 	 *         small, or a {@link Long} if needed or if the {@code L} suffix is
@@ -120,7 +120,7 @@ public final class Literals {
 	/**
 	 * Parses a decimal literal (integer or otherwise; e.g., {@code 1234567890},
 	 * {@code 1234.0987} or {@code 1.2e34}).
-	 * 
+	 *
 	 * @param s The string from which the numeric literal should be parsed.
 	 * @return The parsed numeric value, of a type consistent with Java's support
 	 *         for numeric primitives&mdash;or for values outside the normal range
@@ -155,8 +155,8 @@ public final class Literals {
 	 * <p>
 	 * For literals in double quotes, this parsing mechanism is intended to be as
 	 * close as possible to the numeric literals supported by the Java programming
-	 * language itself. Literals in single quotes are completely verbatim, with
-	 * no escaping performed.
+	 * language itself. Literals in single quotes are completely verbatim, with no
+	 * escaping performed.
 	 * </p>
 	 *
 	 * @param s The string from which the string literal should be parsed.
@@ -239,7 +239,7 @@ public final class Literals {
 
 	/**
 	 * Parses a hexidecimal literal (e.g., {@code 0xfedcba9876543210}).
-	 * 
+	 *
 	 * @param s The string from which the numeric literal should be parsed.
 	 * @param pos The offset from which the literal should be parsed. If parsing
 	 *          is successful, the position will be advanced to the next index
@@ -256,7 +256,7 @@ public final class Literals {
 
 	/**
 	 * Parses a binary literal (e.g., {@code 0b010101000011}).
-	 * 
+	 *
 	 * @param s The string from which the numeric literal should be parsed.
 	 * @param pos The offset from which the literal should be parsed. If parsing
 	 *          is successful, the position will be advanced to the next index
@@ -273,7 +273,7 @@ public final class Literals {
 
 	/**
 	 * Parses an octal literal (e.g., {@code 01234567}).
-	 * 
+	 *
 	 * @param s The string from which the numeric literal should be parsed.
 	 * @param pos The offset from which the literal should be parsed. If parsing
 	 *          is successful, the position will be advanced to the next index
@@ -290,7 +290,7 @@ public final class Literals {
 
 	/**
 	 * Parses a decimal literal (e.g., {@code 1234.0987} or {@code 1.2e34}).
-	 * 
+	 *
 	 * @param s The string from which the numeric literal should be parsed.
 	 * @param pos The offset from which the literal should be parsed. If parsing
 	 *          is successful, the position will be advanced to the next index
@@ -356,11 +356,13 @@ public final class Literals {
 
 	// -- Helper methods --
 
-	private static boolean isOctal(char c) {
+	private static boolean isOctal(final char c) {
 		return c >= '0' && c <= '7';
 	}
 
-	private static char hex(final CharSequence s, final Position pos, int index) {
+	private static char hex(final CharSequence s, final Position pos,
+		final int index)
+	{
 		final char c = pos.ch(s, index);
 		if (c >= '0' && c <= '9') return c;
 		if (c >= 'a' && c <= 'f') return c;
@@ -373,8 +375,8 @@ public final class Literals {
 		isNumberSyntax(final CharSequence s, final Position pos)
 	{
 		final int i = pos.get();
-		final boolean negative = s.charAt(i) == '-';
-		final char digit = s.charAt(negative ? i + 1 : i);
+		final boolean sign = s.charAt(i) == '-' || s.charAt(i) == '+';
+		final char digit = s.charAt(sign ? i + 1 : i);
 		return digit >= '0' && digit <= '9';
 	}
 

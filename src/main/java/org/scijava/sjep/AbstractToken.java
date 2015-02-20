@@ -37,7 +37,7 @@ package org.scijava.sjep;
  */
 public abstract class AbstractToken implements Token {
 
-	private String token;
+	private final String token;
 
 	public AbstractToken(final String token) {
 		this.token = token;

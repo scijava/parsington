@@ -7,13 +7,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *
+ * 
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -36,7 +36,7 @@ import java.util.LinkedList;
 /**
  * A <a href="https://en.wikipedia.org/wiki/Abstract_syntax_tree">syntax
  * tree</a> corresponding to an expression.
- * 
+ *
  * @author Curtis Rueden
  */
 public class SyntaxTree implements Iterable<SyntaxTree> {
@@ -94,6 +94,7 @@ public class SyntaxTree implements Iterable<SyntaxTree> {
 	@Override
 	public Iterator<SyntaxTree> iterator() {
 		return new Iterator<SyntaxTree>() {
+
 			private int index;
 
 			@Override
@@ -115,7 +116,7 @@ public class SyntaxTree implements Iterable<SyntaxTree> {
 
 	// -- Helper methods --
 
-	private void postfix(LinkedList<Object> queue) {
+	private void postfix(final LinkedList<Object> queue) {
 		for (final SyntaxTree child : this) {
 			child.postfix(queue);
 		}
@@ -126,7 +127,7 @@ public class SyntaxTree implements Iterable<SyntaxTree> {
 		final StringBuilder sb = new StringBuilder();
 		sb.append(prefix + " '" + token + "'\n");
 		final String deeperPrefix = " " + prefix + "-";
-		for (int i=0; i<count(); i++) {
+		for (int i = 0; i < count(); i++) {
 			sb.append(child(i).toString(deeperPrefix));
 		}
 		return sb.toString();

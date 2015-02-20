@@ -36,7 +36,7 @@ package org.scijava.sjep;
  * An operator is a special infix (in the case of binary or greater arity) or
  * prefix (in the case of unary) symbol which maps to a particular function.
  * </p>
- * 
+ *
  * @author Curtis Rueden
  */
 public interface Operator extends Verb, Comparable<Operator> {

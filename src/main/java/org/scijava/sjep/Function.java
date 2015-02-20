@@ -31,13 +31,13 @@
 package org.scijava.sjep;
 
 /**
- * A token representing an instance of a mathematical function, which acts on a particular
- * number of arguments.
+ * A token representing an instance of a mathematical function, which acts on a
+ * particular number of arguments.
  * <p>
  * A function maps a set of inputs to a particular output, according to an
  * algorithm.
  * </p>
- * 
+ *
  * @author Curtis Rueden
  */
 public final class Function extends AbstractToken implements Verb {
