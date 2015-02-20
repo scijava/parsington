@@ -75,7 +75,7 @@ public class ExpressionParserTest extends AbstractTest {
 	}
 
 	@Test
-	public void testParseUnaryOperator1() {
+	public void testUnaryOperator1() {
 		final ExpressionParser parser = new ExpressionParser();
 		final LinkedList<Object> queue = parser.parsePostfix("-a");
 
@@ -86,7 +86,7 @@ public class ExpressionParserTest extends AbstractTest {
 	}
 
 	@Test
-	public void testParseUnaryOperator2() {
+	public void testUnaryOperator2() {
 		final ExpressionParser parser = new ExpressionParser();
 		final LinkedList<Object> queue = parser.parsePostfix("-+a");
 
@@ -98,7 +98,7 @@ public class ExpressionParserTest extends AbstractTest {
 	}
 
 	@Test
-	public void testParseUnaryOperator3() {
+	public void testUnaryOperator3() {
 		final ExpressionParser parser = new ExpressionParser();
 		final LinkedList<Object> queue = parser.parsePostfix("a+-b");
 
@@ -111,7 +111,7 @@ public class ExpressionParserTest extends AbstractTest {
 	}
 
 	@Test
-	public void testParseUnaryOperator4() {
+	public void testUnaryOperator4() {
 		final ExpressionParser parser = new ExpressionParser();
 		final LinkedList<Object> queue = parser.parsePostfix("a-+-b");
 
@@ -125,7 +125,7 @@ public class ExpressionParserTest extends AbstractTest {
 	}
 
 	@Test
-	public void testParseUnaryOperator5() {
+	public void testUnaryOperator5() {
 		final ExpressionParser parser = new ExpressionParser();
 		final LinkedList<Object> queue = parser.parsePostfix("-+a-+-b");
 
@@ -141,7 +141,7 @@ public class ExpressionParserTest extends AbstractTest {
 	}
 
 	@Test
-	public void testParseBinaryOperator() {
+	public void testBinaryOperator() {
 		final ExpressionParser parser = new ExpressionParser();
 		final LinkedList<Object> queue = parser.parsePostfix("a-b");
 
@@ -153,7 +153,7 @@ public class ExpressionParserTest extends AbstractTest {
 	}
 
 	@Test
-	public void testParseNullaryFunction() {
+	public void testNullaryFunction() {
 		final ExpressionParser parser = new ExpressionParser();
 		final LinkedList<Object> queue = parser.parsePostfix("f()");
 
@@ -163,7 +163,7 @@ public class ExpressionParserTest extends AbstractTest {
 	}
 
 	@Test
-	public void testParseUnaryFunction() {
+	public void testUnaryFunction() {
 		final ExpressionParser parser = new ExpressionParser();
 		final LinkedList<Object> queue = parser.parsePostfix("f(a)");
 
@@ -174,7 +174,7 @@ public class ExpressionParserTest extends AbstractTest {
 	}
 
 	@Test
-	public void testParseBinaryFunction() {
+	public void testBinaryFunction() {
 		final ExpressionParser parser = new ExpressionParser();
 		final LinkedList<Object> queue = parser.parsePostfix("f(a,b)");
 
@@ -186,7 +186,7 @@ public class ExpressionParserTest extends AbstractTest {
 	}
 
 	@Test
-	public void testParseTernaryFunction() {
+	public void testTernaryFunction() {
 		final ExpressionParser parser = new ExpressionParser();
 		final LinkedList<Object> queue = parser.parsePostfix("f(a,b,c)");
 
@@ -289,7 +289,7 @@ public class ExpressionParserTest extends AbstractTest {
 
 	/** Tests that parsing an invalid expression fails appropriately. */
 	@Test
-	public void testParseInvalid() {
+	public void testInvalid() {
 		final ExpressionParser parser = new ExpressionParser();
 		assertInvalid(parser, "a a", "Invalid character at index 2");
 		assertInvalid(parser, "func(,)", "Invalid character at index 5");
