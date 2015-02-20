@@ -74,6 +74,60 @@ public class ExpressionParserTest extends AbstractTest {
 		assertNumber(6, queue.get(9));
 	}
 
+	/** Tests each individual standard operator. */
+	@Test
+	public void testOperatorsIndividual() {
+		final ExpressionParser p = new ExpressionParser();
+		assertUnary(p, "a", Operators.TRANSPOSE, "a'");
+		assertUnary(p, "a", Operators.DOT_TRANSPOSE, "a.'");
+		assertBinary(p, "a", Operators.POW, "b", "a^b");
+		assertBinary(p, "a", Operators.DOT_POW, "b", "a.^b");
+		assertUnary(p, "a", Operators.PRE_INC, "++a");
+		assertUnary(p, "a", Operators.POST_INC, "a++");
+		assertUnary(p, "a", Operators.PRE_DEC, "--a");
+		assertUnary(p, "a", Operators.POST_DEC, "a--");
+		assertUnary(p, "a", Operators.POS, "+a");
+		assertUnary(p, "a", Operators.NEG, "-a");
+		assertUnary(p, "a", Operators.COMPLEMENT, "~a");
+		assertUnary(p, "a", Operators.NOT, "!a");
+		assertBinary(p, "a", Operators.MUL, "b", "a*b");
+		assertBinary(p, "a", Operators.DIV, "b", "a/b");
+		assertBinary(p, "a", Operators.MOD, "b", "a%b");
+		assertBinary(p, "a", Operators.ADD, "b", "a+b");
+		assertBinary(p, "a", Operators.SUB, "b", "a-b");
+		assertBinary(p, "a", Operators.LEFT_SHIFT, "b", "a<<b");
+		assertBinary(p, "a", Operators.RIGHT_SHIFT, "b", "a>>b");
+		assertBinary(p, "a", Operators.UNSIGNED_RIGHT_SHIFT, "b", "a>>>b");
+		assertBinary(p, "a", Operators.COLON, "b", "a:b");
+		assertBinary(p, "a", Operators.LESS_THAN, "b", "a<b");
+		assertBinary(p, "a", Operators.GREATER_THAN, "b", "a>b");
+		assertBinary(p, "a", Operators.LESS_THAN_OR_EQUAL, "b", "a<=b");
+		assertBinary(p, "a", Operators.GREATER_THAN_OR_EQUAL, "b", "a>=b");
+		assertBinary(p, "a", Operators.INSTANCEOF, "b", "a instanceof b");
+		assertBinary(p, "a", Operators.EQUAL, "b", "a==b");
+		assertBinary(p, "a", Operators.NOT_EQUAL, "b", "a!=b");
+		assertBinary(p, "a", Operators.BITWISE_AND, "b", "a&b");
+		assertBinary(p, "a", Operators.BITWISE_OR, "b", "a|b");
+		assertBinary(p, "a", Operators.LOGICAL_AND, "b", "a&&b");
+		assertBinary(p, "a", Operators.LOGICAL_OR, "b", "a||b");
+		assertBinary(p, "a", Operators.ASSIGN, "b", "a=b");
+		assertBinary(p, "a", Operators.POW_ASSIGN, "b", "a^=b");
+		assertBinary(p, "a", Operators.DOT_POW_ASSIGN, "b", "a.^=b");
+		assertBinary(p, "a", Operators.MUL_ASSIGN, "b", "a*=b");
+		assertBinary(p, "a", Operators.DIV_ASSIGN, "b", "a/=b");
+		assertBinary(p, "a", Operators.MOD_ASSIGN, "b", "a%=b");
+		assertBinary(p, "a", Operators.RIGHT_DIV_ASSIGN, "b", "a\\=b");
+		assertBinary(p, "a", Operators.DOT_DIV_ASSIGN, "b", "a./=b");
+		assertBinary(p, "a", Operators.DOT_RIGHT_DIV_ASSIGN, "b", "a.\\=b");
+		assertBinary(p, "a", Operators.ADD_ASSIGN, "b", "a+=b");
+		assertBinary(p, "a", Operators.SUB_ASSIGN, "b", "a-=b");
+		assertBinary(p, "a", Operators.AND_ASSIGN, "b", "a&=b");
+		assertBinary(p, "a", Operators.OR_ASSIGN, "b", "a|=b");
+		assertBinary(p, "a", Operators.LEFT_SHIFT_ASSIGN, "b", "a<<=b");
+		assertBinary(p, "a", Operators.RIGHT_SHIFT_ASSIGN, "b", "a>>=b");
+		assertBinary(p, "a", Operators.UNSIGNED_RIGHT_SHIFT_ASSIGN, "b", "a>>>=b");
+	}
+
 	@Test
 	public void testUnaryOperator1() {
 		final ExpressionParser parser = new ExpressionParser();
@@ -302,6 +356,27 @@ public class ExpressionParserTest extends AbstractTest {
 	}
 
 	// -- Helper
+
+	private void assertUnary(final ExpressionParser parser, final String var,
+		final Operator op, final String expression)
+	{
+		final LinkedList<Object> queue = parser.parsePostfix(expression);
+		assertNotNull(queue);
+		assertEquals(2, queue.size());
+		assertVariable(var, queue.get(0));
+		assertSame(op, queue.get(1));
+	}
+
+	private void assertBinary(final ExpressionParser parser, final String var1,
+		final Operator op, final String var2, final String expression)
+	{
+		final LinkedList<Object> queue = parser.parsePostfix(expression);
+		assertNotNull(queue);
+		assertEquals(3, queue.size());
+		assertVariable(var1, queue.get(0));
+		assertVariable(var2, queue.get(1));
+		assertSame(op, queue.get(2));
+	}
 
 	private void assertInvalid(final ExpressionParser parser,
 		final String expression, final String message)
