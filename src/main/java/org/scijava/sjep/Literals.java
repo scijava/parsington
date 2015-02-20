@@ -45,16 +45,16 @@ import java.util.regex.Pattern;
 public final class Literals {
 
 	private static final Pattern HEX = Pattern
-		.compile("((-?)0[Xx]([0-9a-fA-F]+)([Ll]?)).*");
+		.compile("(([-+]?)0[Xx]([0-9a-fA-F]+)([Ll]?)).*");
 
 	private static final Pattern BINARY = Pattern
-		.compile("((-?)0[Bb]([01]+)([Ll]?)).*");
+		.compile("(([-+]?)0[Bb]([01]+)([Ll]?)).*");
 
 	private static final Pattern OCTAL = Pattern
-		.compile("((-?)0([0-7]+)([Ll]?)).*");
+		.compile("(([-+]?)0([0-7]+)([Ll]?)).*");
 
 	private static final Pattern DECIMAL = Pattern
-		.compile("((-?[0-9]+(\\.[0-9]*)?([Ee][0-9]+)?)([Dd]|[Ff]|[Ll])?).*");
+		.compile("(([-+]?[0-9]+(\\.[0-9]*)?([Ee][0-9]+)?)([Dd]|[Ff]|[Ll])?).*");
 
 	private Literals() {
 		// NB: Prevent instantiation of utility class.
@@ -375,8 +375,8 @@ public final class Literals {
 		isNumberSyntax(final CharSequence s, final Position pos)
 	{
 		final int i = pos.get();
-		final boolean negative = s.charAt(i) == '-';
-		final char digit = s.charAt(negative ? i + 1 : i);
+		final boolean sign = s.charAt(i) == '-' || s.charAt(i) == '+';
+		final char digit = s.charAt(sign ? i + 1 : i);
 		return digit >= '0' && digit <= '9';
 	}
 
