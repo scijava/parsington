@@ -363,8 +363,8 @@ public class StandardStackEvaluator extends AbstractStackEvaluator {
 		if (isBI(a) && isI(b)) return rightShift(bi(a), i(b));
 		return null;
 	}
-	public int rightShift(final int a, final int b) { return a << b; }
-	public long rightShift(final long a, final long b) { return a << b; }
+	public int rightShift(final int a, final int b) { return a >> b; }
+	public long rightShift(final long a, final long b) { return a >> b; }
 	public BigInteger rightShift(final BigInteger a, final int b) {
 		return a.shiftRight(b);
 	}
@@ -375,8 +375,8 @@ public class StandardStackEvaluator extends AbstractStackEvaluator {
 		if (isL(a) && isL(b)) return unsignedRightShift(l(a), l(b));
 		return null;
 	}
-	public int unsignedRightShift(final int a, final int b) { return a << b; }
-	public long unsignedRightShift(final long a, final long b) { return a << b; }
+	public int unsignedRightShift(final int a, final int b) { return a >>> b; }
+	public long unsignedRightShift(final long a, final long b) { return a >>> b; }
 
 	// -- colon --
 
