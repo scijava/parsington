@@ -709,7 +709,7 @@ public class StandardStackEvaluator extends AbstractStackEvaluator {
 	}
 
 	/** Coerces the given token to a boolean. */
-	private Boolean bool(final Object token) {
+	private boolean bool(final Object token) {
 		final Boolean b = cast(value(token), Boolean.class);
 		return b != null ? b : Boolean.valueOf(token.toString());
 	}
