@@ -171,10 +171,10 @@ public class StandardStackEvaluator extends AbstractStackEvaluator {
 		if (isBD(a)) return pos(bd(a));
 		return value(a);
 	}
-	public double pos(final double num) { return +num; }
-	public float pos(final float num) { return +num; }
 	public int pos(final int num) { return +num; }
 	public long pos(final long num) { return +num; }
+	public float pos(final float num) { return +num; }
+	public double pos(final double num) { return +num; }
 
 	/** Applies the {@link Operators#NEG} operator. */
 	public Object neg(final Object a) {
@@ -186,10 +186,10 @@ public class StandardStackEvaluator extends AbstractStackEvaluator {
 		if (isBD(a)) return neg(bd(a));
 		return sub(0, a);
 	}
-	public double neg(final double num) { return -num; }
-	public float neg(final float num) { return -num; }
 	public int neg(final int num) { return -num; }
 	public long neg(final long num) { return -num; }
+	public float neg(final float num) { return -num; }
+	public double neg(final double num) { return -num; }
 	public BigInteger neg(final BigInteger num) { return num.negate(); }
 	public BigDecimal neg(final BigDecimal num) { return num.negate(); }
 
@@ -242,10 +242,10 @@ public class StandardStackEvaluator extends AbstractStackEvaluator {
 		if (isBD(a) && isBD(b)) return div(bd(a), bd(b));
 		return null;
 	}
-	public double div(final double a, final double b) { return a / b; }
-	public float div(final float a, final float b) { return a / b; }
 	public int div(final int a, final int b) { return a / b; }
 	public long div(final long a, final long b) { return a / b; }
+	public float div(final float a, final float b) { return a / b; }
+	public double div(final double a, final double b) { return a / b; }
 	public BigInteger div(final BigInteger a, final BigInteger b) {
 		return a.divide(b);
 	}
