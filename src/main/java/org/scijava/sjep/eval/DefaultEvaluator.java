@@ -32,14 +32,10 @@ package org.scijava.sjep.eval;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Deque;
 
 import org.scijava.sjep.ExpressionParser;
 import org.scijava.sjep.Literals;
 import org.scijava.sjep.Operators;
-import org.scijava.sjep.Tokens;
-import org.scijava.sjep.Variable;
-import org.scijava.sjep.Verb;
 
 /**
  * An expression evaluator for most {@link Operators standard operators} with
@@ -73,7 +69,7 @@ import org.scijava.sjep.Verb;
  * @author Curtis Rueden
  * @see org.scijava.sjep.Main The main class, to give it a spin.
  */
-public class DefaultEvaluator extends AbstractStackEvaluator {
+public class DefaultEvaluator extends AbstractStandardStackEvaluator {
 
 	public DefaultEvaluator() {
 		super();
@@ -83,12 +79,9 @@ public class DefaultEvaluator extends AbstractStackEvaluator {
 		super(parser);
 	}
 
-	// -- StandardStackEvaluator methods --
-
 	// -- dot --
 
-	/** Applies the {@link Operators#DOT} operator. */
-	@SuppressWarnings("unused")
+	@Override
 	public Object dot(final Object a, final Object b) {
 		// NB: Unimplemented.
 		return null;
@@ -96,21 +89,19 @@ public class DefaultEvaluator extends AbstractStackEvaluator {
 
 	// -- transpose, power --
 
-	/** Applies the {@link Operators#TRANSPOSE} operator. */
-	@SuppressWarnings("unused")
+	@Override
 	public Object transpose(final Object a) {
 		// NB: Unimplemented.
 		return null;
 	}
 
-	/** Applies the {@link Operators#DOT_TRANSPOSE} operator. */
-	@SuppressWarnings("unused")
+	@Override
 	public Object dotTranspose(final Object a) {
 		// NB: Unimplemented.
 		return null;
 	}
 
-	/** Applies the {@link Operators#POW} operator. */
+	@Override
 	public Object pow(final Object a, final Object b) {
 		if (isD(a) && isD(b)) return pow(d(a), d(b));
 		if (isBI(a) && isI(b)) return pow(bi(a), i(b));
@@ -121,56 +112,15 @@ public class DefaultEvaluator extends AbstractStackEvaluator {
 	public BigInteger pow(final BigInteger a, final int b) { return a.pow(b); }
 	public BigDecimal pow(final BigDecimal a, final int b) { return a.pow(b); }
 
-	/** Applies the {@link Operators#DOT_POW} operator. */
-	@SuppressWarnings("unused")
+	@Override
 	public Object dotPow(final Object a, final Object b) {
 		// NB: Unimplemented.
 		return null;
 	}
 
-	// -- postfix --
-
-	/** Applies the {@link Operators#POST_INC} operator. */
-	public Object postInc(final Object a) {
-		final Variable v = var(a);
-		final Number n = num(v);
-		if (n == null) return null;
-		set(v, add(n, 1));
-		return n;
-	}
-
-	/** Applies the {@link Operators#POST_DEC} operator. */
-	public Object postDec(final Object a) {
-		final Variable v = var(a);
-		final Number n = num(v);
-		if (n == null) return null;
-		set(v, sub(n, 1));
-		return n;
-	}
-
 	// -- unary --
 
-	/** Applies the {@link Operators#PRE_INC} operator. */
-	public Object preInc(final Object a) {
-		final Variable v = var(a);
-		final Number n = num(v);
-		if (n == null) return null;
-		final Object result = add(n, 1);
-		set(v, result);
-		return result;
-	}
-
-	/** Applies the {@link Operators#PRE_DEC} operator. */
-	public Object preDec(final Object a) {
-		final Variable v = var(a);
-		final Number n = num(v);
-		if (n == null) return null;
-		final Object result = sub(n, 1);
-		set(v, result);
-		return result;
-	}
-
-	/** Applies the {@link Operators#POS} operator. */
+	@Override
 	public Object pos(final Object a) {
 		if (isI(a)) return pos(i(a));
 		if (isL(a)) return pos(l(a));
@@ -185,7 +135,7 @@ public class DefaultEvaluator extends AbstractStackEvaluator {
 	public float pos(final float num) { return +num; }
 	public double pos(final double num) { return +num; }
 
-	/** Applies the {@link Operators#NEG} operator. */
+	@Override
 	public Object neg(final Object a) {
 		if (isI(a)) return neg(i(a));
 		if (isL(a)) return neg(l(a));
@@ -202,7 +152,7 @@ public class DefaultEvaluator extends AbstractStackEvaluator {
 	public BigInteger neg(final BigInteger num) { return num.negate(); }
 	public BigDecimal neg(final BigDecimal num) { return num.negate(); }
 
-	/** Applies the {@link Operators#COMPLEMENT} operator. */
+	@Override
 	public Object complement(final Object a) {
 		if (isI(a)) return complement(i(a));
 		if (isL(a)) return complement(l(a));
@@ -211,7 +161,7 @@ public class DefaultEvaluator extends AbstractStackEvaluator {
 	public int complement(final int a) { return ~a; }
 	public long complement(final long a) { return ~a; }
 
-	/** Applies the {@link Operators#NOT} operator. */
+	@Override
 	public Object not(final Object a) {
 		if (isBool(a)) return not(bool(a));
 		final Boolean b = bool(a);
@@ -222,7 +172,7 @@ public class DefaultEvaluator extends AbstractStackEvaluator {
 
 	// -- multiplicative --
 
-	/** Applies the {@link Operators#MUL} operator. */
+	@Override
 	public Object mul(final Object a, final Object b) {
 		if (isI(a) && isI(b)) return mul(i(a), i(b));
 		if (isL(a) && isL(b)) return mul(l(a), l(b));
@@ -241,7 +191,7 @@ public class DefaultEvaluator extends AbstractStackEvaluator {
 		return a.multiply(b);
 	}
 
-	/** Applies the {@link Operators#DIV} operator. */
+	@Override
 	public Object div(final Object a, final Object b) {
 		if (isI(a) && isI(b)) return div(i(a), i(b));
 		if (isL(a) && isL(b)) return div(l(a), l(b));
@@ -262,7 +212,7 @@ public class DefaultEvaluator extends AbstractStackEvaluator {
 		return a.divide(b);
 	}
 
-	/** Applies the {@link Operators#MOD} operator. */
+	@Override
 	public Object mod(final Object a, final Object b) {
 		if (isI(a) && isI(b)) return mod(i(a), i(b));
 		if (isL(a) && isL(b)) return mod(l(a), l(b));
@@ -283,22 +233,19 @@ public class DefaultEvaluator extends AbstractStackEvaluator {
 		return a.remainder(b);
 	}
 
-	/** Applies the {@link Operators#RIGHT_DIV} operator. */
-	@SuppressWarnings("unused")
+	@Override
 	public Object rightDiv(final Object a, final Object b) {
 		// NB: Unimplemented.
 		return null;
 	}
 
-	/** Applies the {@link Operators#DOT_DIV} operator. */
-	@SuppressWarnings("unused")
+	@Override
 	public Object dotDiv(final Object a, final Object b) {
 		// NB: Unimplemented.
 		return null;
 	}
 
-	/** Applies the {@link Operators#DOT_RIGHT_DIV} operator. */
-	@SuppressWarnings("unused")
+	@Override
 	public Object dotRightDiv(final Object a, final Object b) {
 		// NB: Unimplemented.
 		return null;
@@ -306,7 +253,7 @@ public class DefaultEvaluator extends AbstractStackEvaluator {
 
 	// -- additive --
 
-	/** Applies the {@link Operators#ADD} operator. */
+	@Override
 	public Object add(final Object a, final Object b) {
 		if (isStr(a)) return add(str(a), str(b));
 		if (isI(a) && isI(b)) return add(i(a), i(b));
@@ -329,7 +276,7 @@ public class DefaultEvaluator extends AbstractStackEvaluator {
 		return a.add(b);
 	}
 
-	/** Applies the {@link Operators#SUB} operator. */
+	@Override
 	public Object sub(final Object a, final Object b) {
 		if (isI(a) && isI(b)) return sub(i(a), i(b));
 		if (isL(a) && isL(b)) return sub(l(a), l(b));
@@ -352,7 +299,7 @@ public class DefaultEvaluator extends AbstractStackEvaluator {
 
 	// -- shift --
 
-	/** Applies the {@link Operators#LEFT_SHIFT} operator. */
+	@Override
 	public Object leftShift(final Object a, final Object b) {
 		if (isI(a) && isI(b)) return leftShift(i(a), i(b));
 		if (isL(a) && isL(b)) return leftShift(l(a), l(b));
@@ -365,7 +312,7 @@ public class DefaultEvaluator extends AbstractStackEvaluator {
 		return a.shiftLeft(b);
 	}
 
-	/** Applies the {@link Operators#RIGHT_SHIFT} operator. */
+	@Override
 	public Object rightShift(final Object a, final Object b) {
 		if (isI(a) && isI(b)) return rightShift(i(a), i(b));
 		if (isL(a) && isL(b)) return rightShift(l(a), l(b));
@@ -378,7 +325,7 @@ public class DefaultEvaluator extends AbstractStackEvaluator {
 		return a.shiftRight(b);
 	}
 
-	/** Applies the {@link Operators#UNSIGNED_RIGHT_SHIFT} operator. */
+	@Override
 	public Object unsignedRightShift(final Object a, final Object b) {
 		if (isI(a) && isI(b)) return unsignedRightShift(i(a), i(b));
 		if (isL(a) && isL(b)) return unsignedRightShift(l(a), l(b));
@@ -389,8 +336,7 @@ public class DefaultEvaluator extends AbstractStackEvaluator {
 
 	// -- colon --
 
-	/** Applies the {@link Operators#COLON} operator. */
-	@SuppressWarnings("unused")
+	@Override
 	public Object colon(final Object a, final Object b) {
 		// NB: Unimplemented.
 		return null;
@@ -398,7 +344,7 @@ public class DefaultEvaluator extends AbstractStackEvaluator {
 
 	// -- relational --
 
-	/** Applies the {@link Operators#LESS_THAN} operator. */
+	@Override
 	public Object lessThan(final Object a, final Object b) {
 		if (isBool(a) && isBool(b)) return lessThan(bool(a), bool(b));
 		if (isStr(a) && isStr(b)) return lessThan(str(a), str(b));
@@ -414,7 +360,7 @@ public class DefaultEvaluator extends AbstractStackEvaluator {
 		return a.compareTo(b) < 0;
 	}
 
-	/** Applies the {@link Operators#GREATER_THAN} operator. */
+	@Override
 	public Object greaterThan(final Object a, final Object b) {
 		if (isBool(a) && isBool(b)) return greaterThan(bool(a), bool(b));
 		if (isStr(a) && isStr(b)) return greaterThan(str(a), str(b));
@@ -430,7 +376,7 @@ public class DefaultEvaluator extends AbstractStackEvaluator {
 		return a.compareTo(b) > 0;
 	}
 
-	/** Applies the {@link Operators#LESS_THAN_OR_EQUAL} operator. */
+	@Override
 	public Object lessThanOrEqual(final Object a, final Object b) {
 		if (isBool(a) && isBool(b)) return lessThanOrEqual(bool(a), bool(b));
 		if (isStr(a) && isStr(b)) return lessThanOrEqual(str(a), str(b));
@@ -446,7 +392,7 @@ public class DefaultEvaluator extends AbstractStackEvaluator {
 		return a.compareTo(b) <= 0;
 	}
 
-	/** Applies the {@link Operators#GREATER_THAN_OR_EQUAL} operator. */
+	@Override
 	public Object greaterThanOrEqual(final Object a, final Object b) {
 		if (isBool(a) && isBool(b)) return greaterThanOrEqual(bool(a), bool(b));
 		if (isStr(a) && isStr(b)) return greaterThanOrEqual(str(a), str(b));
@@ -462,8 +408,7 @@ public class DefaultEvaluator extends AbstractStackEvaluator {
 		return a.compareTo(b) >= 0;
 	}
 
-	/** Applies the {@link Operators#INSTANCEOF} operator. */
-	@SuppressWarnings("unused")
+	@Override
 	public Object instanceOf(final Object a, final Object b) {
 		// NB: Unimplemented.
 		return null;
@@ -471,19 +416,19 @@ public class DefaultEvaluator extends AbstractStackEvaluator {
 
 	// -- equality --
 
-	/** Applies the {@link Operators#EQUAL} operator. */
+	@Override
 	public Object equal(final Object a, final Object b) {
 		return value(a).equals(value(b));
 	}
 
-	/** Applies the {@link Operators#NOT_EQUAL} operator. */
+	@Override
 	public Object notEqual(final Object a, final Object b) {
 		return !value(a).equals(value(b));
 	}
 
 	// -- bitwise --
 
-	/** Applies the {@link Operators#BITWISE_AND} operator. */
+	@Override
 	public Object bitwiseAnd(final Object a, final Object b) {
 		if (isI(a) && isI(b)) return bitwiseAnd(i(a), i(b));
 		if (isL(a) && isL(b)) return bitwiseAnd(l(a), l(b));
@@ -496,7 +441,7 @@ public class DefaultEvaluator extends AbstractStackEvaluator {
 		return a.and(b);
 	}
 
-	/** Applies the {@link Operators#BITWISE_OR} operator. */
+	@Override
 	public Object bitwiseOr(final Object a, final Object b) {
 		if (isI(a) && isI(b)) return bitwiseOr(i(a), i(b));
 		if (isL(a) && isL(b)) return bitwiseOr(l(a), l(b));
@@ -511,182 +456,19 @@ public class DefaultEvaluator extends AbstractStackEvaluator {
 
 	// -- logical --
 
-	/** Applies the {@link Operators#LOGICAL_AND} operator. */
+	@Override
 	public Object logicalAnd(final Object a, final Object b) {
 		if (isBool(a) && isBool(b)) return logicalAnd(bool(a), bool(b));
 		return null;
 	}
 	public boolean logicalAnd(final boolean a, final boolean b) { return a && b; }
 
-	/** Applies the {@link Operators#LOGICAL_OR} operator. */
+	@Override
 	public Object logicalOr(final Object a, final Object b) {
 		if (isBool(a) && isBool(b)) return logicalOr(bool(a), bool(b));
 		return null;
 	}
 	public boolean logicalOr(final boolean a, final boolean b) { return a || b; }
-
-	// -- assignment --
-
-	/** Applies the {@link Operators#ASSIGN} operator. */
-	public Object assign(final Object a, final Object b) {
-		final Variable v = var(a);
-		set(v, value(b));
-		return v;
-	}
-
-	/** Applies the {@link Operators#POW_ASSIGN} operator. */
-	public Object powAssign(final Object a, final Object b) {
-		return assign(a, pow(a, b));
-	}
-
-	/** Applies the {@link Operators#DOT_POW_ASSIGN} operator. */
-	public Object dotPowAssign(final Object a, final Object b) {
-		return assign(a, dotPow(a, b));
-	}
-
-	/** Applies the {@link Operators#MUL_ASSIGN} operator. */
-	public Object mulAssign(final Object a, final Object b) {
-		return assign(a, mul(a, b));
-	}
-
-	/** Applies the {@link Operators#DIV_ASSIGN} operator. */
-	public Object divAssign(final Object a, final Object b) {
-		return assign(a, div(a, b));
-	}
-
-	/** Applies the {@link Operators#MOD_ASSIGN} operator. */
-	public Object modAssign(final Object a, final Object b) {
-		return assign(a, mod(a, b));
-	}
-
-	/** Applies the {@link Operators#RIGHT_DIV_ASSIGN} operator. */
-	public Object rightDivAssign(final Object a, final Object b) {
-		return assign(a, rightDiv(a, b));
-	}
-
-	/** Applies the {@link Operators#DOT_DIV_ASSIGN} operator. */
-	public Object dotDivAssign(final Object a, final Object b) {
-		return assign(a, dotDiv(a, b));
-	}
-
-	/** Applies the {@link Operators#DOT_RIGHT_DIV_ASSIGN} operator. */
-	public Object dotRightDivAssign(final Object a, final Object b) {
-		return assign(a, dotRightDiv(a, b));
-	}
-
-	/** Applies the {@link Operators#ADD_ASSIGN} operator. */
-	public Object addAssign(final Object a, final Object b) {
-		return assign(a, add(a, b));
-	}
-
-	/** Applies the {@link Operators#SUB_ASSIGN} operator. */
-	public Object subAssign(final Object a, final Object b) {
-		return assign(a, sub(a, b));
-	}
-
-	/** Applies the {@link Operators#AND_ASSIGN} operator. */
-	public Object andAssign(final Object a, final Object b) {
-		return assign(a, bitwiseAnd(a, b));
-	}
-
-	/** Applies the {@link Operators#OR_ASSIGN} operator. */
-	public Object orAssign(final Object a, final Object b) {
-		return assign(a, bitwiseOr(a, b));
-	}
-
-	/** Applies the {@link Operators#LEFT_SHIFT_ASSIGN} operator. */
-	public Object leftShiftAssign(final Object a, final Object b) {
-		return assign(a, leftShift(a, b));
-	}
-
-	/** Applies the {@link Operators#RIGHT_SHIFT_ASSIGN} operator. */
-	public Object rightShiftAssign(final Object a, final Object b) {
-		return assign(a, rightShift(a, b));
-	}
-
-	/** Applies the {@link Operators#UNSIGNED_RIGHT_SHIFT_ASSIGN} operator. */
-	public Object unsignedRightShiftAssign(final Object a, final Object b) {
-		return assign(a, unsignedRightShift(a, b));
-	}
-
-	// -- StackEvaluator methods --
-
-	@Override
-	public Object execute(final Verb verb, final Deque<Object> stack) {
-		// Pop the arguments.
-		final int arity = verb.getArity();
-		final Object[] args = new Object[arity];
-		for (int i = args.length - 1; i >= 0; i--) {
-			args[i] = stack.pop();
-		}
-		final Object a = args.length > 0 ? args[0] : null;
-		final Object b = args.length > 1 ? args[1] : null;
-
-		// Let the case logic begin!
-		if (verb == Operators.DOT) return dot(a, b);
-		if (verb == Operators.TRANSPOSE) return transpose(a);
-		if (verb == Operators.DOT_TRANSPOSE) return dotTranspose(a);
-		if (verb == Operators.POW) return pow(a, b);
-		if (verb == Operators.DOT_POW) return dotPow(a, b);
-		if (verb == Operators.POST_INC) return postInc(a);
-		if (verb == Operators.POST_DEC) return postDec(a);
-		if (verb == Operators.PRE_INC) return preInc(a);
-		if (verb == Operators.PRE_DEC) return preDec(a);
-		if (verb == Operators.POS) return pos(a);
-		if (verb == Operators.NEG) return neg(a);
-		if (verb == Operators.COMPLEMENT) return complement(a);
-		if (verb == Operators.NOT) return not(a);
-		if (verb == Operators.MUL) return mul(a, b);
-		if (verb == Operators.DIV) return div(a, b);
-		if (verb == Operators.MOD) return mod(a, b);
-		if (verb == Operators.RIGHT_DIV) return rightDiv(a, b);
-		if (verb == Operators.DOT_DIV) return dotDiv(a, b);
-		if (verb == Operators.DOT_RIGHT_DIV) return dotRightDiv(a, b);
-		if (verb == Operators.ADD) return add(a, b);
-		if (verb == Operators.SUB) return sub(a, b);
-		if (verb == Operators.LEFT_SHIFT) return leftShift(a, b);
-		if (verb == Operators.RIGHT_SHIFT) return rightShift(a, b);
-		if (verb == Operators.UNSIGNED_RIGHT_SHIFT) return unsignedRightShift(a, b);
-		if (verb == Operators.COLON) return colon(a, b);
-		if (verb == Operators.LESS_THAN) return lessThan(a, b);
-		if (verb == Operators.GREATER_THAN) return greaterThan(a, b);
-		if (verb == Operators.LESS_THAN_OR_EQUAL) return lessThanOrEqual(a, b);
-		if (verb == Operators.GREATER_THAN_OR_EQUAL) return greaterThanOrEqual(a, b);
-		if (verb == Operators.INSTANCEOF) return instanceOf(a, b);
-		if (verb == Operators.EQUAL) return equal(a, b);
-		if (verb == Operators.NOT_EQUAL) return notEqual(a, b);
-		if (verb == Operators.BITWISE_AND) return bitwiseAnd(a, b);
-		if (verb == Operators.BITWISE_OR) return bitwiseOr(a, b);
-		if (verb == Operators.LOGICAL_AND) return logicalAnd(a, b);
-		if (verb == Operators.LOGICAL_OR) return logicalOr(a, b);
-		if (verb == Operators.ASSIGN) return assign(a, b);
-		if (verb == Operators.POW_ASSIGN) return powAssign(a, b);
-		if (verb == Operators.DOT_POW_ASSIGN) return dotPowAssign(a, b);
-		if (verb == Operators.MUL_ASSIGN) return mulAssign(a, b);
-		if (verb == Operators.DIV_ASSIGN) return divAssign(a, b);
-		if (verb == Operators.MOD_ASSIGN) return modAssign(a, b);
-		if (verb == Operators.RIGHT_DIV_ASSIGN) return rightDivAssign(a, b);
-		if (verb == Operators.DOT_DIV_ASSIGN) return dotDivAssign(a, b);
-		if (verb == Operators.DOT_RIGHT_DIV_ASSIGN) return dotRightDivAssign(a, b);
-		if (verb == Operators.ADD_ASSIGN) return addAssign(a, b);
-		if (verb == Operators.SUB_ASSIGN) return subAssign(a, b);
-		if (verb == Operators.AND_ASSIGN) return andAssign(a, b);
-		if (verb == Operators.OR_ASSIGN) return orAssign(a, b);
-		if (verb == Operators.LEFT_SHIFT_ASSIGN) return leftShiftAssign(a, b);
-		if (verb == Operators.RIGHT_SHIFT_ASSIGN) return rightShiftAssign(a, b);
-		if (verb == Operators.UNSIGNED_RIGHT_SHIFT_ASSIGN) return unsignedRightShiftAssign(a, b);
-
-		// Unknown verb.
-		return null;
-	}
-
-	// -- Helper methods - variables --
-
-	/** Casts the given token to a variable. */
-	private Variable var(final Object token) {
-		if (Tokens.isVariable(token)) return (Variable) token;
-		throw new IllegalArgumentException("Not a variable: " + token);
-	}
 
 	// -- Helper methods - type matching --
 
