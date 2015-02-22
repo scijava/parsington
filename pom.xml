@@ -85,7 +85,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<packageName>org.scijava.expr</packageName>
+							<packageName>org.scijava.sjep</packageName>
 						</manifest>
 					</archive>
 				</configuration>
