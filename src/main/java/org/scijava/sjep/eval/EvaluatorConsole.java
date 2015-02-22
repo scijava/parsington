@@ -50,7 +50,7 @@ public class EvaluatorConsole {
 	private final Evaluator evaluator;
 
 	public EvaluatorConsole() {
-		this(new StandardEvaluator());
+		this(new DefaultEvaluator());
 	}
 
 	public EvaluatorConsole(final Evaluator evaluator) {

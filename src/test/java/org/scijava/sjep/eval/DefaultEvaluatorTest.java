@@ -39,19 +39,19 @@ import org.junit.Test;
 import org.scijava.sjep.AbstractTest;
 import org.scijava.sjep.Variable;
 
-/** Tests {@link StandardEvaluator}. */
-public class StandardStackEvaluatorTest extends AbstractTest {
+/** Tests {@link DefaultEvaluator}. */
+public class DefaultEvaluatorTest extends AbstractTest {
 
-	private StandardEvaluator e;
+	private DefaultEvaluator e;
 
 	@Before
 	public void setUp() {
-		e = new StandardEvaluator();
+		e = new DefaultEvaluator();
 	}
 
 	// -- dot --
 
-	/** Tests {@link StandardEvaluator#dot(Object, Object)}. */
+	/** Tests {@link DefaultEvaluator#dot(Object, Object)}. */
 	@Test
 	public void testDot() {
 		assertNull(e.dot(o(0), o(1)));
@@ -59,26 +59,26 @@ public class StandardStackEvaluatorTest extends AbstractTest {
 
 	// -- transpose, power --
 
-	/** Tests {@link StandardEvaluator#transpose(Object)}. */
+	/** Tests {@link DefaultEvaluator#transpose(Object)}. */
 	@Test
 	public void testTranspose() {
 		assertNull(e.transpose(o(0)));
 	}
 
-	/** Tests {@link StandardEvaluator#dotTranspose(Object)}. */
+	/** Tests {@link DefaultEvaluator#dotTranspose(Object)}. */
 	@Test
 	public void testDotTranspose() {
 		assertNull(e.dotTranspose(o(0)));
 	}
 
-	/** Tests {@link StandardEvaluator#pow(Object, Object)}. */
+	/** Tests {@link DefaultEvaluator#pow(Object, Object)}. */
 	@Test
 	public void testPow() {
 		assertNumber(15.625d, e.pow(o(2.5d), o(3)));
 		// TODO: Test BigInteger and BigDecimal.
 	}
 
-	/** Tests {@link StandardEvaluator#dotPow(Object, Object)}. */
+	/** Tests {@link DefaultEvaluator#dotPow(Object, Object)}. */
 	@Test
 	public void testDotPow() {
 		assertNull(e.dotPow(o(0), o(0)));
@@ -86,7 +86,7 @@ public class StandardStackEvaluatorTest extends AbstractTest {
 
 	// -- postfix --
 
-	/** Tests {@link StandardEvaluator#postInc(Object)}. */
+	/** Tests {@link DefaultEvaluator#postInc(Object)}. */
 	@Test
 	public void testPostInc() {
 		final Variable v = new Variable("v");
@@ -97,7 +97,7 @@ public class StandardStackEvaluatorTest extends AbstractTest {
 		// TODO: Test BigInteger and BigDecimal.
 	}
 
-	/** Tests {@link StandardEvaluator#postDec(Object)}. */
+	/** Tests {@link DefaultEvaluator#postDec(Object)}. */
 	@Test
 	public void testPostDec() {
 		final Variable v = new Variable("v");
@@ -110,7 +110,7 @@ public class StandardStackEvaluatorTest extends AbstractTest {
 
 	// -- unary --
 
-	/** Tests {@link StandardEvaluator#preInc(Object)}. */
+	/** Tests {@link DefaultEvaluator#preInc(Object)}. */
 	@Test
 	public void testPreInc() {
 		final Variable v = new Variable("v");
@@ -121,7 +121,7 @@ public class StandardStackEvaluatorTest extends AbstractTest {
 		// TODO: Test BigInteger and BigDecimal.
 	}
 
-	/** Tests {@link StandardEvaluator#preDec(Object)}. */
+	/** Tests {@link DefaultEvaluator#preDec(Object)}. */
 	@Test
 	public void testPreDec() {
 		final Variable v = new Variable("v");
@@ -132,7 +132,7 @@ public class StandardStackEvaluatorTest extends AbstractTest {
 		// TODO: Test BigInteger and BigDecimal.
 	}
 
-	/** Tests {@link StandardEvaluator#pos(Object)}. */
+	/** Tests {@link DefaultEvaluator#pos(Object)}. */
 	@Test
 	public void testPos() {
 		assertNumber(7.8d, e.pos(o(7.8d)));
@@ -141,7 +141,7 @@ public class StandardStackEvaluatorTest extends AbstractTest {
 		assertNumber(7L, e.pos(o(7L)));
 	}
 
-	/** Tests {@link StandardEvaluator#neg(Object)}. */
+	/** Tests {@link DefaultEvaluator#neg(Object)}. */
 	@Test
 	public void testNeg() {
 		assertNumber(7.8d, e.neg(o(-7.8d)));
@@ -155,14 +155,14 @@ public class StandardStackEvaluatorTest extends AbstractTest {
 		// TODO: Test BigInteger and BigDecimal.
 	}
 
-	/** Tests {@link StandardEvaluator#complement(Object)}. */
+	/** Tests {@link DefaultEvaluator#complement(Object)}. */
 	@Test
 	public void testComplement() {
 		assertNumber(0x35014541, e.complement(o(0xcafebabe)));
 		assertNumber(0x2152350141104541L, e.complement(o(0xdeadcafebeefbabeL)));
 	}
 
-	/** Tests {@link StandardEvaluator#not(Object)}. */
+	/** Tests {@link DefaultEvaluator#not(Object)}. */
 	@Test
 	public void testNot() {
 		assertSame(false, e.not(o(true)));
@@ -171,7 +171,7 @@ public class StandardStackEvaluatorTest extends AbstractTest {
 
 	// -- multiplicative --
 
-	/** Tests {@link StandardEvaluator#mul(Object, Object)}. */
+	/** Tests {@link DefaultEvaluator#mul(Object, Object)}. */
 	@Test
 	public void testMul() {
 		assertNumber(24, e.mul(o(4), o(6)));
@@ -181,7 +181,7 @@ public class StandardStackEvaluatorTest extends AbstractTest {
 		// TODO: Test BigInteger and BigDecimal.
 	}
 
-	/** Tests {@link StandardEvaluator#div(Object, Object)}. */
+	/** Tests {@link DefaultEvaluator#div(Object, Object)}. */
 	@Test
 	public void testDiv() {
 		assertNumber(4, e.div(o(27), o(6)));
@@ -191,7 +191,7 @@ public class StandardStackEvaluatorTest extends AbstractTest {
 		// TODO: Test BigInteger and BigDecimal.
 	}
 
-	/** Tests {@link StandardEvaluator#mod(Object, Object)}. */
+	/** Tests {@link DefaultEvaluator#mod(Object, Object)}. */
 	@Test
 	public void testMod() {
 		assertNumber(3, e.mod(o(27), o(6)));
@@ -201,19 +201,19 @@ public class StandardStackEvaluatorTest extends AbstractTest {
 		// TODO: Test BigInteger and BigDecimal.
 	}
 
-	/** Tests {@link StandardEvaluator#rightDiv(Object, Object)}. */
+	/** Tests {@link DefaultEvaluator#rightDiv(Object, Object)}. */
 	@Test
 	public void testRightDiv() {
 		assertNull(e.rightDiv(o(0), o(0)));
 	}
 
-	/** Tests {@link StandardEvaluator#dotDiv(Object, Object)}. */
+	/** Tests {@link DefaultEvaluator#dotDiv(Object, Object)}. */
 	@Test
 	public void testDotDiv() {
 		assertNull(e.dotDiv(o(0), o(0)));
 	}
 
-	/** Tests {@link StandardEvaluator#dotRightDiv(Object, Object)}. */
+	/** Tests {@link DefaultEvaluator#dotRightDiv(Object, Object)}. */
 	@Test
 	public void testDotRightDiv() {
 		assertNull(e.dotRightDiv(o(0), o(0)));
@@ -221,7 +221,7 @@ public class StandardStackEvaluatorTest extends AbstractTest {
 
 	// -- additive --
 
-	/** Tests {@link StandardEvaluator#add(Object, Object)}. */
+	/** Tests {@link DefaultEvaluator#add(Object, Object)}. */
 	@Test
 	public void testAdd() {
 		assertEquals("Hello, world", e.add(o("Hello,"), o(" world")));
@@ -232,7 +232,7 @@ public class StandardStackEvaluatorTest extends AbstractTest {
 		// TODO: Test BigInteger and BigDecimal.
 	}
 
-	/** Tests {@link StandardEvaluator#sub(Object, Object)}. */
+	/** Tests {@link DefaultEvaluator#sub(Object, Object)}. */
 	@Test
 	public void testSub() {
 		assertNumber(4, e.sub(o(10), o(6)));
@@ -244,7 +244,7 @@ public class StandardStackEvaluatorTest extends AbstractTest {
 
 	// -- shift --
 
-	/** Tests {@link StandardEvaluator#leftShift(Object, Object)}. */
+	/** Tests {@link DefaultEvaluator#leftShift(Object, Object)}. */
 	@Test
 	public void testLeftShift() {
 		assertNumber(0xafebabe0, e.leftShift(o(0xcafebabe), o(4)));
@@ -252,7 +252,7 @@ public class StandardStackEvaluatorTest extends AbstractTest {
 		// TODO: Test BigInteger.
 	}
 
-	/** Tests {@link StandardEvaluator#rightShift(Object, Object)}. */
+	/** Tests {@link DefaultEvaluator#rightShift(Object, Object)}. */
 	@Test
 	public void testRightShift() {
 		assertNumber(0xfcafebab, e.rightShift(o(0xcafebabe), o(4)));
@@ -260,7 +260,7 @@ public class StandardStackEvaluatorTest extends AbstractTest {
 		// TODO: Test BigInteger.
 	}
 
-	/** Tests {@link StandardEvaluator#unsignedRightShift(Object, Object)}. */
+	/** Tests {@link DefaultEvaluator#unsignedRightShift(Object, Object)}. */
 	@Test
 	public void testUnsignedRightShift() {
 		assertNumber(0x0cafebab, e.unsignedRightShift(o(0xcafebabe), o(4)));
@@ -269,7 +269,7 @@ public class StandardStackEvaluatorTest extends AbstractTest {
 
 	// -- colon --
 
-	/** Tests {@link StandardEvaluator#colon(Object, Object)}. */
+	/** Tests {@link DefaultEvaluator#colon(Object, Object)}. */
 	@Test
 	public void testColon() {
 		assertNull(e.colon(o(0), o(0)));
@@ -277,7 +277,7 @@ public class StandardStackEvaluatorTest extends AbstractTest {
 
 	// -- relational --
 
-	/** Tests {@link StandardEvaluator#lessThan(Object, Object)}. */
+	/** Tests {@link DefaultEvaluator#lessThan(Object, Object)}. */
 	@Test
 	public void testLessThan() {
 		assertSame(true, e.lessThan(o(false), o(true)));
@@ -307,7 +307,7 @@ public class StandardStackEvaluatorTest extends AbstractTest {
 		// TODO: Test BigInteger and BigDecimal.
 	}
 
-	/** Tests {@link StandardEvaluator#greaterThan(Object, Object)}. */
+	/** Tests {@link DefaultEvaluator#greaterThan(Object, Object)}. */
 	@Test
 	public void testGreaterThan() {
 		assertSame(false, e.greaterThan(o(false), o(true)));
@@ -337,7 +337,7 @@ public class StandardStackEvaluatorTest extends AbstractTest {
 		// TODO: Test BigInteger and BigDecimal.
 	}
 
-	/** Tests {@link StandardEvaluator#lessThanOrEqual(Object, Object)}. */
+	/** Tests {@link DefaultEvaluator#lessThanOrEqual(Object, Object)}. */
 	@Test
 	public void testLessThanOrEqual() {
 		assertSame(true, e.lessThanOrEqual(o(false), o(true)));
@@ -367,7 +367,7 @@ public class StandardStackEvaluatorTest extends AbstractTest {
 		// TODO: Test BigInteger and BigDecimal.
 	}
 
-	/** Tests {@link StandardEvaluator#greaterThanOrEqual(Object, Object)}. */
+	/** Tests {@link DefaultEvaluator#greaterThanOrEqual(Object, Object)}. */
 	@Test
 	public void testGreaterThanOrEqual() {
 		assertSame(false, e.greaterThanOrEqual(o(false), o(true)));
@@ -397,7 +397,7 @@ public class StandardStackEvaluatorTest extends AbstractTest {
 		// TODO: Test BigInteger and BigDecimal.
 	}
 
-	/** Tests {@link StandardEvaluator#instanceOf(Object, Object)}. */
+	/** Tests {@link DefaultEvaluator#instanceOf(Object, Object)}. */
 	@Test
 	public void testInstanceOf() {
 		assertNull(e.instanceOf(o(0), o(0)));
@@ -405,7 +405,7 @@ public class StandardStackEvaluatorTest extends AbstractTest {
 
 	// -- equality --
 
-	/** Tests {@link StandardEvaluator#equal(Object, Object)}. */
+	/** Tests {@link DefaultEvaluator#equal(Object, Object)}. */
 	@Test
 	public void testEqual() {
 		assertSame(false, e.equal(o(false), o(true)));
@@ -435,7 +435,7 @@ public class StandardStackEvaluatorTest extends AbstractTest {
 		// TODO: Test BigInteger and BigDecimal.
 	}
 
-	/** Tests {@link StandardEvaluator#notEqual(Object, Object)}. */
+	/** Tests {@link DefaultEvaluator#notEqual(Object, Object)}. */
 	@Test
 	public void testNotEqual() {
 		assertSame(true, e.notEqual(o(false), o(true)));
@@ -467,7 +467,7 @@ public class StandardStackEvaluatorTest extends AbstractTest {
 
 	// -- bitwise --
 
-	/** Tests {@link StandardEvaluator#bitwiseAnd(Object, Object)}. */
+	/** Tests {@link DefaultEvaluator#bitwiseAnd(Object, Object)}. */
 	@Test
 	public void testBitwiseAnd() {
 		assertNumber(0xcaacbaae, e.bitwiseAnd(o(0xcafebabe), o(0xdeadbeef)));
@@ -475,7 +475,7 @@ public class StandardStackEvaluatorTest extends AbstractTest {
 		// TODO: Test BigInteger.
 	}
 
-	/** Tests {@link StandardEvaluator#bitwiseOr(Object, Object)}. */
+	/** Tests {@link DefaultEvaluator#bitwiseOr(Object, Object)}. */
 	@Test
 	public void testBitwiseOr() {
 		assertNumber(0xdeffbeff, e.bitwiseOr(o(0xcafebabe), o(0xdeadbeef)));
@@ -485,7 +485,7 @@ public class StandardStackEvaluatorTest extends AbstractTest {
 
 	// -- logical --
 
-	/** Tests {@link StandardEvaluator#logicalAnd(Object, Object)}. */
+	/** Tests {@link DefaultEvaluator#logicalAnd(Object, Object)}. */
 	@Test
 	public void testLogicalAnd() {
 		assertSame(false, e.logicalAnd(o(false), o(false)));
@@ -494,7 +494,7 @@ public class StandardStackEvaluatorTest extends AbstractTest {
 		assertSame(true, e.logicalAnd(o(true), o(true)));
 	}
 
-	/** Tests {@link StandardEvaluator#logicalOr(Object, Object)}. */
+	/** Tests {@link DefaultEvaluator#logicalOr(Object, Object)}. */
 	@Test
 	public void testLogicalOr() {
 		assertSame(false, e.logicalOr(o(false), o(false)));
@@ -505,7 +505,7 @@ public class StandardStackEvaluatorTest extends AbstractTest {
 
 	// -- assignment --
 
-	/** Tests {@link StandardEvaluator#assign(Object, Object)}. */
+	/** Tests {@link DefaultEvaluator#assign(Object, Object)}. */
 	@Test
 	public void testAssign() {
 		final Variable v = new Variable("v");
@@ -518,7 +518,7 @@ public class StandardStackEvaluatorTest extends AbstractTest {
 		// TODO: Test BigInteger and BigDecimal.
 	}
 
-	/** Tests {@link StandardEvaluator#powAssign(Object, Object)}. */
+	/** Tests {@link DefaultEvaluator#powAssign(Object, Object)}. */
 	@Test
 	public void testPowAssign() {
 		final Variable v = new Variable("v");
@@ -527,13 +527,13 @@ public class StandardStackEvaluatorTest extends AbstractTest {
 		// TODO: Test BigInteger and BigDecimal.
 	}
 
-	/** Tests {@link StandardEvaluator#dotPowAssign(Object, Object)}. */
+	/** Tests {@link DefaultEvaluator#dotPowAssign(Object, Object)}. */
 	@Test
 	public void testDotPowAssign() {
 		// NB: Nothing to test; dotPow is unimplemented.
 	}
 
-	/** Tests {@link StandardEvaluator#mulAssign(Object, Object)}. */
+	/** Tests {@link DefaultEvaluator#mulAssign(Object, Object)}. */
 	@Test
 	public void testMulAssign() {
 		final Variable v = new Variable("v");
@@ -544,7 +544,7 @@ public class StandardStackEvaluatorTest extends AbstractTest {
 		// TODO: Test BigInteger and BigDecimal.
 	}
 
-	/** Tests {@link StandardEvaluator#divAssign(Object, Object)}. */
+	/** Tests {@link DefaultEvaluator#divAssign(Object, Object)}. */
 	@Test
 	public void testDivAssign() {
 		final Variable v = new Variable("v");
@@ -555,7 +555,7 @@ public class StandardStackEvaluatorTest extends AbstractTest {
 		// TODO: Test BigInteger and BigDecimal.
 	}
 
-	/** Tests {@link StandardEvaluator#modAssign(Object, Object)}. */
+	/** Tests {@link DefaultEvaluator#modAssign(Object, Object)}. */
 	@Test
 	public void testModAssign() {
 		final Variable v = new Variable("v");
@@ -566,25 +566,25 @@ public class StandardStackEvaluatorTest extends AbstractTest {
 		// TODO: Test BigInteger and BigDecimal.
 	}
 
-	/** Tests {@link StandardEvaluator#rightDivAssign(Object, Object)}. */
+	/** Tests {@link DefaultEvaluator#rightDivAssign(Object, Object)}. */
 	@Test
 	public void testRightDivAssign() {
 		// NB: Nothing to test; rightDiv is unimplemented.
 	}
 
-	/** Tests {@link StandardEvaluator#dotDivAssign(Object, Object)}. */
+	/** Tests {@link DefaultEvaluator#dotDivAssign(Object, Object)}. */
 	@Test
 	public void testDotDivAssign() {
 		// NB: Nothing to test; dotDiv is unimplemented.
 	}
 
-	/** Tests {@link StandardEvaluator#dotRightDivAssign(Object, Object)}. */
+	/** Tests {@link DefaultEvaluator#dotRightDivAssign(Object, Object)}. */
 	@Test
 	public void testDotRightDivAssign() {
 		// NB: Nothing to test; dotRightDiv is unimplemented.
 	}
 
-	/** Tests {@link StandardEvaluator#addAssign(Object, Object)}. */
+	/** Tests {@link DefaultEvaluator#addAssign(Object, Object)}. */
 	@Test
 	public void testAddAssign() {
 		final Variable v = new Variable("v");
@@ -597,7 +597,7 @@ public class StandardStackEvaluatorTest extends AbstractTest {
 		// TODO: Test BigInteger and BigDecimal.
 	}
 
-	/** Tests {@link StandardEvaluator#subAssign(Object, Object)}. */
+	/** Tests {@link DefaultEvaluator#subAssign(Object, Object)}. */
 	@Test
 	public void testSubAssign() {
 		final Variable v = new Variable("v");
@@ -608,7 +608,7 @@ public class StandardStackEvaluatorTest extends AbstractTest {
 		// TODO: Test BigInteger and BigDecimal.
 	}
 
-	/** Tests {@link StandardEvaluator#andAssign(Object, Object)}. */
+	/** Tests {@link DefaultEvaluator#andAssign(Object, Object)}. */
 	@Test
 	public void testAndAssign() {
 		final Variable v = new Variable("v");
@@ -619,7 +619,7 @@ public class StandardStackEvaluatorTest extends AbstractTest {
 		// TODO: Test BigInteger.
 	}
 
-	/** Tests {@link StandardEvaluator#orAssign(Object, Object)}. */
+	/** Tests {@link DefaultEvaluator#orAssign(Object, Object)}. */
 	@Test
 	public void testOrAssign() {
 		final Variable v = new Variable("v");
@@ -630,7 +630,7 @@ public class StandardStackEvaluatorTest extends AbstractTest {
 		// TODO: Test BigInteger.
 	}
 
-	/** Tests {@link StandardEvaluator#leftShiftAssign(Object, Object)}. */
+	/** Tests {@link DefaultEvaluator#leftShiftAssign(Object, Object)}. */
 	@Test
 	public void testLeftShiftAssign() {
 		final Variable v = new Variable("v");
@@ -641,7 +641,7 @@ public class StandardStackEvaluatorTest extends AbstractTest {
 		// TODO: Test BigInteger.
 	}
 
-	/** Tests {@link StandardEvaluator#rightShiftAssign(Object, Object)}. */
+	/** Tests {@link DefaultEvaluator#rightShiftAssign(Object, Object)}. */
 	@Test
 	public void testRightShiftAssign() {
 		final Variable v = new Variable("v");
@@ -652,7 +652,7 @@ public class StandardStackEvaluatorTest extends AbstractTest {
 		// TODO: Test BigInteger.
 	}
 
-	/** Tests {@link StandardEvaluator#unsignedRightShiftAssign(Object, Object)}. */
+	/** Tests {@link DefaultEvaluator#unsignedRightShiftAssign(Object, Object)}. */
 	@Test
 	public void testUnsignedRightShiftAssign() {
 		final Variable v = new Variable("v");
