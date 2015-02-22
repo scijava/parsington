@@ -69,6 +69,10 @@
 		<url>https://jenkins.imagej.net/job/SciJava-expression-parser/</url>
 	</ciManagement>
 
+	<properties>
+		<main-class>org.scijava.sjep.Main</main-class>
+	</properties>
+
 	<dependencies>
 		<!-- Test scope dependencies -->
 		<dependency>
@@ -85,6 +89,7 @@
 				<configuration>
 					<archive>
 						<manifest>
+							<mainClass>${main-class}</mainClass>
 							<packageName>org.scijava.sjep</packageName>
 						</manifest>
 					</archive>
