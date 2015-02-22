@@ -14,8 +14,8 @@ Expression parsers are as old as the hills; what makes this one different?
 * __[Available on Maven Central](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.scijava%22%20AND%20a%3A%22scijava-expression-parser%22).__
 * __Separation of concerns.__ SJEP is a _parser_, not an _evaluator_. Once you
   have the postfix queue and/or syntax tree, what you do with it is your
-  business (though there is a [toy evaluator in
-  `src/test`](src/test/java/org/scijava/sjep/Evaluator.java), just for fun).
+  business (though there is a [small evaluation API in the eval
+  subpackage](src/main/java/org/scijava/sjep/eval) if that appeals to you).
   In general, there is no assumption that your variables will consist of any
   particular data type, numerical or otherwise.
 * __Clean, well-commented codebase with unit tests.__ 'Nuff said!
