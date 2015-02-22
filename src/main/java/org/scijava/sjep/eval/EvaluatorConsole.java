@@ -37,8 +37,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.scijava.sjep.Tokens;
-import org.scijava.sjep.eval.Evaluator;
-import org.scijava.sjep.eval.StandardEvaluator;
 
 /**
  * A simple console-driven expression evaluator.
