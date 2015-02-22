@@ -31,6 +31,7 @@
 package org.scijava.sjep.eval;
 
 import java.util.LinkedList;
+import java.util.Map;
 
 import org.scijava.sjep.SyntaxTree;
 import org.scijava.sjep.Variable;
@@ -63,5 +64,8 @@ public interface Evaluator {
 
 	/** Sets the value of the given variable. */
 	void set(Variable v, Object value);
+
+	/** Assigns variables en masse. */
+	void setAll(Map<? extends String, ? extends Object> map);
 
 }

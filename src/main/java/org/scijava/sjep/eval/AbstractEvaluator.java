@@ -31,6 +31,7 @@
 package org.scijava.sjep.eval;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import org.scijava.sjep.ExpressionParser;
 import org.scijava.sjep.SyntaxTree;
@@ -84,6 +85,11 @@ public abstract class AbstractEvaluator implements Evaluator {
 	@Override
 	public void set(final Variable v, final Object value) {
 		vars.put(v.getToken(), value);
+	}
+
+	@Override
+	public void setAll(final Map<? extends String, ? extends Object> map) {
+		vars.putAll(map);
 	}
 
 }
