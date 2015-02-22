@@ -137,23 +137,23 @@ public final class Operators {
 
 	// -- assignment --
 
-	public static final Operator ASSIGN = op("=", 2, LEFT, 0);
-	public static final Operator POW_ASSIGN = op("^=", 2, LEFT, 0);
-	public static final Operator DOT_POW_ASSIGN = op(".^=", 2, LEFT, 0);
-	public static final Operator MUL_ASSIGN = op("*=", 2, LEFT, 0);
-	public static final Operator DIV_ASSIGN = op("/=", 2, LEFT, 0);
-	public static final Operator MOD_ASSIGN = op("%=", 2, LEFT, 0);
-	public static final Operator RIGHT_DIV_ASSIGN = op("\\=", 2, LEFT, 0);
-	public static final Operator DOT_DIV_ASSIGN = op("./=", 2, LEFT, 0);
-	public static final Operator DOT_RIGHT_DIV_ASSIGN = op(".\\=", 2, LEFT, 0);
-	public static final Operator ADD_ASSIGN = op("+=", 2, LEFT, 0);
-	public static final Operator SUB_ASSIGN = op("-=", 2, LEFT, 0);
-	public static final Operator AND_ASSIGN = op("&=", 2, LEFT, 0);
-	public static final Operator OR_ASSIGN = op("|=", 2, LEFT, 0);
-	public static final Operator LEFT_SHIFT_ASSIGN = op("<<=", 2, LEFT, 0);
-	public static final Operator RIGHT_SHIFT_ASSIGN = op(">>=", 2, LEFT, 0);
+	public static final Operator ASSIGN = op("=", 2, RIGHT, 0);
+	public static final Operator POW_ASSIGN = op("^=", 2, RIGHT, 0);
+	public static final Operator DOT_POW_ASSIGN = op(".^=", 2, RIGHT, 0);
+	public static final Operator MUL_ASSIGN = op("*=", 2, RIGHT, 0);
+	public static final Operator DIV_ASSIGN = op("/=", 2, RIGHT, 0);
+	public static final Operator MOD_ASSIGN = op("%=", 2, RIGHT, 0);
+	public static final Operator RIGHT_DIV_ASSIGN = op("\\=", 2, RIGHT, 0);
+	public static final Operator DOT_DIV_ASSIGN = op("./=", 2, RIGHT, 0);
+	public static final Operator DOT_RIGHT_DIV_ASSIGN = op(".\\=", 2, RIGHT, 0);
+	public static final Operator ADD_ASSIGN = op("+=", 2, RIGHT, 0);
+	public static final Operator SUB_ASSIGN = op("-=", 2, RIGHT, 0);
+	public static final Operator AND_ASSIGN = op("&=", 2, RIGHT, 0);
+	public static final Operator OR_ASSIGN = op("|=", 2, RIGHT, 0);
+	public static final Operator LEFT_SHIFT_ASSIGN = op("<<=", 2, RIGHT, 0);
+	public static final Operator RIGHT_SHIFT_ASSIGN = op(">>=", 2, RIGHT, 0);
 	public static final Operator UNSIGNED_RIGHT_SHIFT_ASSIGN = op(">>>=", 2,
-		LEFT, 0);
+		RIGHT, 0);
 
 	private Operators() {
 		// NB: Prevent instantiation of utility class.
