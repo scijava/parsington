@@ -16,7 +16,6 @@
 	<description>A general-purpose mathematical expression parser, which converts a expression strings into syntax trees.</description>
 	<url>https://github.com/scijava/scijava-expression-parser/</url>
 	<inceptionYear>2015</inceptionYear>
-
 	<licenses>
 		<license>
 			<name>Simplified BSD License</name>
@@ -39,7 +38,6 @@
 			<timezone>-6</timezone>
 		</developer>
 	</developers>
-
 	<contributors>
 		<!-- NB: Need a least one element to override the parent.
 		     See: http://jira.codehaus.org/browse/MNG-5220 -->
