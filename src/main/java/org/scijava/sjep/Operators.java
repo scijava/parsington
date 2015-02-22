@@ -52,6 +52,10 @@ import org.scijava.sjep.Operator.Associativity;
  */
 public final class Operators {
 
+	// -- dot --
+
+	public static final Operator DOT = op(".", 2, LEFT, 16);
+
 	// -- transpose, power --
 
 	public static final Operator TRANSPOSE = op("'", 1, LEFT, 15);

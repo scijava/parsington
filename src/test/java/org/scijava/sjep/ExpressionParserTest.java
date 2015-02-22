@@ -78,6 +78,7 @@ public class ExpressionParserTest extends AbstractTest {
 	@Test
 	public void testOperatorsIndividual() {
 		final ExpressionParser p = new ExpressionParser();
+		assertBinary(p, "a", Operators.DOT, "b", "a.b");
 		assertUnary(p, "a", Operators.TRANSPOSE, "a'");
 		assertUnary(p, "a", Operators.DOT_TRANSPOSE, "a.'");
 		assertBinary(p, "a", Operators.POW, "b", "a^b");

@@ -85,6 +85,15 @@ public class StandardEvaluator extends AbstractStackEvaluator {
 
 	// -- StandardStackEvaluator methods --
 
+	// -- dot --
+
+	/** Applies the {@link Operators#DOT} operator. */
+	@SuppressWarnings("unused")
+	public Object dot(final Object a, final Object b) {
+		// NB: Unimplemented.
+		return null;
+	}
+
 	// -- transpose, power --
 
 	/** Applies the {@link Operators#TRANSPOSE} operator. */
@@ -614,6 +623,7 @@ public class StandardEvaluator extends AbstractStackEvaluator {
 		final Object b = args.length > 1 ? args[1] : null;
 
 		// Let the case logic begin!
+		if (verb == Operators.DOT) return dot(a, b);
 		if (verb == Operators.TRANSPOSE) return transpose(a);
 		if (verb == Operators.DOT_TRANSPOSE) return dotTranspose(a);
 		if (verb == Operators.POW) return pow(a, b);

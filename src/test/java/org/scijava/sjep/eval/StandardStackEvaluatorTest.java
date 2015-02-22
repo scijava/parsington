@@ -49,6 +49,14 @@ public class StandardStackEvaluatorTest extends AbstractTest {
 		e = new StandardEvaluator();
 	}
 
+	// -- dot --
+
+	/** Tests {@link StandardEvaluator#dot(Object, Object)}. */
+	@Test
+	public void testDot() {
+		assertNull(e.dot(o(0), o(1)));
+	}
+
 	// -- transpose, power --
 
 	/** Tests {@link StandardEvaluator#transpose(Object)}. */
