@@ -38,7 +38,7 @@ import java.util.regex.Pattern;
 
 import org.scijava.sjep.Tokens;
 import org.scijava.sjep.eval.Evaluator;
-import org.scijava.sjep.eval.StandardStackEvaluator;
+import org.scijava.sjep.eval.StandardEvaluator;
 
 /**
  * A simple console-driven expression evaluator.
@@ -52,7 +52,7 @@ public class EvaluatorConsole {
 	private final Evaluator evaluator;
 
 	public EvaluatorConsole() {
-		this(new StandardStackEvaluator());
+		this(new StandardEvaluator());
 	}
 
 	public EvaluatorConsole(final Evaluator evaluator) {

@@ -73,13 +73,13 @@ import org.scijava.sjep.Verb;
  * @author Curtis Rueden
  * @see org.scijava.sjep.Main The main class, to give it a spin.
  */
-public class StandardStackEvaluator extends AbstractStackEvaluator {
+public class StandardEvaluator extends AbstractStackEvaluator {
 
-	public StandardStackEvaluator() {
+	public StandardEvaluator() {
 		super();
 	}
 
-	public StandardStackEvaluator(final ExpressionParser parser) {
+	public StandardEvaluator(final ExpressionParser parser) {
 		super(parser);
 	}
 
