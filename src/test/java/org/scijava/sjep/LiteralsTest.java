@@ -32,6 +32,7 @@ package org.scijava.sjep;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
 
 import java.math.BigInteger;
@@ -44,6 +45,25 @@ import org.junit.Test;
  * @author Curtis Rueden
  */
 public class LiteralsTest extends AbstractTest {
+
+	@Test
+	public void testParseBoolean() {
+		assertSame(Boolean.FALSE, Literals.parseBoolean("false"));
+		assertSame(Boolean.TRUE, Literals.parseBoolean("true"));
+
+		assertNull(Literals.parseBoolean("zfalse"));
+		assertNull(Literals.parseBoolean("zfalsez"));
+		assertNull(Literals.parseBoolean("ztrue"));
+		assertNull(Literals.parseBoolean("ztruez"));
+
+		final Position pos = new Position();
+		pos.set(0);
+		assertSame(Boolean.FALSE, Literals.parseBoolean("false-", pos));
+		assertEquals(5, pos.get());
+		pos.set(0);
+		assertSame(Boolean.TRUE, Literals.parseBoolean("true-", pos));
+		assertEquals(4, pos.get());
+	}
 
 	@Test
 	public void testParseString() {
@@ -241,6 +261,9 @@ public class LiteralsTest extends AbstractTest {
 
 	@Test
 	public void testParseLiteral() {
+		assertSame(Boolean.FALSE, Literals.parseLiteral("false"));
+		assertSame(Boolean.TRUE, Literals.parseLiteral("true"));
+
 		assertEquals("fubar", Literals.parseLiteral("'fubar'"));
 
 		assertNumber(0, Literals.parseLiteral("0"));

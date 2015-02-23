@@ -61,6 +61,18 @@ public final class Literals {
 	}
 
 	/**
+	 * Parses a boolean literal (i.e., true and false).
+	 *
+	 * @param s The string from which the boolean literal should be parsed.
+	 * @return The parsed boolean value&mdash;either {@link Boolean#TRUE} or
+	 *         {@link Boolean#FALSE}&mdash; or null if the string does not begin
+	 *         with a boolean literal.
+	 */
+	public static Boolean parseBoolean(final CharSequence s) {
+		return parseBoolean(s, new Position());
+	}
+
+	/**
 	 * Parses a string literal which is enclosed in single or double quotes.
 	 * <p>
 	 * For literals in double quotes, this parsing mechanism is intended to be as
@@ -151,18 +163,43 @@ public final class Literals {
 	}
 
 	/**
-	 * Parses a literal of any known type (strings and numbers).
+	 * Parses a literal of any known type (booleans, strings and numbers).
 	 *
 	 * @param s The string from which the literal should be parsed.
 	 * @return The parsed value, of a type consistent with Java's support for
-	 *         literals: either {@link String} or a concrete
+	 *         literals: either {@link Boolean}, {@link String} or a concrete
 	 *         {@link Number} subclass. Returns null if the string does
 	 *         not match the syntax of a known literal.
+	 * @see #parseBoolean(CharSequence)
 	 * @see #parseString(CharSequence)
 	 * @see #parseNumber(CharSequence)
 	 */
 	public static Object parseLiteral(final CharSequence s) {
 		return parseLiteral(s, new Position());
+	}
+
+	/**
+	 * Parses a boolean literal (i.e., true and false).
+	 *
+	 * @param s The string from which the boolean literal should be parsed.
+	 * @param pos The offset from which the literal should be parsed. If parsing
+	 *          is successful, the position will be advanced to the next index
+	 *          after the parsed literal.
+	 * @return The parsed boolean value&mdash;either {@link Boolean#TRUE} or
+	 *         {@link Boolean#FALSE}&mdash; or null if the string does not begin
+	 *         with a boolean literal.
+	 */
+	public static Boolean parseBoolean(final CharSequence s, final Position pos) {
+
+		if (isWord(s, pos, "true")) {
+			pos.inc(4);
+			return Boolean.TRUE;
+		}
+		if (isWord(s, pos, "false")) {
+			pos.inc(5);
+			return Boolean.FALSE;
+		}
+		return null;
 	}
 
 	/**
@@ -370,20 +407,24 @@ public final class Literals {
 	}
 
 	/**
-	 * Parses a literal of any known type (strings and numbers).
+	 * Parses a literal of any known type (booleans, strings and numbers).
 	 *
 	 * @param s The string from which the literal should be parsed.
 	 * @param pos The offset from which the literal should be parsed. If parsing
 	 *          is successful, the position will be advanced to the next index
 	 *          after the parsed literal.
 	 * @return The parsed value, of a type consistent with Java's support for
-	 *         literals: either {@link String} or a concrete
+	 *         literals: either {@link Boolean}, {@link String} or a concrete
 	 *         {@link Number} subclass. Returns null if the string does
 	 *         not match the syntax of a known literal.
+	 * @see #parseBoolean(CharSequence, Position)
 	 * @see #parseString(CharSequence, Position)
 	 * @see #parseNumber(CharSequence, Position)
 	 */
 	public static Object parseLiteral(final CharSequence s, final Position pos) {
+		final Boolean bool = parseBoolean(s, pos);
+		if (bool != null) return bool;
+
 		final String str = parseString(s, pos);
 		if (str != null) return str;
 
@@ -519,6 +560,21 @@ public final class Literals {
 		if (result == null) pos.die("Illegal numeric literal");
 		pos.inc(m.group(1).length());
 		return result;
+	}
+
+	private static boolean isWord(final CharSequence s, final Position pos,
+		final String word)
+	{
+		if (s.length() - pos.get() < word.length()) return false;
+		for (int i=0; i<word.length(); i++) {
+			if (pos.ch(s, i) != word.charAt(i)) return false;
+		}
+		final char next = pos.ch(s, word.length());
+		if (next >= 'a' && next <= 'z') return false;
+		if (next >= 'A' && next <= 'Z') return false;
+		if (next >= '0' && next <= '9') return false;
+		if (next == '_') return false;
+		return true;
 	}
 
 }
