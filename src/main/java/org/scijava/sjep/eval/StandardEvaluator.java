@@ -101,6 +101,9 @@ public interface StandardEvaluator extends Evaluator {
 	/** Applies the {@link Operators#RIGHT_DIV} operator. */
 	Object rightDiv(Object a, Object b);
 
+	/** Applies the {@link Operators#DOT_MUL} operator. */
+	Object dotMul(Object a, Object b);
+
 	/** Applies the {@link Operators#DOT_DIV} operator. */
 	Object dotDiv(Object a, Object b);
 

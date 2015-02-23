@@ -83,6 +83,7 @@ public final class Operators {
 	public static final Operator DIV = op("/", 2, LEFT, 12);
 	public static final Operator MOD = op("%", 2, LEFT, 12);
 	public static final Operator RIGHT_DIV = op("\\", 2, LEFT, 12);
+	public static final Operator DOT_MUL = op(".*", 2, LEFT, 12);
 	public static final Operator DOT_DIV = op("./", 2, LEFT, 12);
 	public static final Operator DOT_RIGHT_DIV = op(".\\", 2, LEFT, 12);
 

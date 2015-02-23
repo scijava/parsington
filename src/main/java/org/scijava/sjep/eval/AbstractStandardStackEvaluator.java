@@ -210,6 +210,7 @@ public abstract class AbstractStandardStackEvaluator extends
 		if (verb == Operators.DIV) return div(a, b);
 		if (verb == Operators.MOD) return mod(a, b);
 		if (verb == Operators.RIGHT_DIV) return rightDiv(a, b);
+		if (verb == Operators.DOT_MUL) return dotMul(a, b);
 		if (verb == Operators.DOT_DIV) return dotDiv(a, b);
 		if (verb == Operators.DOT_RIGHT_DIV) return dotRightDiv(a, b);
 		if (verb == Operators.ADD) return add(a, b);

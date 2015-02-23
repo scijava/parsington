@@ -240,6 +240,12 @@ public class DefaultEvaluator extends AbstractStandardStackEvaluator {
 	}
 
 	@Override
+	public Object dotMul(Object a, Object b) {
+		// NB: Unimplemented.
+		return null;
+	}
+
+	@Override
 	public Object dotDiv(final Object a, final Object b) {
 		// NB: Unimplemented.
 		return null;
