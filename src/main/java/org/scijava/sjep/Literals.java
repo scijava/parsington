@@ -151,6 +151,21 @@ public final class Literals {
 	}
 
 	/**
+	 * Parses a literal of any known type (strings and numbers).
+	 *
+	 * @param s The string from which the literal should be parsed.
+	 * @return The parsed value, of a type consistent with Java's support for
+	 *         literals: either {@link String} or a concrete
+	 *         {@link Number} subclass. Returns null if the string does
+	 *         not match the syntax of a known literal.
+	 * @see #parseString(CharSequence)
+	 * @see #parseNumber(CharSequence)
+	 */
+	public static Object parseLiteral(final CharSequence s) {
+		return parseLiteral(s, new Position());
+	}
+
+	/**
 	 * Parses a string literal which is enclosed in single or double quotes.
 	 * <p>
 	 * For literals in double quotes, this parsing mechanism is intended to be as
@@ -350,6 +365,30 @@ public final class Literals {
 
 		final Number decimal = parseDecimal(s, pos);
 		if (decimal != null) return decimal;
+
+		return null;
+	}
+
+	/**
+	 * Parses a literal of any known type (strings and numbers).
+	 *
+	 * @param s The string from which the literal should be parsed.
+	 * @param pos The offset from which the literal should be parsed. If parsing
+	 *          is successful, the position will be advanced to the next index
+	 *          after the parsed literal.
+	 * @return The parsed value, of a type consistent with Java's support for
+	 *         literals: either {@link String} or a concrete
+	 *         {@link Number} subclass. Returns null if the string does
+	 *         not match the syntax of a known literal.
+	 * @see #parseString(CharSequence, Position)
+	 * @see #parseNumber(CharSequence, Position)
+	 */
+	public static Object parseLiteral(final CharSequence s, final Position pos) {
+		final String str = parseString(s, pos);
+		if (str != null) return str;
+
+		final Number num = parseNumber(s, pos);
+		if (num != null) return num;
 
 		return null;
 	}

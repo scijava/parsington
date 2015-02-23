@@ -152,19 +152,10 @@ public class ExpressionParser {
 			while (pos.get() < expression.length()) {
 				parseWhitespace();
 
-				// If next token is a string literal, add it to the output queue.
-				final String s = parseString();
-				if (s != null) {
-					outputQueue.add(s);
-					// Update the state flag.
-					infix = true;
-					continue;
-				}
-
-				// If next token is a number, add it to the output queue.
-				final Number num = parseNumber();
-				if (num != null) {
-					outputQueue.add(num);
+				// If next token is a literal, add it to the output queue.
+				final Object literal = parseLiteral();
+				if (literal != null) {
+					outputQueue.add(literal);
 					// Update the state flag.
 					infix = true;
 					continue;
@@ -319,29 +310,18 @@ public class ExpressionParser {
 		}
 
 		/**
-		 * Attempts to parse a string literal.
-		 *
-		 * @return The parsed string, or null if the next token is not one.
-		 */
-		public String parseString() {
-			// Only accept a string literal in the appropriate context.
-			// This avoids confusing e.g. a quoted string with a quote operator.
-			if (infix) return null;
-
-			return Literals.parseString(expression, pos);
-		}
-
-		/**
 		 * Attempts to parse a numeric literal.
 		 *
-		 * @return The parsed number, or null if the next token is not one.
+		 * @return The parsed literal, or null if the next token is not one.
+		 * @see Literals#parseLiteral
 		 */
-		public Number parseNumber() {
-			// Only accept a numeric literal in the appropriate context.
-			// This avoids confusing e.g. the unary and binary minus operators.
+		public Object parseLiteral() {
+			// Only accept a literal in the appropriate context.
+			// This avoids confusing e.g. the unary and binary minus
+			// operators, or a quoted string with a quote operator.
 			if (infix) return null;
 
-			return Literals.parseNumber(expression, pos);
+			return Literals.parseLiteral(expression, pos);
 		}
 
 		/**

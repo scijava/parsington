@@ -239,4 +239,11 @@ public class LiteralsTest extends AbstractTest {
 		assertEquals(9, pos.get());
 	}
 
+	@Test
+	public void testParseLiteral() {
+		assertEquals("fubar", Literals.parseLiteral("'fubar'"));
+
+		assertNumber(0, Literals.parseLiteral("0"));
+	}
+
 }
