@@ -29,3 +29,34 @@ licensed in a restrictive way. Just a simple infix parser: a nice shunting yard
 implementation, or maybe some lovely recursive descent. Something on GitHub,
 with no dependencies, available on Maven Central. But surprisingly, there was
 only tumbleweed. So SJEP was born, and all our problems are now over!
+
+## Usage
+
+In your POM `<dependencies>`:
+```xml
+<dependency>
+  <groupId>org.scijava</groupId>
+  <artifactId>scijava-expression-parser</artifactId>
+  <version>2.0.0</version>
+</dependency>
+```
+To parse in infix expression to a postfix queue:
+```java
+LinkedList<Object> queue = new ExpressionParser().parsePostfix("a+b*c^f(1,2)'");
+```
+To parse an infix expression to a suffix tree:
+```java
+SuffixTree tree = new ExpressionParser().parseTree("a+b*c^f(1,2)'");
+```
+To evaluate an expression involving basic types:
+```java
+Object result = new DefaultEvaluator().evaluate("6.5*7.8^2.3");
+```
+
+There is also an [interactive console
+shell](src/main/java/org/scijava/sjep/Main.java) you can play with:
+
+```shell
+mvn
+java -jar target/scijava-expression-parser-*-SNAPSHOT.jar
+```
