@@ -176,6 +176,8 @@ public class DefaultEvaluator extends AbstractStandardStackEvaluator {
 		if (isL(a) && isL(b)) return mul(l(a), l(b));
 		if (isF(a) && isF(b)) return mul(f(a), f(b));
 		if (isD(a) && isD(b)) return mul(d(a), d(b));
+		if (isBI(a) && isBI(b)) return mul(bi(a), bi(b));
+		if (isBD(a) && isBD(b)) return mul(bd(a), bd(b));
 		return null;
 	}
 	public int mul(final int a, final int b) { return a * b; }
