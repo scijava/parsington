@@ -138,10 +138,10 @@ public class DefaultEvaluatorTest extends AbstractTest {
 	/** Tests {@link DefaultEvaluator#pos(Object)}. */
 	@Test
 	public void testPos() {
-		assertNumber(7.8d, e.pos(o(7.8d)));
-		assertNumber(7.8f, e.pos(o(7.8f)));
 		assertNumber(7, e.pos(o(7)));
 		assertNumber(7L, e.pos(o(7L)));
+		assertNumber(7.8d, e.pos(o(7.8d)));
+		assertNumber(7.8f, e.pos(o(7.8f)));
 		assertSame(BigInteger.ZERO, e.pos(BigInteger.ZERO));
 		assertSame(BigInteger.ONE, e.pos(BigInteger.ONE));
 		assertSame(BigInteger.TEN, e.pos(BigInteger.TEN));
@@ -153,14 +153,14 @@ public class DefaultEvaluatorTest extends AbstractTest {
 	/** Tests {@link DefaultEvaluator#neg(Object)}. */
 	@Test
 	public void testNeg() {
-		assertNumber(7.8d, e.neg(o(-7.8d)));
-		assertNumber(7.8f, e.neg(o(-7.8f)));
 		assertNumber(7, e.neg(o(-7)));
 		assertNumber(7L, e.neg(o(-7L)));
-		assertNumber(-7.8d, e.neg(o(7.8d)));
-		assertNumber(-7.8f, e.neg(o(7.8f)));
+		assertNumber(7.8f, e.neg(o(-7.8f)));
+		assertNumber(7.8d, e.neg(o(-7.8d)));
 		assertNumber(-7, e.neg(o(7)));
 		assertNumber(-7L, e.neg(o(7L)));
+		assertNumber(-7.8f, e.neg(o(7.8f)));
+		assertNumber(-7.8d, e.neg(o(7.8d)));
 		// TODO: Test BigInteger and BigDecimal.
 	}
 
