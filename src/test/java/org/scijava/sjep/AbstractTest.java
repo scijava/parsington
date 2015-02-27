@@ -31,6 +31,7 @@
 package org.scijava.sjep;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
@@ -46,11 +47,13 @@ public class AbstractTest {
 	// -- Helper methods --
 
 	protected void assertString(final String expected, final Object actual) {
+		assertNotNull(actual);
 		assertSame(expected.getClass(), actual.getClass());
 		assertEquals(expected, actual);
 	}
 
 	protected void assertNumber(final Number expected, final Object actual) {
+		assertNotNull(actual);
 		assertSame(expected.getClass(), actual.getClass());
 		assertEquals(expected, actual);
 	}
@@ -70,18 +73,22 @@ public class AbstractTest {
 	}
 
 	protected void assertInstance(final Object token, final Class<?> c) {
+		assertNotNull(token);
 		assertTrue(token.getClass().getName(), c.isInstance(token));
 	}
 
 	protected void assertCount(final int expected, final SyntaxTree tree) {
+		assertNotNull(tree);
 		assertEquals(expected, tree.count());
 	}
 
 	protected void assertToken(final String expected, final Object token) {
+		assertNotNull(token);
 		assertEquals(expected, token.toString());
 	}
 
 	protected void assertSameLists(final List<?> expected, final List<?> actual) {
+		assertNotNull(actual);
 		assertEquals(expected.size(), actual.size());
 		for (int i = 0; i < expected.size(); i++) {
 			assertSame("Non-matching index: " + i, expected.get(i), actual.get(i));
