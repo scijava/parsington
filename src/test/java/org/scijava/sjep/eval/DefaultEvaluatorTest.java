@@ -271,7 +271,7 @@ public class DefaultEvaluatorTest extends AbstractTest {
 	public void testRightShift() {
 		assertNumber(0xfcafebab, e.rightShift(o(0xcafebabe), o(4)));
 		assertNumber(0xfffdeadcafebeefbL, e.rightShift(o(0xdeadcafebeefbabeL), o(12)));
-		assertNumber(bi(285440), e.leftShift(o(bi(8920)), o(5)));
+		assertNumber(bi(278), e.rightShift(o(bi(8920)), o(5)));
 	}
 
 	/** Tests {@link DefaultEvaluator#unsignedRightShift(Object, Object)}. */
