@@ -318,13 +318,13 @@ public class DefaultEvaluatorTest extends AbstractTest {
 		assertSame(false, e.lessThan(o(11d), o(11d)));
 		assertSame(false, e.lessThan(o(11d), o(10d)));
 
-		assertSame(true, e.lessThan(o(bi(11)), o(bi(12))));
-		assertSame(false, e.lessThan(o(bi(11)), o(bi(11))));
-		assertSame(false, e.lessThan(o(bi(11)), o(bi(10))));
+		assertSame(true, e.lessThan(o(bi(14)), o(bi(15))));
+		assertSame(false, e.lessThan(o(bi(14)), o(bi(14))));
+		assertSame(false, e.lessThan(o(bi(14)), o(bi(13))));
 
-		assertSame(true, e.lessThan(o(bd(11)), o(bd(12))));
-		assertSame(false, e.lessThan(o(bd(11)), o(bd(11))));
-		assertSame(false, e.lessThan(o(bd(11)), o(bd(10))));
+		assertSame(true, e.lessThan(o(bd(17)), o(bd(18))));
+		assertSame(false, e.lessThan(o(bd(17)), o(bd(17))));
+		assertSame(false, e.lessThan(o(bd(17)), o(bd(16))));
 	}
 
 	/** Tests {@link DefaultEvaluator#greaterThan(Object, Object)}. */
