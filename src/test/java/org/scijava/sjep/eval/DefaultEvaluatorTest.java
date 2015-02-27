@@ -34,6 +34,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.scijava.sjep.AbstractTest;
@@ -139,6 +142,12 @@ public class DefaultEvaluatorTest extends AbstractTest {
 		assertNumber(7.8f, e.pos(o(7.8f)));
 		assertNumber(7, e.pos(o(7)));
 		assertNumber(7L, e.pos(o(7L)));
+		assertSame(BigInteger.ZERO, e.pos(BigInteger.ZERO));
+		assertSame(BigInteger.ONE, e.pos(BigInteger.ONE));
+		assertSame(BigInteger.TEN, e.pos(BigInteger.TEN));
+		assertSame(BigDecimal.ZERO, e.pos(BigDecimal.ZERO));
+		assertSame(BigDecimal.ONE, e.pos(BigDecimal.ONE));
+		assertSame(BigDecimal.TEN, e.pos(BigDecimal.TEN));
 	}
 
 	/** Tests {@link DefaultEvaluator#neg(Object)}. */

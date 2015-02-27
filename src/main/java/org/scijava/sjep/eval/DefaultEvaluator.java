@@ -126,8 +126,6 @@ public class DefaultEvaluator extends AbstractStandardStackEvaluator {
 		if (isL(a)) return pos(l(a));
 		if (isF(a)) return pos(f(a));
 		if (isD(a)) return pos(d(a));
-		if (isBI(a)) return pos(bi(a));
-		if (isBD(a)) return pos(bd(a));
 		return value(a);
 	}
 	public int pos(final int num) { return +num; }
