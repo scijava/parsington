@@ -309,7 +309,7 @@ public class DefaultEvaluator extends AbstractStandardStackEvaluator {
 	public Object leftShift(final Object a, final Object b) {
 		if (isI(a) && isI(b)) return leftShift(i(a), i(b));
 		if (isL(a) && isL(b)) return leftShift(l(a), l(b));
-		if (isBI(a) && isBI(b)) return leftShift(bi(a), bi(b));
+		if (isBI(a) && isI(b)) return leftShift(bi(a), i(b));
 		return null;
 	}
 	public int leftShift(final int a, final int b) { return a << b; }
