@@ -530,11 +530,11 @@ public class DefaultEvaluator extends AbstractStandardStackEvaluator {
 	private double d(final Object o) { return num(o).doubleValue(); }
 	private BigInteger bi(final Object o) {
 		final BigInteger bi = cast(o, BigInteger.class);
-		return bi != null ? bi : new BigInteger("" + o);
+		return bi != null ? bi : new BigInteger("" + value(o));
 	}
 	private BigDecimal bd(final Object o) {
 		final BigDecimal bd = cast(o, BigDecimal.class);
-		return bd != null ? bd : new BigDecimal("" + o);
+		return bd != null ? bd : new BigDecimal("" + value(o));
 	}
 
 }
