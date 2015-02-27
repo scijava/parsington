@@ -187,7 +187,8 @@ public class DefaultEvaluatorTest extends AbstractTest {
 		assertNumber(24L, e.mul(o(4L), o(6L)));
 		assertNumber(8.75f, e.mul(o(2.5f), o(3.5f)));
 		assertNumber(8.75d, e.mul(o(2.5d), o(3.5d)));
-		// TODO: Test BigInteger and BigDecimal.
+		assertNumber(bi(24), e.mul(o(bi(4)), o(bi(6))));
+		assertNumber(bd(8.75), e.mul(o(bd(2.5)), o(bd(3.5))));
 	}
 
 	/** Tests {@link DefaultEvaluator#div(Object, Object)}. */
@@ -197,7 +198,8 @@ public class DefaultEvaluatorTest extends AbstractTest {
 		assertNumber(4L, e.div(o(27L), o(6L)));
 		assertNumber(2.5f, e.div(o(8.75f), o(3.5f)));
 		assertNumber(2.5d, e.div(o(8.75d), o(3.5d)));
-		// TODO: Test BigInteger and BigDecimal.
+		assertNumber(bi(4), e.div(o(bi(27)), o(bi(6))));
+		assertNumber(bd(2.5), e.div(o(bd(8.75)), o(bd(3.5))));
 	}
 
 	/** Tests {@link DefaultEvaluator#mod(Object, Object)}. */
@@ -207,7 +209,8 @@ public class DefaultEvaluatorTest extends AbstractTest {
 		assertNumber(3L, e.mod(o(27L), o(6L)));
 		assertNumber(1.75f, e.mod(o(8.75f), o(3.5f)));
 		assertNumber(1.75d, e.mod(o(8.75d), o(3.5d)));
-		// TODO: Test BigInteger and BigDecimal.
+		assertNumber(bi(3), e.mod(o(bi(27)), o(bi(6))));
+		assertNumber(bd(1.75), e.mod(o(bd(8.75)), o(bd(3.5))));
 	}
 
 	/** Tests {@link DefaultEvaluator#rightDiv(Object, Object)}. */
@@ -238,7 +241,8 @@ public class DefaultEvaluatorTest extends AbstractTest {
 		assertNumber(10L, e.add(o(4L), o(6L)));
 		assertNumber(3.6f, e.add(o(1.5f), o(2.1f)));
 		assertNumber(3.6d, e.add(o(1.5d), o(2.1d)));
-		// TODO: Test BigInteger and BigDecimal.
+		assertNumber(bi(10), e.add(o(bi(4)), o(bi(6))));
+		assertNumber(bd(3.6), e.add(o(bd(1.5)), o(bd(2.1))));
 	}
 
 	/** Tests {@link DefaultEvaluator#sub(Object, Object)}. */
@@ -248,7 +252,8 @@ public class DefaultEvaluatorTest extends AbstractTest {
 		assertNumber(4L, e.sub(o(10L), o(6L)));
 		assertNumber(1.5f, e.sub(o(3.6f), o(2.1f)));
 		assertNumber(1.5d, e.sub(o(3.6d), o(2.1d)));
-		// TODO: Test BigInteger and BigDecimal.
+		assertNumber(bi(4), e.sub(o(bi(10)), o(bi(6))));
+		assertNumber(bd(1.5), e.sub(o(bd(3.6)), o(bd(2.1))));
 	}
 
 	// -- shift --
@@ -258,7 +263,7 @@ public class DefaultEvaluatorTest extends AbstractTest {
 	public void testLeftShift() {
 		assertNumber(0xafebabe0, e.leftShift(o(0xcafebabe), o(4)));
 		assertNumber(0xdcafebeefbabe000L, e.leftShift(o(0xdeadcafebeefbabeL), o(12)));
-		// TODO: Test BigInteger.
+		assertNumber(bi(7296), e.leftShift(o(bi(57)), o(7)));
 	}
 
 	/** Tests {@link DefaultEvaluator#rightShift(Object, Object)}. */
@@ -266,7 +271,7 @@ public class DefaultEvaluatorTest extends AbstractTest {
 	public void testRightShift() {
 		assertNumber(0xfcafebab, e.rightShift(o(0xcafebabe), o(4)));
 		assertNumber(0xfffdeadcafebeefbL, e.rightShift(o(0xdeadcafebeefbabeL), o(12)));
-		// TODO: Test BigInteger.
+		assertNumber(bi(285440), e.leftShift(o(bi(8920)), o(5)));
 	}
 
 	/** Tests {@link DefaultEvaluator#unsignedRightShift(Object, Object)}. */
@@ -313,7 +318,13 @@ public class DefaultEvaluatorTest extends AbstractTest {
 		assertSame(false, e.lessThan(o(11d), o(11d)));
 		assertSame(false, e.lessThan(o(11d), o(10d)));
 
-		// TODO: Test BigInteger and BigDecimal.
+		assertSame(true, e.lessThan(o(bi(11)), o(bi(12))));
+		assertSame(false, e.lessThan(o(bi(11)), o(bi(11))));
+		assertSame(false, e.lessThan(o(bi(11)), o(bi(10))));
+
+		assertSame(true, e.lessThan(o(bd(11)), o(bd(12))));
+		assertSame(false, e.lessThan(o(bd(11)), o(bd(11))));
+		assertSame(false, e.lessThan(o(bd(11)), o(bd(10))));
 	}
 
 	/** Tests {@link DefaultEvaluator#greaterThan(Object, Object)}. */
@@ -675,6 +686,9 @@ public class DefaultEvaluatorTest extends AbstractTest {
 
 	/** Widens the given object to an {@link Object}. */
 	private Object o(final Object o) { return o; }
+
+	private BigInteger bi(final Object o) { return new BigInteger(o.toString()); }
+	private BigDecimal bd(final Object o) { return new BigDecimal(o.toString()); }
 
 	private void assertAssigned(final Object expected, final Variable v,
 		final Object result)
