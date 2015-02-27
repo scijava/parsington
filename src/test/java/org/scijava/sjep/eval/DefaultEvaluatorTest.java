@@ -77,7 +77,7 @@ public class DefaultEvaluatorTest extends AbstractTest {
 	/** Tests {@link DefaultEvaluator#pow(Object, Object)}. */
 	@Test
 	public void testPow() {
-		assertNumber(15.625d, e.pow(o(2.5d), o(3)));
+		assertNumber(15.625d, e.pow(o(2.5d), o(3d)));
 		// TODO: Test BigInteger and BigDecimal.
 	}
 
