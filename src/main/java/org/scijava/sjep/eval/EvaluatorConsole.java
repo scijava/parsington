@@ -33,6 +33,7 @@ package org.scijava.sjep.eval;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -70,10 +71,7 @@ public class EvaluatorConsole {
 			if (line == null) break;
 			try {
 				final Object result = evaluator.evaluate(line);
-				if (Tokens.isVariable(result)) {
-					println(result + " = " + evaluator.value(result));
-				}
-				else println(result);
+				if (result != null) printResult(result);
 			}
 			catch (final IllegalArgumentException exc) {
 				final String msg = exc.getMessage();
@@ -87,6 +85,18 @@ public class EvaluatorConsole {
 				println(msg);
 			}
 		}
+	}
+
+	private void printResult(final Object o) {
+		if (o instanceof List) {
+			for (final Object item : (List<?>) o) {
+				printResult(item);
+			}
+		}
+		else if (Tokens.isVariable(o)) {
+			println(o + " = " + evaluator.value(o));
+		}
+		else println(o);
 	}
 
 	public void print(final Object o) {
