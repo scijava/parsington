@@ -77,12 +77,14 @@ public abstract class AbstractStackEvaluator extends AbstractEvaluator
 			stack.push(result);
 		}
 
-		if (stack.size() != 1) {
-			throw new IllegalArgumentException("Expected one result but got " +
-				stack.size());
-		}
+		if (stack.isEmpty()) return null;
+		if (stack.size() == 1) return stack.pop();
 
-		return stack.pop();
+		final LinkedList<Object> resultList = new LinkedList<Object>();
+		while (!stack.isEmpty()) {
+			resultList.addFirst(stack.pop());
+		}
+		return resultList;
 	}
 
 	// -- Helper methods --

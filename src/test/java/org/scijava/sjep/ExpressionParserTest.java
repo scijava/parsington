@@ -425,6 +425,27 @@ public class ExpressionParserTest extends AbstractTest {
 		assertSame(Operators.ADD, queue.get(10));
 	}
 
+	/** Tests multiple semicolon-separated statements. */
+	@Test
+	public void testMultipleStatements() {
+		final ExpressionParser parser = new ExpressionParser();
+		final LinkedList<Object> queue =
+			parser.parsePostfix("a=1 ; b=2 ; c=3");
+
+		assertNotNull(queue);
+		assertEquals(9, queue.size());
+		// [a, 1, =, b, 2, =, c, 3, =]
+		assertVariable("a", queue.get(0));
+		assertNumber(1, queue.get(1));
+		assertSame(Operators.ASSIGN, queue.get(2));
+		assertVariable("b", queue.get(3));
+		assertNumber(2, queue.get(4));
+		assertSame(Operators.ASSIGN, queue.get(5));
+		assertVariable("c", queue.get(6));
+		assertNumber(3, queue.get(7));
+		assertSame(Operators.ASSIGN, queue.get(8));
+	}
+
 	/** A more complex test of {@link ExpressionParser#parsePostfix}. */
 	@Test
 	public void testParsePostfix() {
