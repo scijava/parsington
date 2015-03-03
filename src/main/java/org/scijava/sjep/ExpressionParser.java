@@ -190,6 +190,15 @@ public class ExpressionParser {
 					continue;
 				}
 
+				// If next token is a statement separator (i.e., a semicolon)...
+				final Character semicolon = parseSemicolon();
+				if (semicolon != null) {
+					// Flush the stack and begin a new statement.
+					flushStack();
+					infix = false;
+					continue;
+				}
+
 				// If the token is an operator...
 				final Operator o1 = parseOperator();
 				if (o1 != null) {
@@ -267,14 +276,7 @@ public class ExpressionParser {
 			}
 			// No more tokens to read!
 
-			// While there are still operator tokens in the stack...
-			while (!stack.isEmpty()) {
-				final Object token = stack.pop();
-				// There shouldn't be any parentheses left.
-				if (Tokens.isParen(token)) pos.die("Mismatched parentheses");
-				// Pop the operator onto the output queue.
-				outputQueue.add(token);
-			}
+			flushStack();
 
 			return outputQueue;
 		}
@@ -439,6 +441,18 @@ public class ExpressionParser {
 		}
 
 		/**
+		 * Attempts to parse a semicolon character.
+		 *
+		 * @return The semicolon, or null if the next token is not one.
+		 */
+		public Character parseSemicolon() {
+			// Only accept a semicolon in the appropriate context.
+//			if (stack.size() > 1) return null;
+
+			return parseChar(';');
+		}
+
+		/**
 		 * Attempts to parse the given character.
 		 *
 		 * @return The character, or null if the next token is not that character.
@@ -475,6 +489,19 @@ public class ExpressionParser {
 			}
 			sb.append("^");
 			return sb.toString();
+		}
+
+		// -- Helper methods --
+
+		private void flushStack() {
+			// While there are still operator tokens in the stack...
+			while (!stack.isEmpty()) {
+				final Object token = stack.pop();
+				// There shouldn't be any parentheses left.
+				if (Tokens.isParen(token)) pos.die("Mismatched parentheses");
+				// Pop the operator onto the output queue.
+				outputQueue.add(token);
+			}
 		}
 
 	}
