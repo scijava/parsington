@@ -446,9 +446,6 @@ public class ExpressionParser {
 		 * @return The semicolon, or null if the next token is not one.
 		 */
 		public Character parseSemicolon() {
-			// Only accept a semicolon in the appropriate context.
-//			if (stack.size() > 1) return null;
-
 			return parseChar(';');
 		}
 
