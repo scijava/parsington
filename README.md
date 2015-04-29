@@ -1,4 +1,4 @@
-![](http://jenkins.imagej.net/job/SciJava-expression-parser/lastBuild/badge/icon)
+[![](http://jenkins.imagej.net/job/SciJava-expression-parser/lastBuild/badge/icon)](http://jenkins.imagej.net/job/SciJava-expression-parser/)
 
 # SciJava Expression Parser (SJEP)
 
