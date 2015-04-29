@@ -1,3 +1,5 @@
+![](http://jenkins.imagej.net/job/SciJava-expression-parser/lastBuild/badge/icon)
+
 # SciJava Expression Parser (SJEP)
 
 The SciJava Expression Parser is an infix-to-postfix (or infix-to-syntax-tree)
