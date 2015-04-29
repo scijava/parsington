@@ -68,7 +68,7 @@
 	</issueManagement>
 	<ciManagement>
 		<system>Jenkins</system>
-		<url>https://jenkins.imagej.net/job/SciJava-expression-parser/</url>
+		<url>http://jenkins.imagej.net/job/SciJava-expression-parser/</url>
 	</ciManagement>
 
 	<properties>
