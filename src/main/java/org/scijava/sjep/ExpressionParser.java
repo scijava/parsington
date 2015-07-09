@@ -150,6 +150,8 @@ public class ExpressionParser {
 		public LinkedList<Object> parsePostfix() {
 			// While there are tokens to be read...
 			while (pos.get() < expression.length()) {
+				// PROTIP: Put a breakpoint here, and watch the expression
+				// parser do its thing piece by piece in your debugger!
 				parseWhitespace();
 
 				// If next token is a literal, add it to the output queue.
