@@ -24,7 +24,7 @@ Expression parsers are as old as the hills; what makes this one different?
 
 ## History
 
-The [ImageJ OPS](https://github.com/imagej/imagej-ops) project needed an
+The [ImageJ Ops](https://github.com/imagej/imagej-ops) project needed an
 expression parser so that it could be more awesome. But not one limited to
 primitive doubles, or one that conflated parsing with evaluation, or one
 licensed in a restrictive way. Just a simple infix parser: a nice shunting yard
