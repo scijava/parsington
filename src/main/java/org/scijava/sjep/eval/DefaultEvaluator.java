@@ -49,8 +49,8 @@ import org.scijava.sjep.Operators;
  * </p>
  * <p>
  * "Great idea!" I would reply. Then I would suggest you have a look at the <a
- * href="https://github.com/scijava/scijava-ops">SciJava OPS</a> and <a
- * href="https://github.com/imagej/imagej-ops">ImageJ OPS</a> projects, which do
+ * href="https://github.com/scijava/scijava-ops">SciJava Ops</a> and <a
+ * href="https://github.com/imagej/imagej-ops">ImageJ Ops</a> projects, which do
  * exactly that in an extensible way.
  * </p>
  * <p>
