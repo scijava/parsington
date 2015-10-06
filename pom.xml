@@ -41,7 +41,7 @@
 	<contributors>
 		<!--
 		NB: Need a least one element to override the parent.
-		See: http://jira.codehaus.org/browse/MNG-5220
+		See: https://issues.apache.org/jira/browse/MNG-5220
 		-->
 		<contributor><name>None</name></contributor>
 	</contributors>
