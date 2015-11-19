@@ -10,7 +10,7 @@
 	</parent>
 
 	<artifactId>scijava-expression-parser</artifactId>
-	<version>2.1.1-SNAPSHOT</version>
+	<version>2.1.2-SNAPSHOT</version>
 
 	<name>SciJava Expression Parser</name>
 	<description>A general-purpose mathematical expression parser, which converts infix expression strings into postfix queues and/or syntax trees.</description>
