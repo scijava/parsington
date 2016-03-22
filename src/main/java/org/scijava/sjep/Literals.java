@@ -274,7 +274,7 @@ public final class Literals {
 						final char u3 = hex(s, pos, index + 3);
 						final char u4 = hex(s, pos, index + 4);
 						sb.append((char) Integer.parseInt("" + u1 + u2 + u3 + u4, 16));
-						index += 5;
+						index += 4;
 						break;
 					default: // invalid escape
 						pos.die("Invalid escape sequence");

@@ -74,7 +74,8 @@ public class LiteralsTest extends AbstractTest {
 		assertEquals("\t\\\t\\\\\t", Literals
 			.parseString("\"\\t\\\\\\t\\\\\\\\\\t\""));
 		// Test Unicode escape sequences.
-		// TODO
+		assertEquals("\u9654", Literals.parseString("\"\u9654\""));
+		assertEquals("xyz\u9654abc", Literals.parseString("\"xyz\\u9654abc\""));
 		// Test octal escape sequences.
 		assertEquals("\0", Literals.parseString("\"\\0\""));
 		assertEquals("\00", Literals.parseString("\"\\00\""));
