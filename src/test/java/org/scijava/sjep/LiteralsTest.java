@@ -141,7 +141,8 @@ public class LiteralsTest extends AbstractTest {
 		// Test explicit long.
 		assertNumber(33L, Literals.parseBinary("0b100001L"));
 		// Test implicit long.
-		// TODO
+		assertNumber(194588677707L, Literals.parseBinary(
+			"0b10110101001110011000111001011001001011"));
 		// Test BigInteger.
 		final String big =
 			"10110011100011110000111110000011111100000011111110000000"
@@ -157,7 +158,8 @@ public class LiteralsTest extends AbstractTest {
 		// Test explicit long.
 		assertNumber(-33L, Literals.parseBinary("-0b100001L"));
 		// Test implicit long.
-		// TODO
+		assertNumber(-194588677707L, Literals.parseBinary(
+			"-0b10110101001110011000111001011001001011"));
 		// Test BigInteger.
 		final String big =
 			"10110011100011110000111110000011111100000011111110000000"
