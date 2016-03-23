@@ -160,12 +160,7 @@ public class DefaultEvaluator extends AbstractStandardStackEvaluator {
 	public long complement(final long a) { return ~a; }
 
 	@Override
-	public Object not(final Object a) {
-		if (isBool(a)) return not(bool(a));
-		final Boolean b = bool(a);
-		if (b == null) return null;
-		return !b;
-	}
+	public Object not(final Object a) { return not(bool(a)); }
 	public boolean not(final boolean a) { return !a; }
 
 	// -- multiplicative --
