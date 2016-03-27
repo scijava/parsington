@@ -142,64 +142,81 @@ public class ExpressionParserTest extends AbstractTest {
 				+ "*(aa.^=bb).^(cc^=dd)^f(~ee--,-ff++,+--gg',++hh.')";
 		final ExpressionParser parser = new ExpressionParser();
 		final LinkedList<Object> queue = parser.parsePostfix(expression);
-		// a b |= c d &= e f >>>= g h >>= >>> i j <<= >> k l -= m n += - o p .\=
-		// q r ./= .\ s t \= ./ u v %= \ w x /= % y z *= / aa bb .^= cc dd ^= ee
-		// -- ~ ff ++ - gg ' -- + hh .' ++ f ^ .^ * + << & |
+		// a b |= (1) c d &= (1) e f >>>= (1) g h >>= (1) >>> i j <<= (1) >> k l
+		// -= (1) m n += (1) - o p .\= (1) q r ./= (1) .\ s t \= (1) ./ u v %=
+		// (1) \ w x /= (1) % y z *= (1) / aa bb .^= (1) cc dd ^= (1) f ee -- ~
+		// ff ++ - gg ' -- + hh .' ++ (4) <Fn> ^ .^ * + << & |
 		assertNotNull(queue);
-		assertEquals(74, queue.size());
+		assertEquals(91, queue.size());
 		assertVariable("a", queue.pop());
 		assertVariable("b", queue.pop());
 		assertSame(Operators.OR_ASSIGN, queue.pop());
+		assertGroup(Operators.PARENS, 1, queue.pop());
 		assertVariable("c", queue.pop());
 		assertVariable("d", queue.pop());
 		assertSame(Operators.AND_ASSIGN, queue.pop());
+		assertGroup(Operators.PARENS, 1, queue.pop());
 		assertVariable("e", queue.pop());
 		assertVariable("f", queue.pop());
 		assertSame(Operators.UNSIGNED_RIGHT_SHIFT_ASSIGN, queue.pop());
+		assertGroup(Operators.PARENS, 1, queue.pop());
 		assertVariable("g", queue.pop());
 		assertVariable("h", queue.pop());
 		assertSame(Operators.RIGHT_SHIFT_ASSIGN, queue.pop());
+		assertGroup(Operators.PARENS, 1, queue.pop());
 		assertSame(Operators.UNSIGNED_RIGHT_SHIFT, queue.pop());
 		assertVariable("i", queue.pop());
 		assertVariable("j", queue.pop());
 		assertSame(Operators.LEFT_SHIFT_ASSIGN, queue.pop());
+		assertGroup(Operators.PARENS, 1, queue.pop());
 		assertSame(Operators.RIGHT_SHIFT, queue.pop());
 		assertVariable("k", queue.pop());
 		assertVariable("l", queue.pop());
 		assertSame(Operators.SUB_ASSIGN, queue.pop());
+		assertGroup(Operators.PARENS, 1, queue.pop());
 		assertVariable("m", queue.pop());
 		assertVariable("n", queue.pop());
 		assertSame(Operators.ADD_ASSIGN, queue.pop());
+		assertGroup(Operators.PARENS, 1, queue.pop());
 		assertSame(Operators.SUB, queue.pop());
 		assertVariable("o", queue.pop());
 		assertVariable("p", queue.pop());
 		assertSame(Operators.DOT_RIGHT_DIV_ASSIGN, queue.pop());
+		assertGroup(Operators.PARENS, 1, queue.pop());
 		assertVariable("q", queue.pop());
 		assertVariable("r", queue.pop());
 		assertSame(Operators.DOT_DIV_ASSIGN, queue.pop());
+		assertGroup(Operators.PARENS, 1, queue.pop());
 		assertSame(Operators.DOT_RIGHT_DIV, queue.pop());
 		assertVariable("s", queue.pop());
 		assertVariable("t", queue.pop());
 		assertSame(Operators.RIGHT_DIV_ASSIGN, queue.pop());
+		assertGroup(Operators.PARENS, 1, queue.pop());
 		assertSame(Operators.DOT_DIV, queue.pop());
 		assertVariable("u", queue.pop());
 		assertVariable("v", queue.pop());
 		assertSame(Operators.MOD_ASSIGN, queue.pop());
+		assertGroup(Operators.PARENS, 1, queue.pop());
 		assertSame(Operators.RIGHT_DIV, queue.pop());
 		assertVariable("w", queue.pop());
 		assertVariable("x", queue.pop());
 		assertSame(Operators.DIV_ASSIGN, queue.pop());
+		assertGroup(Operators.PARENS, 1, queue.pop());
 		assertSame(Operators.MOD, queue.pop());
 		assertVariable("y", queue.pop());
 		assertVariable("z", queue.pop());
 		assertSame(Operators.MUL_ASSIGN, queue.pop());
+		assertGroup(Operators.PARENS, 1, queue.pop());
 		assertSame(Operators.DIV, queue.pop());
 		assertVariable("aa", queue.pop());
 		assertVariable("bb", queue.pop());
 		assertSame(Operators.DOT_POW_ASSIGN, queue.pop());
+		assertGroup(Operators.PARENS, 1, queue.pop());
 		assertVariable("cc", queue.pop());
 		assertVariable("dd", queue.pop());
 		assertSame(Operators.POW_ASSIGN, queue.pop());
+		assertGroup(Operators.PARENS, 1, queue.pop());
+		assertVariable("f", queue.pop());
 		assertVariable("ee", queue.pop());
 		assertSame(Operators.POST_DEC, queue.pop());
 		assertSame(Operators.COMPLEMENT, queue.pop());
@@ -213,7 +230,8 @@ public class ExpressionParserTest extends AbstractTest {
 		assertVariable("hh", queue.pop());
 		assertSame(Operators.DOT_TRANSPOSE, queue.pop());
 		assertSame(Operators.PRE_INC, queue.pop());
-		assertFunction("f", 4, queue.pop());
+		assertGroup(Operators.PARENS, 4, queue.pop());
+		assertFunction(queue.pop());
 		assertSame(Operators.POW, queue.pop());
 		assertSame(Operators.DOT_POW, queue.pop());
 		assertSame(Operators.MUL, queue.pop());
@@ -325,46 +343,53 @@ public class ExpressionParserTest extends AbstractTest {
 	public void testNullaryFunction() {
 		final ExpressionParser parser = new ExpressionParser();
 		final LinkedList<Object> queue = parser.parsePostfix("f()");
-		// f
+		// f (0) <Fn>
 		assertNotNull(queue);
-		assertEquals(1, queue.size());
-		assertFunction("f", 0, queue.pop());
+		assertEquals(3, queue.size());
+		assertVariable("f", queue.pop());
+		assertGroup(Operators.PARENS, 0, queue.pop());
+		assertFunction(queue.pop());
 	}
 
 	@Test
 	public void testUnaryFunction() {
 		final ExpressionParser parser = new ExpressionParser();
 		final LinkedList<Object> queue = parser.parsePostfix("f(a)");
-		// a f
+		// f a (1) <Fn>
 		assertNotNull(queue);
-		assertEquals(2, queue.size());
+		assertVariable("f", queue.pop());
 		assertVariable("a", queue.pop());
-		assertFunction("f", 1, queue.pop());
+		assertGroup(Operators.PARENS, 1, queue.pop());
+		assertFunction(queue.pop());
 	}
 
 	@Test
 	public void testBinaryFunction() {
 		final ExpressionParser parser = new ExpressionParser();
 		final LinkedList<Object> queue = parser.parsePostfix("f(a,b)");
-		// a b f
+		// f a b (2) <Fn>
 		assertNotNull(queue);
-		assertEquals(3, queue.size());
+		assertEquals(5, queue.size());
+		assertVariable("f", queue.pop());
 		assertVariable("a", queue.pop());
 		assertVariable("b", queue.pop());
-		assertFunction("f", 2, queue.pop());
+		assertGroup(Operators.PARENS, 2, queue.pop());
+		assertFunction(queue.pop());
 	}
 
 	@Test
 	public void testTernaryFunction() {
 		final ExpressionParser parser = new ExpressionParser();
 		final LinkedList<Object> queue = parser.parsePostfix("f(a,b,c)");
-		// a b c f
+		// f a b c (3) <Fn>
 		assertNotNull(queue);
-		assertEquals(4, queue.size());
+		assertEquals(6, queue.size());
+		assertVariable("f", queue.pop());
 		assertVariable("a", queue.pop());
 		assertVariable("b", queue.pop());
 		assertVariable("c", queue.pop());
-		assertFunction("f", 3, queue.pop());
+		assertGroup(Operators.PARENS, 3, queue.pop());
+		assertFunction(queue.pop());
 	}
 
 	@Test
@@ -372,17 +397,25 @@ public class ExpressionParserTest extends AbstractTest {
 		final ExpressionParser parser = new ExpressionParser();
 		final LinkedList<Object> queue =
 			parser.parsePostfix("f(g(),a,h(b),i(c,d))");
-		// g a b h c d i f
+		// f g (0) <Fn> a h b (1) <Fn> i c d (2) <Fn> (4) <Fn>
 		assertNotNull(queue);
-		assertEquals(8, queue.size());
-		assertFunction("g", 0, queue.pop());
+		assertEquals(16, queue.size());
+		assertVariable("f", queue.pop());
+		assertVariable("g", queue.pop());
+		assertGroup(Operators.PARENS, 0, queue.pop());
+		assertFunction(queue.pop());
 		assertVariable("a", queue.pop());
+		assertVariable("h", queue.pop());
 		assertVariable("b", queue.pop());
-		assertFunction("h", 1, queue.pop());
+		assertGroup(Operators.PARENS, 1, queue.pop());
+		assertFunction(queue.pop());
+		assertVariable("i", queue.pop());
 		assertVariable("c", queue.pop());
 		assertVariable("d", queue.pop());
-		assertFunction("i", 2, queue.pop());
-		assertFunction("f", 4, queue.pop());
+		assertGroup(Operators.PARENS, 2, queue.pop());
+		assertFunction(queue.pop());
+		assertGroup(Operators.PARENS, 4, queue.pop());
+		assertFunction(queue.pop());
 	}
 
 	@Test
@@ -408,19 +441,21 @@ public class ExpressionParserTest extends AbstractTest {
 	public void testOperatorAssociativity() {
 		final ExpressionParser parser = new ExpressionParser();
 		final LinkedList<Object> queue = parser.parsePostfix("(a/b/c)+(a^b^c)");
-		// a b / c / a b c ^ ^ +
+		// a b / c / (1) a b c ^ ^ (1) +
 		assertNotNull(queue);
-		assertEquals(11, queue.size());
+		assertEquals(13, queue.size());
 		assertVariable("a", queue.pop());
 		assertVariable("b", queue.pop());
 		assertSame(Operators.DIV, queue.pop());
 		assertVariable("c", queue.pop());
 		assertSame(Operators.DIV, queue.pop());
+		assertGroup(Operators.PARENS, 1, queue.pop());
 		assertVariable("a", queue.pop());
 		assertVariable("b", queue.pop());
 		assertVariable("c", queue.pop());
 		assertSame(Operators.POW, queue.pop());
 		assertSame(Operators.POW, queue.pop());
+		assertGroup(Operators.PARENS, 1, queue.pop());
 		assertSame(Operators.ADD, queue.pop());
 	}
 
@@ -450,19 +485,21 @@ public class ExpressionParserTest extends AbstractTest {
 		final ExpressionParser parser = new ExpressionParser();
 		final LinkedList<Object> queue =
 			parser.parsePostfix("a*b-c*a/func(quick,brown,fox)^foo^bar");
-		// a b * c a * quick brown fox func foo bar ^ ^ / -
+		// a b * c a * func quick brown fox (3) <Fn> foo bar ^ ^ / -
 		assertNotNull(queue);
-		assertEquals(16, queue.size());
+		assertEquals(18, queue.size());
 		assertVariable("a", queue.pop());
 		assertVariable("b", queue.pop());
 		assertSame(Operators.MUL, queue.pop());
 		assertVariable("c", queue.pop());
 		assertVariable("a", queue.pop());
 		assertSame(Operators.MUL, queue.pop());
+		assertVariable("func", queue.pop());
 		assertVariable("quick", queue.pop());
 		assertVariable("brown", queue.pop());
 		assertVariable("fox", queue.pop());
-		assertFunction("func", 3, queue.pop());
+		assertGroup(Operators.PARENS, 3, queue.pop());
+		assertFunction(queue.pop());
 		assertVariable("foo", queue.pop());
 		assertVariable("bar", queue.pop());
 		assertSame(Operators.POW, queue.pop());
@@ -476,8 +513,6 @@ public class ExpressionParserTest extends AbstractTest {
 	public void testEmpty() {
 		final ExpressionParser parser = new ExpressionParser();
 		assertEquals(0, parser.parsePostfix("").size());
-		assertEquals(0, parser.parsePostfix("()").size());
-		assertEquals(0, parser.parsePostfix("(())").size());
 	}
 
 	/** Tests that parsing an invalid expression fails appropriately. */
@@ -487,11 +522,11 @@ public class ExpressionParserTest extends AbstractTest {
 		assertInvalid(parser, "a a", "Invalid character at index 2");
 		assertInvalid(parser, "func(,)", "Invalid character at index 5");
 		assertInvalid(parser, "foo,bar",
-			"Misplaced separator or mismatched parentheses at index 4");
-		assertInvalid(parser, "(", "Mismatched parentheses at index 1");
-		assertInvalid(parser, ")", "Mismatched parentheses at index 1");
-		assertInvalid(parser, ")(", "Mismatched parentheses at index 1");
-		assertInvalid(parser, "(()", "Mismatched parentheses at index 3");
+			"Misplaced separator or mismatched groups at index 4");
+		assertInvalid(parser, "(", "Mismatched groups at index 1");
+		assertInvalid(parser, ")", "Mismatched group terminator ')' at index 1");
+		assertInvalid(parser, ")(", "Mismatched group terminator ')' at index 1");
+		assertInvalid(parser, "(()", "Mismatched groups at index 3");
 	}
 
 	// -- Helper

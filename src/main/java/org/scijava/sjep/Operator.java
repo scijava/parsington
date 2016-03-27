@@ -37,7 +37,7 @@ package org.scijava.sjep;
  *
  * @author Curtis Rueden
  */
-public class Operator extends Verb implements Comparable<Operator> {
+public class Operator extends Token implements Comparable<Operator> {
 
 	public enum Associativity {
 		EITHER, LEFT, RIGHT, NONE
@@ -57,6 +57,11 @@ public class Operator extends Verb implements Comparable<Operator> {
 	}
 
 	// -- Operator methods --
+
+	/** 1 for unary, 2 for binary, etc. */
+	public int getArity() {
+		return arity;
+	}
 
 	public Associativity getAssociativity() {
 		return associativity;
@@ -94,13 +99,6 @@ public class Operator extends Verb implements Comparable<Operator> {
 	public Operator instance() {
 		// NB: Properties are immutable, so instance can be reused.
 		return this;
-	}
-
-	// -- Verb methods --
-
-	@Override
-	public int getArity() {
-		return arity;
 	}
 
 	// -- Comparable methods --

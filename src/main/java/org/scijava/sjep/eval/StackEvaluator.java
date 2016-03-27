@@ -32,9 +32,7 @@ package org.scijava.sjep.eval;
 
 import java.util.Deque;
 
-import org.scijava.sjep.Function;
 import org.scijava.sjep.Operator;
-import org.scijava.sjep.Verb;
 
 /**
  * Interface for stack-based expression evaluators.
@@ -44,9 +42,9 @@ import org.scijava.sjep.Verb;
 public interface StackEvaluator extends Evaluator {
 
 	/**
-	 * Executes the given {@link Verb operation} (typically an {@link Operator} or
-	 * a {@link Function}) with the specified value stack.
+	 * Executes the given {@link Operator operation} with the specified value
+	 * stack.
 	 */
-	Object execute(final Verb verb, final Deque<Object> stack);
+	Object execute(final Operator op, final Deque<Object> stack);
 
 }

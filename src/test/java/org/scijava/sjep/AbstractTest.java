@@ -58,13 +58,17 @@ public class AbstractTest {
 		assertEquals(expected, actual);
 	}
 
-	protected void assertFunction(final String expected, final int arity,
+	protected void assertGroup(final Group expected, final int arity,
 		final Object token)
 	{
+		assertInstance(token, Group.class);
+		final Group group = (Group) token;
+		assertEquals(arity, group.getArity());
+		assertTrue(expected.matches(group));
+	}
+
+	protected void assertFunction(final Object token) {
 		assertInstance(token, Function.class);
-		final Function function = (Function) token;
-		assertEquals(expected, function.getToken());
-		assertEquals(arity, function.getArity());
 	}
 
 	protected void assertVariable(final String expected, final Object token) {

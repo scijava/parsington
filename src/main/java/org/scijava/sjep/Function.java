@@ -31,39 +31,25 @@
 package org.scijava.sjep;
 
 /**
- * A token representing an instance of a mathematical function, which acts on a
- * particular number of arguments.
+ * A function is an implicit binary operator between two "noun"
+ * tokens&mdash;typically between a variable on the left and a group on the
+ * right, in which case the function's precedence is inferred from the group.
  * <p>
- * A function maps a set of inputs to a particular output, according to an
- * algorithm.
+ * Examples:
  * </p>
+ * <ul>
+ * <li>{@code f()} &rarr; {@code f (0) <Fn>}</li>
+ * <li>{@code f(a)} &rarr; {@code f a (1) <Fn>}</li>
+ * <li>{@code f(a, b)} &rarr; {@code f a b (2) <Fn>}</li>
+ * <li>{@code f(g(a))} &rarr; {@code f g a (1) <Fn> (1) <Fn>}</li>
+ * </ul>
  *
  * @author Curtis Rueden
  */
-public final class Function extends Verb {
+public class Function extends Operator {
 
-	private int arity;
-
-	public Function(final String name) {
-		this(name, 0);
-	}
-
-	public Function(final String name, final int arity) {
-		super(name);
-		this.arity = arity;
-	}
-
-	// -- Function methods --
-
-	public void incArity() {
-		arity++;
-	}
-
-	// -- Verb methods --
-
-	@Override
-	public int getArity() {
-		return arity;
+	public Function(final double precedence) {
+		super("<Fn>", 2, Associativity.LEFT, precedence);
 	}
 
 }

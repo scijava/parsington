@@ -33,10 +33,10 @@ package org.scijava.sjep.eval;
 import java.util.Deque;
 
 import org.scijava.sjep.ExpressionParser;
+import org.scijava.sjep.Operator;
 import org.scijava.sjep.Operators;
 import org.scijava.sjep.Tokens;
 import org.scijava.sjep.Variable;
-import org.scijava.sjep.Verb;
 
 /**
  * Base class for stack-based evaluators which support the standard operators.
@@ -182,9 +182,9 @@ public abstract class AbstractStandardStackEvaluator extends
 	// -- StackEvaluator methods --
 
 	@Override
-	public Object execute(final Verb verb, final Deque<Object> stack) {
+	public Object execute(final Operator op, final Deque<Object> stack) {
 		// Pop the arguments.
-		final int arity = verb.getArity();
+		final int arity = op.getArity();
 		final Object[] args = new Object[arity];
 		for (int i = args.length - 1; i >= 0; i--) {
 			args[i] = stack.pop();
@@ -193,61 +193,61 @@ public abstract class AbstractStandardStackEvaluator extends
 		final Object b = args.length > 1 ? args[1] : null;
 
 		// Let the case logic begin!
-		if (verb == Operators.DOT) return dot(a, b);
-		if (verb == Operators.TRANSPOSE) return transpose(a);
-		if (verb == Operators.DOT_TRANSPOSE) return dotTranspose(a);
-		if (verb == Operators.POW) return pow(a, b);
-		if (verb == Operators.DOT_POW) return dotPow(a, b);
-		if (verb == Operators.POST_INC) return postInc(a);
-		if (verb == Operators.POST_DEC) return postDec(a);
-		if (verb == Operators.PRE_INC) return preInc(a);
-		if (verb == Operators.PRE_DEC) return preDec(a);
-		if (verb == Operators.POS) return pos(a);
-		if (verb == Operators.NEG) return neg(a);
-		if (verb == Operators.COMPLEMENT) return complement(a);
-		if (verb == Operators.NOT) return not(a);
-		if (verb == Operators.MUL) return mul(a, b);
-		if (verb == Operators.DIV) return div(a, b);
-		if (verb == Operators.MOD) return mod(a, b);
-		if (verb == Operators.RIGHT_DIV) return rightDiv(a, b);
-		if (verb == Operators.DOT_MUL) return dotMul(a, b);
-		if (verb == Operators.DOT_DIV) return dotDiv(a, b);
-		if (verb == Operators.DOT_RIGHT_DIV) return dotRightDiv(a, b);
-		if (verb == Operators.ADD) return add(a, b);
-		if (verb == Operators.SUB) return sub(a, b);
-		if (verb == Operators.LEFT_SHIFT) return leftShift(a, b);
-		if (verb == Operators.RIGHT_SHIFT) return rightShift(a, b);
-		if (verb == Operators.UNSIGNED_RIGHT_SHIFT) return unsignedRightShift(a, b);
-		if (verb == Operators.COLON) return colon(a, b);
-		if (verb == Operators.LESS_THAN) return lessThan(a, b);
-		if (verb == Operators.GREATER_THAN) return greaterThan(a, b);
-		if (verb == Operators.LESS_THAN_OR_EQUAL) return lessThanOrEqual(a, b);
-		if (verb == Operators.GREATER_THAN_OR_EQUAL) return greaterThanOrEqual(a, b);
-		if (verb == Operators.INSTANCEOF) return instanceOf(a, b);
-		if (verb == Operators.EQUAL) return equal(a, b);
-		if (verb == Operators.NOT_EQUAL) return notEqual(a, b);
-		if (verb == Operators.BITWISE_AND) return bitwiseAnd(a, b);
-		if (verb == Operators.BITWISE_OR) return bitwiseOr(a, b);
-		if (verb == Operators.LOGICAL_AND) return logicalAnd(a, b);
-		if (verb == Operators.LOGICAL_OR) return logicalOr(a, b);
-		if (verb == Operators.ASSIGN) return assign(a, b);
-		if (verb == Operators.POW_ASSIGN) return powAssign(a, b);
-		if (verb == Operators.DOT_POW_ASSIGN) return dotPowAssign(a, b);
-		if (verb == Operators.MUL_ASSIGN) return mulAssign(a, b);
-		if (verb == Operators.DIV_ASSIGN) return divAssign(a, b);
-		if (verb == Operators.MOD_ASSIGN) return modAssign(a, b);
-		if (verb == Operators.RIGHT_DIV_ASSIGN) return rightDivAssign(a, b);
-		if (verb == Operators.DOT_DIV_ASSIGN) return dotDivAssign(a, b);
-		if (verb == Operators.DOT_RIGHT_DIV_ASSIGN) return dotRightDivAssign(a, b);
-		if (verb == Operators.ADD_ASSIGN) return addAssign(a, b);
-		if (verb == Operators.SUB_ASSIGN) return subAssign(a, b);
-		if (verb == Operators.AND_ASSIGN) return andAssign(a, b);
-		if (verb == Operators.OR_ASSIGN) return orAssign(a, b);
-		if (verb == Operators.LEFT_SHIFT_ASSIGN) return leftShiftAssign(a, b);
-		if (verb == Operators.RIGHT_SHIFT_ASSIGN) return rightShiftAssign(a, b);
-		if (verb == Operators.UNSIGNED_RIGHT_SHIFT_ASSIGN) return unsignedRightShiftAssign(a, b);
+		if (op == Operators.DOT) return dot(a, b);
+		if (op == Operators.TRANSPOSE) return transpose(a);
+		if (op == Operators.DOT_TRANSPOSE) return dotTranspose(a);
+		if (op == Operators.POW) return pow(a, b);
+		if (op == Operators.DOT_POW) return dotPow(a, b);
+		if (op == Operators.POST_INC) return postInc(a);
+		if (op == Operators.POST_DEC) return postDec(a);
+		if (op == Operators.PRE_INC) return preInc(a);
+		if (op == Operators.PRE_DEC) return preDec(a);
+		if (op == Operators.POS) return pos(a);
+		if (op == Operators.NEG) return neg(a);
+		if (op == Operators.COMPLEMENT) return complement(a);
+		if (op == Operators.NOT) return not(a);
+		if (op == Operators.MUL) return mul(a, b);
+		if (op == Operators.DIV) return div(a, b);
+		if (op == Operators.MOD) return mod(a, b);
+		if (op == Operators.RIGHT_DIV) return rightDiv(a, b);
+		if (op == Operators.DOT_MUL) return dotMul(a, b);
+		if (op == Operators.DOT_DIV) return dotDiv(a, b);
+		if (op == Operators.DOT_RIGHT_DIV) return dotRightDiv(a, b);
+		if (op == Operators.ADD) return add(a, b);
+		if (op == Operators.SUB) return sub(a, b);
+		if (op == Operators.LEFT_SHIFT) return leftShift(a, b);
+		if (op == Operators.RIGHT_SHIFT) return rightShift(a, b);
+		if (op == Operators.UNSIGNED_RIGHT_SHIFT) return unsignedRightShift(a, b);
+		if (op == Operators.COLON) return colon(a, b);
+		if (op == Operators.LESS_THAN) return lessThan(a, b);
+		if (op == Operators.GREATER_THAN) return greaterThan(a, b);
+		if (op == Operators.LESS_THAN_OR_EQUAL) return lessThanOrEqual(a, b);
+		if (op == Operators.GREATER_THAN_OR_EQUAL) return greaterThanOrEqual(a, b);
+		if (op == Operators.INSTANCEOF) return instanceOf(a, b);
+		if (op == Operators.EQUAL) return equal(a, b);
+		if (op == Operators.NOT_EQUAL) return notEqual(a, b);
+		if (op == Operators.BITWISE_AND) return bitwiseAnd(a, b);
+		if (op == Operators.BITWISE_OR) return bitwiseOr(a, b);
+		if (op == Operators.LOGICAL_AND) return logicalAnd(a, b);
+		if (op == Operators.LOGICAL_OR) return logicalOr(a, b);
+		if (op == Operators.ASSIGN) return assign(a, b);
+		if (op == Operators.POW_ASSIGN) return powAssign(a, b);
+		if (op == Operators.DOT_POW_ASSIGN) return dotPowAssign(a, b);
+		if (op == Operators.MUL_ASSIGN) return mulAssign(a, b);
+		if (op == Operators.DIV_ASSIGN) return divAssign(a, b);
+		if (op == Operators.MOD_ASSIGN) return modAssign(a, b);
+		if (op == Operators.RIGHT_DIV_ASSIGN) return rightDivAssign(a, b);
+		if (op == Operators.DOT_DIV_ASSIGN) return dotDivAssign(a, b);
+		if (op == Operators.DOT_RIGHT_DIV_ASSIGN) return dotRightDivAssign(a, b);
+		if (op == Operators.ADD_ASSIGN) return addAssign(a, b);
+		if (op == Operators.SUB_ASSIGN) return subAssign(a, b);
+		if (op == Operators.AND_ASSIGN) return andAssign(a, b);
+		if (op == Operators.OR_ASSIGN) return orAssign(a, b);
+		if (op == Operators.LEFT_SHIFT_ASSIGN) return leftShiftAssign(a, b);
+		if (op == Operators.RIGHT_SHIFT_ASSIGN) return rightShiftAssign(a, b);
+		if (op == Operators.UNSIGNED_RIGHT_SHIFT_ASSIGN) return unsignedRightShiftAssign(a, b);
 
-		// Unknown verb.
+		// Unknown operator.
 		return null;
 	}
 
