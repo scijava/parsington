@@ -35,7 +35,7 @@ package org.scijava.sjep;
  *
  * @author Curtis Rueden
  */
-public final class Variable extends Token {
+public class Variable extends Token {
 
 	public Variable(final String token) {
 		super(token);
