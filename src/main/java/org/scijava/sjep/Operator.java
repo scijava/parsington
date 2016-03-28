@@ -31,35 +31,83 @@
 package org.scijava.sjep;
 
 /**
- * Interface for mathematical operators.
- * <p>
- * An operator is a special infix (in the case of binary or greater arity) or
- * prefix (in the case of unary) symbol which maps to a particular function.
- * </p>
+ * A mathematical operator is a "verb": a special infix (in the case of binary
+ * or greater arity) or prefix (in the case of unary) symbol which defines a
+ * relation between "nouns" (i.e.: literals and variables).
  *
  * @author Curtis Rueden
  */
-public interface Operator extends Verb, Comparable<Operator> {
+public class Operator extends AbstractToken implements Verb,
+	Comparable<Operator>
+{
 
-	enum Associativity {
+	public enum Associativity {
 		EITHER, LEFT, RIGHT, NONE
 	}
 
-	Associativity getAssociativity();
+	private final int arity;
+	private final Associativity associativity;
+	private final double precedence;
 
-	boolean isLeftAssociative();
+	public Operator(final String symbol, final int arity,
+		final Associativity associativity, final double precedence)
+	{
+		super(symbol);
+		this.arity = arity;
+		this.associativity = associativity;
+		this.precedence = precedence;
+	}
 
-	boolean isRightAssociative();
+	// -- Operator methods --
+
+	public Associativity getAssociativity() {
+		return associativity;
+	}
+
+	public boolean isLeftAssociative() {
+		final Associativity a = getAssociativity();
+		return a == Associativity.LEFT || a == Associativity.EITHER;
+	}
+
+	public boolean isRightAssociative() {
+		final Associativity a = getAssociativity();
+		return a == Associativity.RIGHT || a == Associativity.EITHER;
+	}
 
 	/** True iff the operator is an infix operator (e.g., {@code a-b}). */
-	boolean isInfix();
+	public boolean isInfix() {
+		return getArity() > 1;
+	}
 
 	/** True iff the operator is a prefix operator (e.g., {@code -a}). */
-	boolean isPrefix();
+	public boolean isPrefix() {
+		return getArity() == 1 && isRightAssociative();
+	}
 
 	/** True iff the operator is a postfix operator (e.g., {@code a'}). */
-	boolean isPostfix();
+	public boolean isPostfix() {
+		return getArity() == 1 && isLeftAssociative();
+	}
 
-	double getPrecedence();
+	public double getPrecedence() {
+		return precedence;
+	}
+
+	// -- Verb methods --
+
+	@Override
+	public int getArity() {
+		return arity;
+	}
+
+	// -- Comparable methods --
+
+	@Override
+	public int compareTo(final Operator that) {
+		final double thisP = getPrecedence();
+		final double thatP = that.getPrecedence();
+		if (thisP == thatP) return 0;
+		return thisP < thatP ? -1 : 1;
+	}
 
 }

@@ -186,7 +186,7 @@ public final class Operators {
 	private static Operator op(final String symbol, final int arity,
 		final Associativity associativity, final double precedence)
 	{
-		return new DefaultOperator(symbol, arity, associativity, precedence);
+		return new Operator(symbol, arity, associativity, precedence);
 	}
 
 	private static boolean isOperator(final Field f) {
