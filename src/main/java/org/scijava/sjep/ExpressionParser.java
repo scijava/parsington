@@ -343,16 +343,16 @@ public class ExpressionParser {
 		 * @return The parsed operator, or null if the next token is not one.
 		 */
 		public Operator parseOperator() {
-			for (final Operator operator : operators) {
-				final String symbol = operator.getToken();
+			for (final Operator op : operators) {
+				final String symbol = op.getToken();
 				if (!expression.startsWith(symbol, pos.get())) continue;
 				// Ensure the operator is appropriate to the current context.
-				if (isPrefixOK() && operator.isPrefix() || //
-					isPostfixOK() && operator.isPostfix() || //
-					isInfixOK() && operator.isInfix())
+				if (isPrefixOK() && op.isPrefix() || //
+					isPostfixOK() && op.isPostfix() || //
+					isInfixOK() && op.isInfix())
 				{
 					pos.inc(symbol.length());
-					return operator;
+					return op;
 				}
 			}
 			return null;
