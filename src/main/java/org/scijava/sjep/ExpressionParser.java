@@ -127,8 +127,8 @@ public class ExpressionParser {
 		 * State flag for parsing context.
 		 * <ul>
 		 * <li>If true, we are expecting an infix or postfix operator next.</li>
-		 * <li>If false, we are expecting a prefix operator or non-operator token
-		 * (e.g., variable, literal or function) next.</li>
+		 * <li>If false, we are expecting a prefix operator or "noun" token (e.g.,
+		 * variable or literal) next.</li>
 		 * </ul>
 		 */
 		private boolean infix;
