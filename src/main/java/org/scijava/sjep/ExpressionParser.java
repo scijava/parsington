@@ -175,20 +175,7 @@ public class ExpressionParser {
 				// If next token is a function argument separator (i.e., a comma)...
 				final Character separator = parseComma();
 				if (separator != null) {
-					// Pop from stack to output queue until function found.
-					while (true) {
-						if (stack.isEmpty()) {
-							pos.die("Misplaced separator or mismatched parentheses");
-						}
-						if (Tokens.isFunction(stack.peek())) {
-							// Count the completed function argument in the function's arity.
-							((Function) stack.peek()).incArity();
-							break;
-						}
-						outputQueue.add(stack.pop());
-					}
-					// Update the state flag.
-					infix = false;
+					handleSeparator();
 					continue;
 				}
 
@@ -204,26 +191,7 @@ public class ExpressionParser {
 				// If the token is an operator...
 				final Operator o1 = parseOperator();
 				if (o1 != null) {
-					// While there is an operator token, o2, at the top of the stack...
-					final double p1 = o1.getPrecedence();
-					while (!stack.isEmpty() && Tokens.isOperator(stack.peek())) {
-						final Operator o2 = (Operator) stack.peek();
-						final double p2 = o2.getPrecedence();
-						// ...and o1 has lower precedence than o2...
-						if (o1.isLeftAssociative() && p1 <= p2 || //
-							o1.isRightAssociative() && p1 < p2)
-						{
-							// Pop o2 off the stack, onto the output queue.
-							outputQueue.add(stack.pop());
-						}
-						else break;
-					}
-					// Push o1 onto the stack.
-					stack.push(o1);
-					// Update the state flag.
-					if (o1.isPrefix() || o1.isInfix()) infix = false;
-					else if (o1.isPostfix()) infix = true;
-					else pos.fail("Impenetrable operator '" + o1 + "'");
+					handleOperator(o1);
 					continue;
 				}
 
@@ -239,29 +207,7 @@ public class ExpressionParser {
 				// If the token is a right parenthesis...
 				final Character rightParen = parseRightParen();
 				if (rightParen != null) {
-					// Pop from stack to output queue until left parenthesis found.
-					while (true) {
-						if (stack.isEmpty()) {
-							// No left parenthesis found: mismatched parentheses!
-							pos.die("Mismatched parentheses");
-						}
-						if (Tokens.isLeftParen(stack.peek())) {
-							// Pop the left parenthesis, but not onto the output queue.
-							stack.pop();
-							break;
-						}
-						// If token is a function, it implicitly has a left parenthesis.
-						if (Tokens.isFunction(stack.peek())) {
-							// Count the completed function argument in the function's arity.
-							if (infix) ((Function) stack.peek()).incArity();
-							// Pop the function onto the output queue.
-							outputQueue.add(stack.pop());
-							break;
-						}
-						outputQueue.add(stack.pop());
-					}
-					// Update the state flag.
-					infix = true;
+					handleRightParen();
 					continue;
 				}
 
@@ -491,6 +437,72 @@ public class ExpressionParser {
 		}
 
 		// -- Helper methods --
+
+		private void handleOperator(final Operator o1) {
+			// While there is an operator token, o2, at the top of the stack...
+			final double p1 = o1.getPrecedence();
+			while (!stack.isEmpty() && Tokens.isOperator(stack.peek())) {
+				final Operator o2 = (Operator) stack.peek();
+				final double p2 = o2.getPrecedence();
+				// ...and o1 has lower precedence than o2...
+				if (o1.isLeftAssociative() && p1 <= p2 || //
+					o1.isRightAssociative() && p1 < p2)
+				{
+					// Pop o2 off the stack, onto the output queue.
+					outputQueue.add(stack.pop());
+				}
+				else break;
+			}
+			// Push o1 onto the stack.
+			stack.push(o1);
+			// Update the state flag.
+			if (o1.isPrefix() || o1.isInfix()) infix = false;
+			else if (o1.isPostfix()) infix = true;
+			else pos.fail("Impenetrable operator '" + o1 + "'");
+		}
+
+		private void handleSeparator() {
+			// Pop from stack to output queue until function found.
+			while (true) {
+				if (stack.isEmpty()) {
+					pos.die("Misplaced separator or mismatched parentheses");
+				}
+				if (Tokens.isFunction(stack.peek())) {
+					// Count the completed function argument in the function's arity.
+					((Function) stack.peek()).incArity();
+					break;
+				}
+				outputQueue.add(stack.pop());
+			}
+			// Update the state flag.
+			infix = false;
+		}
+
+		private void handleRightParen() {
+			// Pop from stack to output queue until left parenthesis found.
+			while (true) {
+				if (stack.isEmpty()) {
+					// No left parenthesis found: mismatched parentheses!
+					pos.die("Mismatched parentheses");
+				}
+				if (Tokens.isLeftParen(stack.peek())) {
+					// Pop the left parenthesis, but not onto the output queue.
+					stack.pop();
+					break;
+				}
+				// If token is a function, it implicitly has a left parenthesis.
+				if (Tokens.isFunction(stack.peek())) {
+					// Count the completed function argument in the function's arity.
+					if (infix) ((Function) stack.peek()).incArity();
+					// Pop the function onto the output queue.
+					outputQueue.add(stack.pop());
+					break;
+				}
+				outputQueue.add(stack.pop());
+			}
+			// Update the state flag.
+			infix = true;
+		}
 
 		private void flushStack() {
 			// While there are still operator tokens in the stack...
