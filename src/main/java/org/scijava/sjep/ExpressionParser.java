@@ -345,15 +345,7 @@ public class ExpressionParser {
 		public Operator parseOperator() {
 			for (final Operator op : operators) {
 				final String symbol = op.getToken();
-				if (!expression.startsWith(symbol, pos.get())) continue;
-				// Ensure the operator is appropriate to the current context.
-				if (isPrefixOK() && op.isPrefix() || //
-					isPostfixOK() && op.isPostfix() || //
-					isInfixOK() && op.isInfix())
-				{
-					pos.inc(symbol.length());
-					return op;
-				}
+				if (operatorMatches(op, symbol)) return op;
 			}
 			return null;
 		}
@@ -513,6 +505,19 @@ public class ExpressionParser {
 				// Pop the operator onto the output queue.
 				outputQueue.add(token);
 			}
+		}
+
+		private boolean operatorMatches(final Operator op, final String symbol) {
+			if (!expression.startsWith(symbol, pos.get())) return false;
+			// Ensure the operator is appropriate to the current context.
+			if (isPrefixOK() && op.isPrefix() || //
+				isPostfixOK() && op.isPostfix() || //
+				isInfixOK() && op.isInfix())
+			{
+				pos.inc(symbol.length());
+				return true;
+			}
+			return false;
 		}
 
 	}
