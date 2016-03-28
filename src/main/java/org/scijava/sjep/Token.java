@@ -31,14 +31,31 @@
 package org.scijava.sjep;
 
 /**
- * Interface for various types of tokens: operators, functions and other
+ * Base class for various types of tokens: operators, functions and other
  * symbols.
  *
  * @author Curtis Rueden
  */
-public interface Token {
+public abstract class Token {
+
+	private final String token;
+
+	public Token(final String token) {
+		this.token = token;
+	}
+
+	// -- Token methods --
 
 	/** Gets the token's sequence of characters. */
-	String getToken();
+	public String getToken() {
+		return token;
+	}
+
+	// -- Object methods --
+
+	@Override
+	public String toString() {
+		return getToken();
+	}
 
 }

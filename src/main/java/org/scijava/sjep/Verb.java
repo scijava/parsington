@@ -37,9 +37,13 @@ package org.scijava.sjep;
  *
  * @author Curtis Rueden
  */
-public interface Verb extends Token {
+public abstract class Verb extends Token {
+
+	public Verb(final String token) {
+		super(token);
+	}
 
 	/** 1 for unary, 2 for binary, etc. */
-	int getArity();
+	public abstract int getArity();
 
 }

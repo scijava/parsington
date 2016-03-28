@@ -37,9 +37,7 @@ package org.scijava.sjep;
  *
  * @author Curtis Rueden
  */
-public class Operator extends AbstractToken implements Verb,
-	Comparable<Operator>
-{
+public class Operator extends Verb implements Comparable<Operator> {
 
 	public enum Associativity {
 		EITHER, LEFT, RIGHT, NONE

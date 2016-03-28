@@ -40,7 +40,7 @@ package org.scijava.sjep;
  *
  * @author Curtis Rueden
  */
-public final class Function extends AbstractToken implements Verb {
+public final class Function extends Verb {
 
 	private int arity;
 
