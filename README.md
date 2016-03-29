@@ -40,7 +40,7 @@ In your POM `<dependencies>`:
 <dependency>
   <groupId>org.scijava</groupId>
   <artifactId>scijava-expression-parser</artifactId>
-  <version>2.0.0</version>
+  <version>3.0.0</version>
 </dependency>
 ```
 To parse an infix expression to a postfix queue:
