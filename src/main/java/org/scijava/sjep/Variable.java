@@ -31,7 +31,7 @@
 package org.scijava.sjep;
 
 /**
- * A token representing a variable.
+ * A "noun" token representing a variable.
  *
  * @author Curtis Rueden
  */
