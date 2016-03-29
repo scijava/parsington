@@ -677,6 +677,27 @@ public class ExpressionParserTest extends AbstractTest {
 	}
 
 	@Test
+	public void testParameterSyntax() {
+		final ExpressionParser parser = new ExpressionParser();
+		final LinkedList<Object> queue = parser.parsePostfix(
+			"(choices={'quick brown fox', 'lazy dog'}, persist=false, value=5)");
+		// choices 'quick brown fox' 'lazy dog' {2} = persist false = value 5 = (3)
+		assertNotNull(queue);
+		assertVariable("choices", queue.pop());
+		assertString("quick brown fox", queue.pop());
+		assertString("lazy dog", queue.pop());
+		assertGroup(Operators.BRACES, 2, queue.pop());
+		assertSame(Operators.ASSIGN, queue.pop());
+		assertVariable("persist", queue.pop());
+		assertSame(false, queue.pop());
+		assertSame(Operators.ASSIGN, queue.pop());
+		assertVariable("value", queue.pop());
+		assertNumber(5, queue.pop());
+		assertSame(Operators.ASSIGN, queue.pop());
+		assertGroup(Operators.PARENS, 3, queue.pop());
+	}
+
+	@Test
 	public void testNonFunctionGroup() {
 		final ExpressionParser parser = new ExpressionParser();
 		final LinkedList<Object> queue = parser.parsePostfix("f+(g)");
