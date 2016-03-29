@@ -50,9 +50,8 @@ public class ExpressionParserTest extends AbstractTest {
 	public void testStrings() {
 		final ExpressionParser parser = new ExpressionParser();
 		final LinkedList<Object> queue = parser.parsePostfix("'hello'*\"world\"");
-
+		// "hello" "world" *
 		assertNotNull(queue);
-		// ["hello", "world", *]
 		assertEquals(3, queue.size());
 		assertString("hello", queue.get(0));
 		assertString("world", queue.get(1));
@@ -62,9 +61,8 @@ public class ExpressionParserTest extends AbstractTest {
 	public void testNumbers() {
 		final ExpressionParser parser = new ExpressionParser();
 		final LinkedList<Object> queue = parser.parsePostfix("1.1+2L+3f+4-+5d-6");
-
+		// 1.1 2L + 3f + 4 + +5d - 6 -
 		assertNotNull(queue);
-		// [1.1, 2L, +, 3f, +, 4, +, +5d, -, 6, -]
 		assertEquals(11, queue.size());
 		assertNumber(1.1, queue.get(0));
 		assertNumber(2L, queue.get(1));
@@ -138,12 +136,10 @@ public class ExpressionParserTest extends AbstractTest {
 				+ "*(aa.^=bb).^(cc^=dd)^f(~ee--,-ff++,+--gg',++hh.')";
 		final ExpressionParser parser = new ExpressionParser();
 		final LinkedList<Object> queue = parser.parsePostfix(expression);
+		// a b |= c d &= e f >>>= g h >>= >>> i j <<= >> k l -= m n += - o p .\=
+		// q r ./= .\ s t \= ./ u v %= \ w x /= % y z *= / aa bb .^= cc dd ^= ee
+		// -- ~ ff ++ - gg ' -- + hh .' ++ f ^ .^ * + << & |
 		assertNotNull(queue);
-
-		// [a, b, |=, c, d, &=, e, f, >>>=, g, h, >>=, >>>, i, j, <<=, >>, k,
-		// l, -=, m, n, +=, -, o, p, .\=, q, r, ./=, .\, s, t, \=, ./, u, v,
-		// %=, \, w, x, /=, %, y, z, *=, /, aa, bb, .^=, cc, dd, ^=, ee, --,
-		// ~, ff, ++, -, gg, ', --, +, hh, .', ++, f, ^, .^, *, +, <<, &, |]
 		assertEquals(74, queue.size());
 		assertVariable("a", queue.get(0));
 		assertVariable("b", queue.get(1));
@@ -227,12 +223,10 @@ public class ExpressionParserTest extends AbstractTest {
 			"a<b || c>d && e<=f || g>=h && i==j || k!=l && m instanceof n || !o";
 		final ExpressionParser parser = new ExpressionParser();
 		final LinkedList<Object> queue = parser.parsePostfix(expression);
+		// a b |= c d &= e f >>>= g h >>= >>> i j <<= >> k l -= m n += - o p .\=
+		// q r ./= .\ s t \= ./ u v %= \ w x /= % y z *= / aa bb .^= cc dd ^= ee
+		// -- ~ ff ++ - gg ' -- + hh .' ++ f ^ .^ * + << & |
 		assertNotNull(queue);
-
-		// [a, b, |=, c, d, &=, e, f, >>>=, g, h, >>=, >>>, i, j, <<=, >>, k,
-		// l, -=, m, n, +=, -, o, p, .\=, q, r, ./=, .\, s, t, \=, ./, u, v,
-		// %=, \, w, x, /=, %, y, z, *=, /, aa, bb, .^=, cc, dd, ^=, ee, --,
-		// ~, ff, ++, -, gg, ', --, +, hh, .', ++, f, ^, .^, *, +, <<, &, |]
 		assertEquals(30, queue.size());
 		assertVariable("a", queue.get(0));
 		assertVariable("b", queue.get(1));
@@ -270,9 +264,8 @@ public class ExpressionParserTest extends AbstractTest {
 	public void testUnaryOperators1() {
 		final ExpressionParser parser = new ExpressionParser();
 		final LinkedList<Object> queue = parser.parsePostfix("-+a");
-
+		// a + -
 		assertNotNull(queue);
-		// [a, +, -]
 		assertVariable("a", queue.get(0));
 		assertSame(Operators.POS, queue.get(1));
 		assertSame(Operators.NEG, queue.get(2));
@@ -282,9 +275,8 @@ public class ExpressionParserTest extends AbstractTest {
 	public void testUnaryOperators2() {
 		final ExpressionParser parser = new ExpressionParser();
 		final LinkedList<Object> queue = parser.parsePostfix("a+-b");
-
+		// a b - +
 		assertNotNull(queue);
-		// [a, b, -, +]
 		assertVariable("a", queue.get(0));
 		assertVariable("b", queue.get(1));
 		assertSame(Operators.NEG, queue.get(2));
@@ -295,9 +287,8 @@ public class ExpressionParserTest extends AbstractTest {
 	public void testUnaryOperators3() {
 		final ExpressionParser parser = new ExpressionParser();
 		final LinkedList<Object> queue = parser.parsePostfix("a-+-b");
-
+		// a b - + -
 		assertNotNull(queue);
-		// [a, b, -, +, -]
 		assertVariable("a", queue.get(0));
 		assertVariable("b", queue.get(1));
 		assertSame(Operators.NEG, queue.get(2));
@@ -309,9 +300,8 @@ public class ExpressionParserTest extends AbstractTest {
 	public void testUnaryOperators4() {
 		final ExpressionParser parser = new ExpressionParser();
 		final LinkedList<Object> queue = parser.parsePostfix("-+a-+-b");
-
+		// a + - b - + -
 		assertNotNull(queue);
-		// [a, +, -, b, -, +, -]
 		assertVariable("a", queue.get(0));
 		assertSame(Operators.POS, queue.get(1));
 		assertSame(Operators.NEG, queue.get(2));
@@ -325,9 +315,8 @@ public class ExpressionParserTest extends AbstractTest {
 	public void testNullaryFunction() {
 		final ExpressionParser parser = new ExpressionParser();
 		final LinkedList<Object> queue = parser.parsePostfix("f()");
-
+		// f
 		assertNotNull(queue);
-		// [f]
 		assertFunction("f", 0, queue.get(0));
 	}
 
@@ -335,9 +324,8 @@ public class ExpressionParserTest extends AbstractTest {
 	public void testUnaryFunction() {
 		final ExpressionParser parser = new ExpressionParser();
 		final LinkedList<Object> queue = parser.parsePostfix("f(a)");
-
+		// a f
 		assertNotNull(queue);
-		// [a, f]
 		assertVariable("a", queue.get(0));
 		assertFunction("f", 1, queue.get(1));
 	}
@@ -346,9 +334,8 @@ public class ExpressionParserTest extends AbstractTest {
 	public void testBinaryFunction() {
 		final ExpressionParser parser = new ExpressionParser();
 		final LinkedList<Object> queue = parser.parsePostfix("f(a,b)");
-
+		// a b f
 		assertNotNull(queue);
-		// [a, b, f]
 		assertVariable("a", queue.get(0));
 		assertVariable("b", queue.get(1));
 		assertFunction("f", 2, queue.get(2));
@@ -358,9 +345,8 @@ public class ExpressionParserTest extends AbstractTest {
 	public void testTernaryFunction() {
 		final ExpressionParser parser = new ExpressionParser();
 		final LinkedList<Object> queue = parser.parsePostfix("f(a,b,c)");
-
+		// a b c f
 		assertNotNull(queue);
-		// [a, b, c, f]
 		assertVariable("a", queue.get(0));
 		assertVariable("b", queue.get(1));
 		assertVariable("c", queue.get(2));
@@ -372,9 +358,8 @@ public class ExpressionParserTest extends AbstractTest {
 		final ExpressionParser parser = new ExpressionParser();
 		final LinkedList<Object> queue =
 			parser.parsePostfix("f(g(),a,h(b),i(c,d))");
-
+		// g a b h c d i f
 		assertNotNull(queue);
-		// [g, a, b, h, c, d, i, f]
 		assertFunction("g", 0, queue.get(0));
 		assertVariable("a", queue.get(1));
 		assertVariable("b", queue.get(2));
@@ -389,9 +374,8 @@ public class ExpressionParserTest extends AbstractTest {
 	public void testOperatorPrecedence() {
 		final ExpressionParser parser = new ExpressionParser();
 		final LinkedList<Object> queue = parser.parsePostfix("a+b*c^d.^e'");
-
+		// a b c d e .^ ^ ' * +
 		assertNotNull(queue);
-		// [a, b, c, d, e, .^, ^, ', *, +]
 		assertEquals(10, queue.size());
 		assertVariable("a", queue.get(0));
 		assertVariable("b", queue.get(1));
@@ -409,9 +393,8 @@ public class ExpressionParserTest extends AbstractTest {
 	public void testOperatorAssociativity() {
 		final ExpressionParser parser = new ExpressionParser();
 		final LinkedList<Object> queue = parser.parsePostfix("(a/b/c)+(a^b^c)");
-
+		// a b / c / a b c ^ ^ +
 		assertNotNull(queue);
-		// [a, b, /, c, /, a, b, c, ^, ^, +]
 		assertVariable("a", queue.get(0));
 		assertVariable("b", queue.get(1));
 		assertSame(Operators.DIV, queue.get(2));
@@ -431,10 +414,9 @@ public class ExpressionParserTest extends AbstractTest {
 		final ExpressionParser parser = new ExpressionParser();
 		final LinkedList<Object> queue =
 			parser.parsePostfix("a=1 ; b=2 ; c=3");
-
+		// a 1 = b 2 = c 3 =
 		assertNotNull(queue);
 		assertEquals(9, queue.size());
-		// [a, 1, =, b, 2, =, c, 3, =]
 		assertVariable("a", queue.get(0));
 		assertNumber(1, queue.get(1));
 		assertSame(Operators.ASSIGN, queue.get(2));
@@ -452,10 +434,9 @@ public class ExpressionParserTest extends AbstractTest {
 		final ExpressionParser parser = new ExpressionParser();
 		final LinkedList<Object> queue =
 			parser.parsePostfix("a*b-c*a/func(quick,brown,fox)^foo^bar");
-
+		// a b * c a * quick brown fox func foo bar ^ ^ / -
 		assertNotNull(queue);
 		assertEquals(16, queue.size());
-		// [a, b, *, c, a, *, quick, brown, fox, func, foo, bar, ^, ^, /, -]
 		assertVariable("a", queue.get(0));
 		assertVariable("b", queue.get(1));
 		assertSame(Operators.MUL, queue.get(2));

@@ -48,7 +48,7 @@ public class SyntaxTreeTest extends AbstractTest {
 	@Test
 	public void testSimple() {
 		// infix: a + b * c
-		// postfix: [a, b, c, *, +]
+		// postfix: a b c * +
 		final LinkedList<Object> queue =
 			queue(var("a"), var("b"), var("c"), Operators.MUL, Operators.ADD);
 
@@ -72,7 +72,7 @@ public class SyntaxTreeTest extends AbstractTest {
 	@Test
 	public void testComplicated() {
 		// infix: a / b * c + a ^ b ^ c - f(d, c, b, a)
-		// postfix: [a, b, /, c, *, a, b, c, ^, ^, +, d, c, b, a, f, -]
+		// postfix: a b / c * a b c ^ ^ + d c b a f -
 		final LinkedList<Object> queue =
 			queue(var("a"), var("b"), Operators.DIV, var("c"), Operators.MUL,
 				var("a"), var("b"), var("c"), Operators.POW, Operators.POW,
