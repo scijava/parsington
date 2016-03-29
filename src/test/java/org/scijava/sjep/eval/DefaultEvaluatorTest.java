@@ -36,6 +36,9 @@ import static org.junit.Assert.assertSame;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -52,12 +55,62 @@ public class DefaultEvaluatorTest extends AbstractTest {
 		e = new DefaultEvaluator();
 	}
 
+	// -- function --
+
+	/** Tests {@link DefaultEvaluator#function(Object, Object)}. */
+	@Test
+	public void testFunction() {
+		// test list access
+		final Variable v = new Variable("v");
+		e.set(v, Arrays.asList("a", "b", "c"));
+		assertEquals("a", e.function(v, Arrays.asList(0)));
+		assertEquals("b", e.function(v, Arrays.asList(1)));
+		assertEquals("c", e.function(v, Arrays.asList(2)));
+
+		assertNull(e.function(o(0), o(1)));
+	}
+
 	// -- dot --
 
 	/** Tests {@link DefaultEvaluator#dot(Object, Object)}. */
 	@Test
 	public void testDot() {
 		assertNull(e.dot(o(0), o(1)));
+	}
+
+	// -- groups --
+
+	/** Tests {@link DefaultEvaluator#parens(Object[])}. */
+	@Test
+	public void testParens() {
+		final Object[] o = {1, 2, 3};
+		assertEquals(Arrays.asList(o), e.parens(o));
+
+		// test empty parentheses
+		assertEquals(Collections.emptyList(), e.parens(new Object[0]));
+
+		// test collapse of single elements
+		assertEquals(4, e.parens(new Object[] {4}));
+	}
+
+	/** Tests {@link DefaultEvaluator#brackets(Object[])}. */
+	@Test
+	public void testBrackets() {
+		final Object[] o = {1, 2, 3};
+		assertEquals(Arrays.asList(o), e.brackets(o));
+
+		// test empty brackets
+		assertEquals(Collections.emptyList(), e.brackets(new Object[0]));
+	}
+
+	/** Tests {@link DefaultEvaluator#braces(Object[])}. */
+	@Test
+	public void testBraces() {
+		final Object[] o = {1, 2, 3};
+		assertEquals(Arrays.asList(o), e.braces(o));
+
+		// test empty braces
+		assertEquals(Collections.emptyList(), e.braces(new Object[0]));
 	}
 
 	// -- transpose, power --
