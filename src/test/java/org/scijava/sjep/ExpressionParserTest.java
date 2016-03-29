@@ -36,8 +36,10 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
 
 import java.util.LinkedList;
+import java.util.List;
 
 import org.junit.Test;
+import org.scijava.sjep.Operator.Associativity;
 
 /**
  * Tests {@link ExpressionParser}.
@@ -340,6 +342,38 @@ public class ExpressionParserTest extends AbstractTest {
 	}
 
 	@Test
+	public void testNullaryGroup() {
+		final ExpressionParser parser = new ExpressionParser();
+		final LinkedList<Object> queue = parser.parsePostfix("()");
+		// (0)
+		assertNotNull(queue);
+		assertEquals(1, queue.size());
+		assertGroup(Operators.PARENS, 0, queue.pop());
+	}
+
+	@Test
+	public void testUnaryGroup() {
+		final ExpressionParser parser = new ExpressionParser();
+		final LinkedList<Object> queue = parser.parsePostfix("(a)");
+		// a (1)
+		assertNotNull(queue);
+		assertEquals(2, queue.size());
+		assertVariable("a", queue.pop());
+		assertGroup(Operators.PARENS, 1, queue.pop());
+	}
+
+	@Test
+	public void testNestedGroups() {
+		final ExpressionParser parser = new ExpressionParser();
+		final LinkedList<Object> queue = parser.parsePostfix("(())");
+		// (0) (1)
+		assertNotNull(queue);
+		assertEquals(2, queue.size());
+		assertGroup(Operators.PARENS, 0, queue.pop());
+		assertGroup(Operators.PARENS, 1, queue.pop());
+	}
+
+	@Test
 	public void testNullaryFunction() {
 		final ExpressionParser parser = new ExpressionParser();
 		final LinkedList<Object> queue = parser.parsePostfix("f()");
@@ -416,6 +450,243 @@ public class ExpressionParserTest extends AbstractTest {
 		assertFunction(queue.pop());
 		assertGroup(Operators.PARENS, 4, queue.pop());
 		assertFunction(queue.pop());
+	}
+
+	@Test
+	public void testFunctionParens1() {
+		final ExpressionParser parser = new ExpressionParser();
+		final LinkedList<Object> queue = parser.parsePostfix("a.b(c)");
+		// a b . c (1) <Fn>
+		assertNotNull(queue);
+		assertEquals(6, queue.size());
+		assertVariable("a", queue.pop());
+		assertVariable("b", queue.pop());
+		assertSame(Operators.DOT, queue.pop());
+		assertVariable("c", queue.pop());
+		assertGroup(Operators.PARENS, 1, queue.pop());
+		assertFunction(queue.pop());
+	}
+
+	@Test
+	public void testFunctionParens2() {
+		final ExpressionParser parser = new ExpressionParser();
+		final LinkedList<Object> queue = parser.parsePostfix("a(b).c");
+		// a b (1) <Fn> c .
+		assertNotNull(queue);
+		assertEquals(6, queue.size());
+		assertVariable("a", queue.pop());
+		assertVariable("b", queue.pop());
+		assertGroup(Operators.PARENS, 1, queue.pop());
+		assertFunction(queue.pop());
+		assertVariable("c", queue.pop());
+		assertSame(Operators.DOT, queue.pop());
+	}
+
+	@Test
+	public void testFunctionParens3() {
+		final ExpressionParser parser = new ExpressionParser();
+		final LinkedList<Object> queue = parser.parsePostfix("a.b(c).d");
+		// a b . c (1) <Fn> d .
+		assertNotNull(queue);
+		assertEquals(8, queue.size());
+		assertVariable("a", queue.pop());
+		assertVariable("b", queue.pop());
+		assertSame(Operators.DOT, queue.pop());
+		assertVariable("c", queue.pop());
+		assertGroup(Operators.PARENS, 1, queue.pop());
+		assertFunction(queue.pop());
+		assertVariable("d", queue.pop());
+		assertSame(Operators.DOT, queue.pop());
+	}
+
+	@Test
+	public void testFunctionParens4() {
+		final List<Operator> operators = Operators.standardList();
+		final Operator atOp = new Operator("@", 2, Associativity.LEFT, 100);
+		operators.add(atOp);
+		final ExpressionParser parser = new ExpressionParser(operators);
+		final LinkedList<Object> queue = parser.parsePostfix("a@b(c)@d");
+		// a b @ c (1) d @ <Fn>
+		assertNotNull(queue);
+		assertEquals(8, queue.size());
+		assertVariable("a", queue.pop());
+		assertVariable("b", queue.pop());
+		assertSame(atOp, queue.pop());
+		assertVariable("c", queue.pop());
+		assertGroup(Operators.PARENS, 1, queue.pop());
+		assertVariable("d", queue.pop());
+		assertSame(atOp, queue.pop());
+		assertFunction(queue.pop());
+	}
+
+	@Test
+	public void testFunctionBrackets1() {
+		final ExpressionParser parser = new ExpressionParser();
+		final LinkedList<Object> queue = parser.parsePostfix("a.b[c]");
+		// a b . c [1] <Fn>
+		assertNotNull(queue);
+		assertEquals(6, queue.size());
+		assertVariable("a", queue.pop());
+		assertVariable("b", queue.pop());
+		assertSame(Operators.DOT, queue.pop());
+		assertVariable("c", queue.pop());
+		assertGroup(Operators.BRACKETS, 1, queue.pop());
+		assertFunction(queue.pop());
+	}
+
+	@Test
+	public void testFunctionBrackets2() {
+		final ExpressionParser parser = new ExpressionParser();
+		final LinkedList<Object> queue = parser.parsePostfix("a[b].c");
+		// a b [1] <Fn> c .
+		assertNotNull(queue);
+		assertEquals(6, queue.size());
+		assertVariable("a", queue.pop());
+		assertVariable("b", queue.pop());
+		assertGroup(Operators.BRACKETS, 1, queue.pop());
+		assertFunction(queue.pop());
+		assertVariable("c", queue.pop());
+		assertSame(Operators.DOT, queue.pop());
+	}
+
+	@Test
+	public void testFunctionBrackets3() {
+		final ExpressionParser parser = new ExpressionParser();
+		final LinkedList<Object> queue = parser.parsePostfix("a.b[c].d");
+		// a b . c [1] <Fn> d .
+		assertNotNull(queue);
+		assertEquals(8, queue.size());
+		assertVariable("a", queue.pop());
+		assertVariable("b", queue.pop());
+		assertSame(Operators.DOT, queue.pop());
+		assertVariable("c", queue.pop());
+		assertGroup(Operators.BRACKETS, 1, queue.pop());
+		assertFunction(queue.pop());
+		assertVariable("d", queue.pop());
+		assertSame(Operators.DOT, queue.pop());
+	}
+
+	@Test
+	public void testFunctionBrackets4() {
+		final List<Operator> operators = Operators.standardList();
+		final Operator atOp = new Operator("@", 2, Associativity.LEFT, 100);
+		operators.add(atOp);
+		final ExpressionParser parser = new ExpressionParser(operators);
+		final LinkedList<Object> queue = parser.parsePostfix("a@b[c]@d");
+		// a b @ c [1] d @ <Fn>
+		assertNotNull(queue);
+		assertEquals(8, queue.size());
+		assertVariable("a", queue.pop());
+		assertVariable("b", queue.pop());
+		assertSame(atOp, queue.pop());
+		assertVariable("c", queue.pop());
+		assertGroup(Operators.BRACKETS, 1, queue.pop());
+		assertVariable("d", queue.pop());
+		assertSame(atOp, queue.pop());
+		assertFunction(queue.pop());
+	}
+
+	@Test
+	public void testFunctionBraces1() {
+		final ExpressionParser parser = new ExpressionParser();
+		final LinkedList<Object> queue = parser.parsePostfix("a.b{c}");
+		// a b . c {1} <Fn>
+		assertNotNull(queue);
+		assertEquals(6, queue.size());
+		assertVariable("a", queue.pop());
+		assertVariable("b", queue.pop());
+		assertSame(Operators.DOT, queue.pop());
+		assertVariable("c", queue.pop());
+		assertGroup(Operators.BRACES, 1, queue.pop());
+		assertFunction(queue.pop());
+	}
+
+	@Test
+	public void testFunctionBraces2() {
+		final ExpressionParser parser = new ExpressionParser();
+		final LinkedList<Object> queue = parser.parsePostfix("a{b}.c");
+		// a b {1} <Fn> c .
+		assertNotNull(queue);
+		assertEquals(6, queue.size());
+		assertVariable("a", queue.pop());
+		assertVariable("b", queue.pop());
+		assertGroup(Operators.BRACES, 1, queue.pop());
+		assertFunction(queue.pop());
+		assertVariable("c", queue.pop());
+		assertSame(Operators.DOT, queue.pop());
+	}
+
+	@Test
+	public void testFunctionBraces3() {
+		final ExpressionParser parser = new ExpressionParser();
+		final LinkedList<Object> queue = parser.parsePostfix("a.b{c}.d");
+		// a b . c {1} <Fn> d .
+		assertNotNull(queue);
+		assertEquals(8, queue.size());
+		assertVariable("a", queue.pop());
+		assertVariable("b", queue.pop());
+		assertSame(Operators.DOT, queue.pop());
+		assertVariable("c", queue.pop());
+		assertGroup(Operators.BRACES, 1, queue.pop());
+		assertFunction(queue.pop());
+		assertVariable("d", queue.pop());
+		assertSame(Operators.DOT, queue.pop());
+	}
+
+	@Test
+	public void testFunctionBraces4() {
+		final List<Operator> operators = Operators.standardList();
+		final Operator atOp = new Operator("@", 2, Associativity.LEFT, 100);
+		operators.add(atOp);
+		final ExpressionParser parser = new ExpressionParser(operators);
+		final LinkedList<Object> queue = parser.parsePostfix("a@b{c}@d");
+		// a b @ c {1} d @ <Fn>
+		assertNotNull(queue);
+		assertEquals(8, queue.size());
+		assertVariable("a", queue.pop());
+		assertVariable("b", queue.pop());
+		assertSame(atOp, queue.pop());
+		assertVariable("c", queue.pop());
+		assertGroup(Operators.BRACES, 1, queue.pop());
+		assertVariable("d", queue.pop());
+		assertSame(atOp, queue.pop());
+		assertFunction(queue.pop());
+	}
+
+	@Test
+	public void testMixedFunctions() {
+		final ExpressionParser parser = new ExpressionParser();
+		final LinkedList<Object> queue = parser.parsePostfix("a[b(c), d{3:4}, 2]");
+		// a b c (1) <Fn> d 3 4 : {1} <Fn> 2 [3] <Fn>
+		assertNotNull(queue);
+		assertEquals(14, queue.size());
+		assertVariable("a", queue.pop());
+		assertVariable("b", queue.pop());
+		assertVariable("c", queue.pop());
+		assertGroup(Operators.PARENS, 1, queue.pop());
+		assertFunction(queue.pop());
+		assertVariable("d", queue.pop());
+		assertNumber(3, queue.pop());
+		assertNumber(4, queue.pop());
+		assertSame(Operators.COLON, queue.pop());
+		assertGroup(Operators.BRACES, 1, queue.pop());
+		assertFunction(queue.pop());
+		assertNumber(2, queue.pop());
+		assertGroup(Operators.BRACKETS, 3, queue.pop());
+		assertFunction(queue.pop());
+	}
+
+	@Test
+	public void testNonFunctionGroup() {
+		final ExpressionParser parser = new ExpressionParser();
+		final LinkedList<Object> queue = parser.parsePostfix("f+(g)");
+		// f g (1) +
+		assertNotNull(queue);
+		assertEquals(4, queue.size());
+		assertVariable("f", queue.pop());
+		assertVariable("g", queue.pop());
+		assertGroup(Operators.PARENS, 1, queue.pop());
+		assertSame(Operators.ADD, queue.pop());
 	}
 
 	@Test
