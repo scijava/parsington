@@ -55,6 +55,12 @@ public class DefaultEvaluatorTest extends AbstractTest {
 		e = new DefaultEvaluator();
 	}
 
+	/** Tests {@link DefaultEvaluator#evaluate(String)}. */
+	@Test
+	public void testEvaluate() {
+		assertEquals(26, e.evaluate("(2*3)+(4*5)"));
+	}
+
 	// -- function --
 
 	/** Tests {@link DefaultEvaluator#function(Object, Object)}. */
