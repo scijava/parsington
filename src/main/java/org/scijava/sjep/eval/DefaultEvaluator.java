@@ -32,6 +32,7 @@ package org.scijava.sjep.eval;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Arrays;
 
 import org.scijava.sjep.ExpressionParser;
 import org.scijava.sjep.Literals;
@@ -79,12 +80,38 @@ public class DefaultEvaluator extends AbstractStandardStackEvaluator {
 		super(parser);
 	}
 
+	// -- function --
+
+	@Override
+	public Object function(final Object a, final Object b) {
+		// NB: Unimplemented.
+		return null;
+	}
+
 	// -- dot --
 
 	@Override
 	public Object dot(final Object a, final Object b) {
 		// NB: Unimplemented.
 		return null;
+	}
+
+	// -- groups --
+
+	@Override
+	public Object parens(final Object[] args) {
+		if (args.length == 1) return args[0];
+		return Arrays.asList(args);
+	}
+
+	@Override
+	public Object brackets(final Object[] args) {
+		return Arrays.asList(args);
+	}
+
+	@Override
+	public Object braces(final Object[] args) {
+		return Arrays.asList(args);
 	}
 
 	// -- transpose, power --

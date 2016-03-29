@@ -33,6 +33,7 @@ package org.scijava.sjep.eval;
 import java.util.Deque;
 
 import org.scijava.sjep.ExpressionParser;
+import org.scijava.sjep.Function;
 import org.scijava.sjep.Operator;
 import org.scijava.sjep.Operators;
 import org.scijava.sjep.Tokens;
@@ -193,7 +194,11 @@ public abstract class AbstractStandardStackEvaluator extends
 		final Object b = args.length > 1 ? args[1] : null;
 
 		// Let the case logic begin!
+		if (op instanceof Function) return function(a, b);
 		if (op == Operators.DOT) return dot(a, b);
+		if (Tokens.isMatchingGroup(op, Operators.PARENS)) return parens(args);
+		if (Tokens.isMatchingGroup(op, Operators.BRACKETS)) return brackets(args);
+		if (Tokens.isMatchingGroup(op, Operators.BRACES)) return braces(args);
 		if (op == Operators.TRANSPOSE) return transpose(a);
 		if (op == Operators.DOT_TRANSPOSE) return dotTranspose(a);
 		if (op == Operators.POW) return pow(a, b);

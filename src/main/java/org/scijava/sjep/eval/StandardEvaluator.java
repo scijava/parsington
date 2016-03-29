@@ -30,6 +30,7 @@
 
 package org.scijava.sjep.eval;
 
+import org.scijava.sjep.Function;
 import org.scijava.sjep.Operators;
 
 /**
@@ -40,10 +41,26 @@ import org.scijava.sjep.Operators;
  */
 public interface StandardEvaluator extends Evaluator {
 
+	// -- function --
+
+	/** Applies the {@link Function} operator. */
+	Object function(Object a, Object b);
+
 	// -- dot --
 
 	/** Applies the {@link Operators#DOT} operator. */
 	Object dot(Object a, Object b);
+
+	// -- groups --
+
+	/** Applies the {@link Operators#PARENS} operator. */
+	Object parens(Object[] args);
+
+	/** Applies the {@link Operators#BRACKETS} operator. */
+	Object brackets(Object[] args);
+
+	/** Applies the {@link Operators#BRACES} operator. */
+	Object braces(Object[] args);
 
 	// -- transpose, power --
 
