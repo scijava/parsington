@@ -33,6 +33,7 @@ package org.scijava.sjep.eval;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.List;
 
 import org.scijava.sjep.ExpressionParser;
 import org.scijava.sjep.Literals;
@@ -84,7 +85,10 @@ public class DefaultEvaluator extends AbstractStandardStackEvaluator {
 
 	@Override
 	public Object function(final Object a, final Object b) {
-		// NB: Unimplemented.
+		final Object element = listElement(a, b);
+		if (element != null) return element;
+
+		// NB: Unknown function type.
 		return null;
 	}
 
@@ -557,6 +561,16 @@ public class DefaultEvaluator extends AbstractStandardStackEvaluator {
 	private BigDecimal bd(final Object o) {
 		final BigDecimal bd = cast(o, BigDecimal.class);
 		return bd != null ? bd : new BigDecimal("" + value(o));
+	}
+
+	private Object listElement(final Object a, final Object b) {
+		final Object value = value(a);
+		if (!(value instanceof List)) return null;
+		final List<?> list = (List<?>) value;
+		if (!(b instanceof List)) return null;
+		final List<?> indices = (List<?>) b;
+		if (indices.size() != 1) return null; // not a 1-D access
+		return list.get(i(indices.get(0)));
 	}
 
 }
