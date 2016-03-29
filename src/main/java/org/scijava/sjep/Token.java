@@ -33,6 +33,11 @@ package org.scijava.sjep;
 /**
  * Base class for various types of tokens: operators, functions and other
  * symbols.
+ * <p>
+ * The only exception are literals, which use the standard Java types of
+ * {@link String}, {@link Boolean} and {@link Number} rather than extending this
+ * class.
+ * </p>
  *
  * @author Curtis Rueden
  */
