@@ -43,7 +43,7 @@ In your POM `<dependencies>`:
   <version>2.0.0</version>
 </dependency>
 ```
-To parse in infix expression to a postfix queue:
+To parse an infix expression to a postfix queue:
 ```java
 LinkedList<Object> queue = new ExpressionParser().parsePostfix("a+b*c^f(1,2)'");
 ```
