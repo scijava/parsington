@@ -446,7 +446,7 @@ public class ExpressionParser {
 				else break;
 			}
 			// Push o1 onto the stack.
-			stack.push(o1);
+			stack.push(o1.instance());
 			// Update the state flag.
 			if (o1.isPrefix() || o1.isInfix()) infix = false;
 			else if (o1.isPostfix()) infix = true;

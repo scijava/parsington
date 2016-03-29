@@ -91,6 +91,11 @@ public class Operator extends Verb implements Comparable<Operator> {
 		return precedence;
 	}
 
+	public Operator instance() {
+		// NB: Properties are immutable, so instance can be reused.
+		return this;
+	}
+
 	// -- Verb methods --
 
 	@Override
