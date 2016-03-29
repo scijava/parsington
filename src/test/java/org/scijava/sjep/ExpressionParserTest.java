@@ -53,8 +53,9 @@ public class ExpressionParserTest extends AbstractTest {
 		// "hello" "world" *
 		assertNotNull(queue);
 		assertEquals(3, queue.size());
-		assertString("hello", queue.get(0));
-		assertString("world", queue.get(1));
+		assertString("hello", queue.pop());
+		assertString("world", queue.pop());
+		assertSame(Operators.MUL, queue.pop());
 	}
 
 	@Test
@@ -64,12 +65,17 @@ public class ExpressionParserTest extends AbstractTest {
 		// 1.1 2L + 3f + 4 + +5d - 6 -
 		assertNotNull(queue);
 		assertEquals(11, queue.size());
-		assertNumber(1.1, queue.get(0));
-		assertNumber(2L, queue.get(1));
-		assertNumber(3f, queue.get(3));
-		assertNumber(4, queue.get(5));
-		assertNumber(+5d, queue.get(7));
-		assertNumber(6, queue.get(9));
+		assertNumber(1.1, queue.pop());
+		assertNumber(2L, queue.pop());
+		assertSame(Operators.ADD, queue.pop());
+		assertNumber(3f, queue.pop());
+		assertSame(Operators.ADD, queue.pop());
+		assertNumber(4, queue.pop());
+		assertSame(Operators.ADD, queue.pop());
+		assertNumber(+5d, queue.pop());
+		assertSame(Operators.SUB, queue.pop());
+		assertNumber(6, queue.pop());
+		assertSame(Operators.SUB, queue.pop());
 	}
 
 	/** Tests each individual standard operator. */
@@ -141,80 +147,80 @@ public class ExpressionParserTest extends AbstractTest {
 		// -- ~ ff ++ - gg ' -- + hh .' ++ f ^ .^ * + << & |
 		assertNotNull(queue);
 		assertEquals(74, queue.size());
-		assertVariable("a", queue.get(0));
-		assertVariable("b", queue.get(1));
-		assertSame(Operators.OR_ASSIGN, queue.get(2));
-		assertVariable("c", queue.get(3));
-		assertVariable("d", queue.get(4));
-		assertSame(Operators.AND_ASSIGN, queue.get(5));
-		assertVariable("e", queue.get(6));
-		assertVariable("f", queue.get(7));
-		assertSame(Operators.UNSIGNED_RIGHT_SHIFT_ASSIGN, queue.get(8));
-		assertVariable("g", queue.get(9));
-		assertVariable("h", queue.get(10));
-		assertSame(Operators.RIGHT_SHIFT_ASSIGN, queue.get(11));
-		assertSame(Operators.UNSIGNED_RIGHT_SHIFT, queue.get(12));
-		assertVariable("i", queue.get(13));
-		assertVariable("j", queue.get(14));
-		assertSame(Operators.LEFT_SHIFT_ASSIGN, queue.get(15));
-		assertSame(Operators.RIGHT_SHIFT, queue.get(16));
-		assertVariable("k", queue.get(17));
-		assertVariable("l", queue.get(18));
-		assertSame(Operators.SUB_ASSIGN, queue.get(19));
-		assertVariable("m", queue.get(20));
-		assertVariable("n", queue.get(21));
-		assertSame(Operators.ADD_ASSIGN, queue.get(22));
-		assertSame(Operators.SUB, queue.get(23));
-		assertVariable("o", queue.get(24));
-		assertVariable("p", queue.get(25));
-		assertSame(Operators.DOT_RIGHT_DIV_ASSIGN, queue.get(26));
-		assertVariable("q", queue.get(27));
-		assertVariable("r", queue.get(28));
-		assertSame(Operators.DOT_DIV_ASSIGN, queue.get(29));
-		assertSame(Operators.DOT_RIGHT_DIV, queue.get(30));
-		assertVariable("s", queue.get(31));
-		assertVariable("t", queue.get(32));
-		assertSame(Operators.RIGHT_DIV_ASSIGN, queue.get(33));
-		assertSame(Operators.DOT_DIV, queue.get(34));
-		assertVariable("u", queue.get(35));
-		assertVariable("v", queue.get(36));
-		assertSame(Operators.MOD_ASSIGN, queue.get(37));
-		assertSame(Operators.RIGHT_DIV, queue.get(38));
-		assertVariable("w", queue.get(39));
-		assertVariable("x", queue.get(40));
-		assertSame(Operators.DIV_ASSIGN, queue.get(41));
-		assertSame(Operators.MOD, queue.get(42));
-		assertVariable("y", queue.get(43));
-		assertVariable("z", queue.get(44));
-		assertSame(Operators.MUL_ASSIGN, queue.get(45));
-		assertSame(Operators.DIV, queue.get(46));
-		assertVariable("aa", queue.get(47));
-		assertVariable("bb", queue.get(48));
-		assertSame(Operators.DOT_POW_ASSIGN, queue.get(49));
-		assertVariable("cc", queue.get(50));
-		assertVariable("dd", queue.get(51));
-		assertSame(Operators.POW_ASSIGN, queue.get(52));
-		assertVariable("ee", queue.get(53));
-		assertSame(Operators.POST_DEC, queue.get(54));
-		assertSame(Operators.COMPLEMENT, queue.get(55));
-		assertVariable("ff", queue.get(56));
-		assertSame(Operators.POST_INC, queue.get(57));
-		assertSame(Operators.NEG, queue.get(58));
-		assertVariable("gg", queue.get(59));
-		assertSame(Operators.TRANSPOSE, queue.get(60));
-		assertSame(Operators.PRE_DEC, queue.get(61));
-		assertSame(Operators.POS, queue.get(62));
-		assertVariable("hh", queue.get(63));
-		assertSame(Operators.DOT_TRANSPOSE, queue.get(64));
-		assertSame(Operators.PRE_INC, queue.get(65));
-		assertFunction("f", 4, queue.get(66));
-		assertSame(Operators.POW, queue.get(67));
-		assertSame(Operators.DOT_POW, queue.get(68));
-		assertSame(Operators.MUL, queue.get(69));
-		assertSame(Operators.ADD, queue.get(70));
-		assertSame(Operators.LEFT_SHIFT, queue.get(71));
-		assertSame(Operators.BITWISE_AND, queue.get(72));
-		assertSame(Operators.BITWISE_OR, queue.get(73));
+		assertVariable("a", queue.pop());
+		assertVariable("b", queue.pop());
+		assertSame(Operators.OR_ASSIGN, queue.pop());
+		assertVariable("c", queue.pop());
+		assertVariable("d", queue.pop());
+		assertSame(Operators.AND_ASSIGN, queue.pop());
+		assertVariable("e", queue.pop());
+		assertVariable("f", queue.pop());
+		assertSame(Operators.UNSIGNED_RIGHT_SHIFT_ASSIGN, queue.pop());
+		assertVariable("g", queue.pop());
+		assertVariable("h", queue.pop());
+		assertSame(Operators.RIGHT_SHIFT_ASSIGN, queue.pop());
+		assertSame(Operators.UNSIGNED_RIGHT_SHIFT, queue.pop());
+		assertVariable("i", queue.pop());
+		assertVariable("j", queue.pop());
+		assertSame(Operators.LEFT_SHIFT_ASSIGN, queue.pop());
+		assertSame(Operators.RIGHT_SHIFT, queue.pop());
+		assertVariable("k", queue.pop());
+		assertVariable("l", queue.pop());
+		assertSame(Operators.SUB_ASSIGN, queue.pop());
+		assertVariable("m", queue.pop());
+		assertVariable("n", queue.pop());
+		assertSame(Operators.ADD_ASSIGN, queue.pop());
+		assertSame(Operators.SUB, queue.pop());
+		assertVariable("o", queue.pop());
+		assertVariable("p", queue.pop());
+		assertSame(Operators.DOT_RIGHT_DIV_ASSIGN, queue.pop());
+		assertVariable("q", queue.pop());
+		assertVariable("r", queue.pop());
+		assertSame(Operators.DOT_DIV_ASSIGN, queue.pop());
+		assertSame(Operators.DOT_RIGHT_DIV, queue.pop());
+		assertVariable("s", queue.pop());
+		assertVariable("t", queue.pop());
+		assertSame(Operators.RIGHT_DIV_ASSIGN, queue.pop());
+		assertSame(Operators.DOT_DIV, queue.pop());
+		assertVariable("u", queue.pop());
+		assertVariable("v", queue.pop());
+		assertSame(Operators.MOD_ASSIGN, queue.pop());
+		assertSame(Operators.RIGHT_DIV, queue.pop());
+		assertVariable("w", queue.pop());
+		assertVariable("x", queue.pop());
+		assertSame(Operators.DIV_ASSIGN, queue.pop());
+		assertSame(Operators.MOD, queue.pop());
+		assertVariable("y", queue.pop());
+		assertVariable("z", queue.pop());
+		assertSame(Operators.MUL_ASSIGN, queue.pop());
+		assertSame(Operators.DIV, queue.pop());
+		assertVariable("aa", queue.pop());
+		assertVariable("bb", queue.pop());
+		assertSame(Operators.DOT_POW_ASSIGN, queue.pop());
+		assertVariable("cc", queue.pop());
+		assertVariable("dd", queue.pop());
+		assertSame(Operators.POW_ASSIGN, queue.pop());
+		assertVariable("ee", queue.pop());
+		assertSame(Operators.POST_DEC, queue.pop());
+		assertSame(Operators.COMPLEMENT, queue.pop());
+		assertVariable("ff", queue.pop());
+		assertSame(Operators.POST_INC, queue.pop());
+		assertSame(Operators.NEG, queue.pop());
+		assertVariable("gg", queue.pop());
+		assertSame(Operators.TRANSPOSE, queue.pop());
+		assertSame(Operators.PRE_DEC, queue.pop());
+		assertSame(Operators.POS, queue.pop());
+		assertVariable("hh", queue.pop());
+		assertSame(Operators.DOT_TRANSPOSE, queue.pop());
+		assertSame(Operators.PRE_INC, queue.pop());
+		assertFunction("f", 4, queue.pop());
+		assertSame(Operators.POW, queue.pop());
+		assertSame(Operators.DOT_POW, queue.pop());
+		assertSame(Operators.MUL, queue.pop());
+		assertSame(Operators.ADD, queue.pop());
+		assertSame(Operators.LEFT_SHIFT, queue.pop());
+		assertSame(Operators.BITWISE_AND, queue.pop());
+		assertSame(Operators.BITWISE_OR, queue.pop());
 	}
 
 	/** Tests all the boolean operators in a single expression. */
@@ -228,36 +234,36 @@ public class ExpressionParserTest extends AbstractTest {
 		// -- ~ ff ++ - gg ' -- + hh .' ++ f ^ .^ * + << & |
 		assertNotNull(queue);
 		assertEquals(30, queue.size());
-		assertVariable("a", queue.get(0));
-		assertVariable("b", queue.get(1));
-		assertSame(Operators.LESS_THAN, queue.get(2));
-		assertVariable("c", queue.get(3));
-		assertVariable("d", queue.get(4));
-		assertSame(Operators.GREATER_THAN, queue.get(5));
-		assertVariable("e", queue.get(6));
-		assertVariable("f", queue.get(7));
-		assertSame(Operators.LESS_THAN_OR_EQUAL, queue.get(8));
-		assertSame(Operators.LOGICAL_AND, queue.get(9));
-		assertSame(Operators.LOGICAL_OR, queue.get(10));
-		assertVariable("g", queue.get(11));
-		assertVariable("h", queue.get(12));
-		assertSame(Operators.GREATER_THAN_OR_EQUAL, queue.get(13));
-		assertVariable("i", queue.get(14));
-		assertVariable("j", queue.get(15));
-		assertSame(Operators.EQUAL, queue.get(16));
-		assertSame(Operators.LOGICAL_AND, queue.get(17));
-		assertSame(Operators.LOGICAL_OR, queue.get(18));
-		assertVariable("k", queue.get(19));
-		assertVariable("l", queue.get(20));
-		assertSame(Operators.NOT_EQUAL, queue.get(21));
-		assertVariable("m", queue.get(22));
-		assertVariable("n", queue.get(23));
-		assertSame(Operators.INSTANCEOF, queue.get(24));
-		assertSame(Operators.LOGICAL_AND, queue.get(25));
-		assertSame(Operators.LOGICAL_OR, queue.get(26));
-		assertVariable("0", queue.get(27));
-		assertSame(Operators.NOT, queue.get(28));
-		assertSame(Operators.LOGICAL_OR, queue.get(29));
+		assertVariable("a", queue.pop());
+		assertVariable("b", queue.pop());
+		assertSame(Operators.LESS_THAN, queue.pop());
+		assertVariable("c", queue.pop());
+		assertVariable("d", queue.pop());
+		assertSame(Operators.GREATER_THAN, queue.pop());
+		assertVariable("e", queue.pop());
+		assertVariable("f", queue.pop());
+		assertSame(Operators.LESS_THAN_OR_EQUAL, queue.pop());
+		assertSame(Operators.LOGICAL_AND, queue.pop());
+		assertSame(Operators.LOGICAL_OR, queue.pop());
+		assertVariable("g", queue.pop());
+		assertVariable("h", queue.pop());
+		assertSame(Operators.GREATER_THAN_OR_EQUAL, queue.pop());
+		assertVariable("i", queue.pop());
+		assertVariable("j", queue.pop());
+		assertSame(Operators.EQUAL, queue.pop());
+		assertSame(Operators.LOGICAL_AND, queue.pop());
+		assertSame(Operators.LOGICAL_OR, queue.pop());
+		assertVariable("k", queue.pop());
+		assertVariable("l", queue.pop());
+		assertSame(Operators.NOT_EQUAL, queue.pop());
+		assertVariable("m", queue.pop());
+		assertVariable("n", queue.pop());
+		assertSame(Operators.INSTANCEOF, queue.pop());
+		assertSame(Operators.LOGICAL_AND, queue.pop());
+		assertSame(Operators.LOGICAL_OR, queue.pop());
+		assertVariable("0", queue.pop());
+		assertSame(Operators.NOT, queue.pop());
+		assertSame(Operators.LOGICAL_OR, queue.pop());
 	}
 
 	@Test
@@ -267,9 +273,9 @@ public class ExpressionParserTest extends AbstractTest {
 		// a + -
 		assertNotNull(queue);
 		assertEquals(3, queue.size());
-		assertVariable("a", queue.get(0));
-		assertSame(Operators.POS, queue.get(1));
-		assertSame(Operators.NEG, queue.get(2));
+		assertVariable("a", queue.pop());
+		assertSame(Operators.POS, queue.pop());
+		assertSame(Operators.NEG, queue.pop());
 	}
 
 	@Test
@@ -279,10 +285,10 @@ public class ExpressionParserTest extends AbstractTest {
 		// a b - +
 		assertNotNull(queue);
 		assertEquals(4, queue.size());
-		assertVariable("a", queue.get(0));
-		assertVariable("b", queue.get(1));
-		assertSame(Operators.NEG, queue.get(2));
-		assertSame(Operators.ADD, queue.get(3));
+		assertVariable("a", queue.pop());
+		assertVariable("b", queue.pop());
+		assertSame(Operators.NEG, queue.pop());
+		assertSame(Operators.ADD, queue.pop());
 	}
 
 	@Test
@@ -292,11 +298,11 @@ public class ExpressionParserTest extends AbstractTest {
 		// a b - + -
 		assertNotNull(queue);
 		assertEquals(5, queue.size());
-		assertVariable("a", queue.get(0));
-		assertVariable("b", queue.get(1));
-		assertSame(Operators.NEG, queue.get(2));
-		assertSame(Operators.POS, queue.get(3));
-		assertSame(Operators.SUB, queue.get(4));
+		assertVariable("a", queue.pop());
+		assertVariable("b", queue.pop());
+		assertSame(Operators.NEG, queue.pop());
+		assertSame(Operators.POS, queue.pop());
+		assertSame(Operators.SUB, queue.pop());
 	}
 
 	@Test
@@ -306,13 +312,13 @@ public class ExpressionParserTest extends AbstractTest {
 		// a + - b - + -
 		assertNotNull(queue);
 		assertEquals(7, queue.size());
-		assertVariable("a", queue.get(0));
-		assertSame(Operators.POS, queue.get(1));
-		assertSame(Operators.NEG, queue.get(2));
-		assertVariable("b", queue.get(3));
-		assertSame(Operators.NEG, queue.get(4));
-		assertSame(Operators.POS, queue.get(5));
-		assertSame(Operators.SUB, queue.get(6));
+		assertVariable("a", queue.pop());
+		assertSame(Operators.POS, queue.pop());
+		assertSame(Operators.NEG, queue.pop());
+		assertVariable("b", queue.pop());
+		assertSame(Operators.NEG, queue.pop());
+		assertSame(Operators.POS, queue.pop());
+		assertSame(Operators.SUB, queue.pop());
 	}
 
 	@Test
@@ -322,7 +328,7 @@ public class ExpressionParserTest extends AbstractTest {
 		// f
 		assertNotNull(queue);
 		assertEquals(1, queue.size());
-		assertFunction("f", 0, queue.get(0));
+		assertFunction("f", 0, queue.pop());
 	}
 
 	@Test
@@ -332,8 +338,8 @@ public class ExpressionParserTest extends AbstractTest {
 		// a f
 		assertNotNull(queue);
 		assertEquals(2, queue.size());
-		assertVariable("a", queue.get(0));
-		assertFunction("f", 1, queue.get(1));
+		assertVariable("a", queue.pop());
+		assertFunction("f", 1, queue.pop());
 	}
 
 	@Test
@@ -343,9 +349,9 @@ public class ExpressionParserTest extends AbstractTest {
 		// a b f
 		assertNotNull(queue);
 		assertEquals(3, queue.size());
-		assertVariable("a", queue.get(0));
-		assertVariable("b", queue.get(1));
-		assertFunction("f", 2, queue.get(2));
+		assertVariable("a", queue.pop());
+		assertVariable("b", queue.pop());
+		assertFunction("f", 2, queue.pop());
 	}
 
 	@Test
@@ -355,10 +361,10 @@ public class ExpressionParserTest extends AbstractTest {
 		// a b c f
 		assertNotNull(queue);
 		assertEquals(4, queue.size());
-		assertVariable("a", queue.get(0));
-		assertVariable("b", queue.get(1));
-		assertVariable("c", queue.get(2));
-		assertFunction("f", 3, queue.get(3));
+		assertVariable("a", queue.pop());
+		assertVariable("b", queue.pop());
+		assertVariable("c", queue.pop());
+		assertFunction("f", 3, queue.pop());
 	}
 
 	@Test
@@ -369,14 +375,14 @@ public class ExpressionParserTest extends AbstractTest {
 		// g a b h c d i f
 		assertNotNull(queue);
 		assertEquals(8, queue.size());
-		assertFunction("g", 0, queue.get(0));
-		assertVariable("a", queue.get(1));
-		assertVariable("b", queue.get(2));
-		assertFunction("h", 1, queue.get(3));
-		assertVariable("c", queue.get(4));
-		assertVariable("d", queue.get(5));
-		assertFunction("i", 2, queue.get(6));
-		assertFunction("f", 4, queue.get(7));
+		assertFunction("g", 0, queue.pop());
+		assertVariable("a", queue.pop());
+		assertVariable("b", queue.pop());
+		assertFunction("h", 1, queue.pop());
+		assertVariable("c", queue.pop());
+		assertVariable("d", queue.pop());
+		assertFunction("i", 2, queue.pop());
+		assertFunction("f", 4, queue.pop());
 	}
 
 	@Test
@@ -386,16 +392,16 @@ public class ExpressionParserTest extends AbstractTest {
 		// a b c d e .^ ^ ' * +
 		assertNotNull(queue);
 		assertEquals(10, queue.size());
-		assertVariable("a", queue.get(0));
-		assertVariable("b", queue.get(1));
-		assertVariable("c", queue.get(2));
-		assertVariable("d", queue.get(3));
-		assertVariable("e", queue.get(4));
-		assertSame(Operators.DOT_POW, queue.get(5));
-		assertSame(Operators.POW, queue.get(6));
-		assertSame(Operators.TRANSPOSE, queue.get(7));
-		assertSame(Operators.MUL, queue.get(8));
-		assertSame(Operators.ADD, queue.get(9));
+		assertVariable("a", queue.pop());
+		assertVariable("b", queue.pop());
+		assertVariable("c", queue.pop());
+		assertVariable("d", queue.pop());
+		assertVariable("e", queue.pop());
+		assertSame(Operators.DOT_POW, queue.pop());
+		assertSame(Operators.POW, queue.pop());
+		assertSame(Operators.TRANSPOSE, queue.pop());
+		assertSame(Operators.MUL, queue.pop());
+		assertSame(Operators.ADD, queue.pop());
 	}
 
 	@Test
@@ -405,17 +411,17 @@ public class ExpressionParserTest extends AbstractTest {
 		// a b / c / a b c ^ ^ +
 		assertNotNull(queue);
 		assertEquals(11, queue.size());
-		assertVariable("a", queue.get(0));
-		assertVariable("b", queue.get(1));
-		assertSame(Operators.DIV, queue.get(2));
-		assertVariable("c", queue.get(3));
-		assertSame(Operators.DIV, queue.get(4));
-		assertVariable("a", queue.get(5));
-		assertVariable("b", queue.get(6));
-		assertVariable("c", queue.get(7));
-		assertSame(Operators.POW, queue.get(8));
-		assertSame(Operators.POW, queue.get(9));
-		assertSame(Operators.ADD, queue.get(10));
+		assertVariable("a", queue.pop());
+		assertVariable("b", queue.pop());
+		assertSame(Operators.DIV, queue.pop());
+		assertVariable("c", queue.pop());
+		assertSame(Operators.DIV, queue.pop());
+		assertVariable("a", queue.pop());
+		assertVariable("b", queue.pop());
+		assertVariable("c", queue.pop());
+		assertSame(Operators.POW, queue.pop());
+		assertSame(Operators.POW, queue.pop());
+		assertSame(Operators.ADD, queue.pop());
 	}
 
 	/** Tests multiple semicolon-separated statements. */
@@ -427,15 +433,15 @@ public class ExpressionParserTest extends AbstractTest {
 		// a 1 = b 2 = c 3 =
 		assertNotNull(queue);
 		assertEquals(9, queue.size());
-		assertVariable("a", queue.get(0));
-		assertNumber(1, queue.get(1));
-		assertSame(Operators.ASSIGN, queue.get(2));
-		assertVariable("b", queue.get(3));
-		assertNumber(2, queue.get(4));
-		assertSame(Operators.ASSIGN, queue.get(5));
-		assertVariable("c", queue.get(6));
-		assertNumber(3, queue.get(7));
-		assertSame(Operators.ASSIGN, queue.get(8));
+		assertVariable("a", queue.pop());
+		assertNumber(1, queue.pop());
+		assertSame(Operators.ASSIGN, queue.pop());
+		assertVariable("b", queue.pop());
+		assertNumber(2, queue.pop());
+		assertSame(Operators.ASSIGN, queue.pop());
+		assertVariable("c", queue.pop());
+		assertNumber(3, queue.pop());
+		assertSame(Operators.ASSIGN, queue.pop());
 	}
 
 	/** A more complex test of {@link ExpressionParser#parsePostfix}. */
@@ -447,22 +453,22 @@ public class ExpressionParserTest extends AbstractTest {
 		// a b * c a * quick brown fox func foo bar ^ ^ / -
 		assertNotNull(queue);
 		assertEquals(16, queue.size());
-		assertVariable("a", queue.get(0));
-		assertVariable("b", queue.get(1));
-		assertSame(Operators.MUL, queue.get(2));
-		assertVariable("c", queue.get(3));
-		assertVariable("a", queue.get(4));
-		assertSame(Operators.MUL, queue.get(5));
-		assertVariable("quick", queue.get(6));
-		assertVariable("brown", queue.get(7));
-		assertVariable("fox", queue.get(8));
-		assertFunction("func", 3, queue.get(9));
-		assertVariable("foo", queue.get(10));
-		assertVariable("bar", queue.get(11));
-		assertSame(Operators.POW, queue.get(12));
-		assertSame(Operators.POW, queue.get(13));
-		assertSame(Operators.DIV, queue.get(14));
-		assertSame(Operators.SUB, queue.get(15));
+		assertVariable("a", queue.pop());
+		assertVariable("b", queue.pop());
+		assertSame(Operators.MUL, queue.pop());
+		assertVariable("c", queue.pop());
+		assertVariable("a", queue.pop());
+		assertSame(Operators.MUL, queue.pop());
+		assertVariable("quick", queue.pop());
+		assertVariable("brown", queue.pop());
+		assertVariable("fox", queue.pop());
+		assertFunction("func", 3, queue.pop());
+		assertVariable("foo", queue.pop());
+		assertVariable("bar", queue.pop());
+		assertSame(Operators.POW, queue.pop());
+		assertSame(Operators.POW, queue.pop());
+		assertSame(Operators.DIV, queue.pop());
+		assertSame(Operators.SUB, queue.pop());
 	}
 
 	/** Tests empty expressions. */
@@ -496,8 +502,8 @@ public class ExpressionParserTest extends AbstractTest {
 		final LinkedList<Object> queue = parser.parsePostfix(expression);
 		assertNotNull(queue);
 		assertEquals(2, queue.size());
-		assertVariable(var, queue.get(0));
-		assertSame(op, queue.get(1));
+		assertVariable(var, queue.pop());
+		assertSame(op, queue.pop());
 	}
 
 	private void assertBinary(final ExpressionParser parser, final String var1,
@@ -506,9 +512,9 @@ public class ExpressionParserTest extends AbstractTest {
 		final LinkedList<Object> queue = parser.parsePostfix(expression);
 		assertNotNull(queue);
 		assertEquals(3, queue.size());
-		assertVariable(var1, queue.get(0));
-		assertVariable(var2, queue.get(1));
-		assertSame(op, queue.get(2));
+		assertVariable(var1, queue.pop());
+		assertVariable(var2, queue.pop());
+		assertSame(op, queue.pop());
 	}
 
 	private void assertInvalid(final ExpressionParser parser,
