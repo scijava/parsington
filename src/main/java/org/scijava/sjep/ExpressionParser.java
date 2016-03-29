@@ -127,8 +127,8 @@ public class ExpressionParser {
 		 * State flag for parsing context.
 		 * <ul>
 		 * <li>If true, we are expecting an infix or postfix operator next.</li>
-		 * <li>If false, we are expecting a prefix operator or non-operator token
-		 * (e.g., variable, literal or function) next.</li>
+		 * <li>If false, we are expecting a prefix operator or "noun" token (e.g.,
+		 * variable or literal) next.</li>
 		 * </ul>
 		 */
 		private boolean infix;
@@ -163,32 +163,10 @@ public class ExpressionParser {
 					continue;
 				}
 
-				// If next token is a function, push it onto the stack.
-				final Function func = parseFunction();
-				if (func != null) {
-					stack.push(func);
-					// Update the state flag.
-					infix = false;
-					continue;
-				}
-
 				// If next token is a function argument separator (i.e., a comma)...
 				final Character separator = parseComma();
 				if (separator != null) {
-					// Pop from stack to output queue until function found.
-					while (true) {
-						if (stack.isEmpty()) {
-							pos.die("Misplaced separator or mismatched parentheses");
-						}
-						if (Tokens.isFunction(stack.peek())) {
-							// Count the completed function argument in the function's arity.
-							((Function) stack.peek()).incArity();
-							break;
-						}
-						outputQueue.add(stack.pop());
-					}
-					// Update the state flag.
-					infix = false;
+					handleGroupSeparator();
 					continue;
 				}
 
@@ -204,64 +182,19 @@ public class ExpressionParser {
 				// If the token is an operator...
 				final Operator o1 = parseOperator();
 				if (o1 != null) {
-					// While there is an operator token, o2, at the top of the stack...
-					final double p1 = o1.getPrecedence();
-					while (!stack.isEmpty() && Tokens.isOperator(stack.peek())) {
-						final Operator o2 = (Operator) stack.peek();
-						final double p2 = o2.getPrecedence();
-						// ...and o1 has lower precedence than o2...
-						if (o1.isLeftAssociative() && p1 <= p2 || //
-							o1.isRightAssociative() && p1 < p2)
-						{
-							// Pop o2 off the stack, onto the output queue.
-							outputQueue.add(stack.pop());
-						}
-						else break;
+					if (Tokens.isGroup(o1) && infix) {
+						// NB: Group initiator symbol following a "noun" token;
+						// we infer an implicit function operator between them.
+						handleOperator(new Function(o1.getPrecedence()));
 					}
-					// Push o1 onto the stack.
-					stack.push(o1);
-					// Update the state flag.
-					if (o1.isPrefix() || o1.isInfix()) infix = false;
-					else if (o1.isPostfix()) infix = true;
-					else pos.fail("Impenetrable operator '" + o1 + "'");
+					handleOperator(o1);
 					continue;
 				}
 
-				// If the token is a left parenthesis, then push it onto the stack.
-				final Character leftParen = parseLeftParen();
-				if (leftParen != null) {
-					stack.push(leftParen);
-					// Update the state flag.
-					infix = false;
-					continue;
-				}
-
-				// If the token is a right parenthesis...
-				final Character rightParen = parseRightParen();
-				if (rightParen != null) {
-					// Pop from stack to output queue until left parenthesis found.
-					while (true) {
-						if (stack.isEmpty()) {
-							// No left parenthesis found: mismatched parentheses!
-							pos.die("Mismatched parentheses");
-						}
-						if (Tokens.isLeftParen(stack.peek())) {
-							// Pop the left parenthesis, but not onto the output queue.
-							stack.pop();
-							break;
-						}
-						// If token is a function, it implicitly has a left parenthesis.
-						if (Tokens.isFunction(stack.peek())) {
-							// Count the completed function argument in the function's arity.
-							if (infix) ((Function) stack.peek()).incArity();
-							// Pop the function onto the output queue.
-							outputQueue.add(stack.pop());
-							break;
-						}
-						outputQueue.add(stack.pop());
-					}
-					// Update the state flag.
-					infix = true;
+				// If the token is a group terminator...
+				final Group group = parseGroupTerminator();
+				if (group != null) {
+					handleGroupTerminator(group);
 					continue;
 				}
 
@@ -329,35 +262,6 @@ public class ExpressionParser {
 		}
 
 		/**
-		 * Attempts to parse a function.
-		 *
-		 * @return The parsed function name, or null if the next token is not one.
-		 */
-		public Function parseFunction() {
-			final int length = parseIdentifier();
-			if (length == 0) return null;
-
-			// Skip any intervening whitespace.
-			int offset = length;
-			while (Character.isWhitespace(futureChar(offset)))
-				offset++;
-
-			// NB: Token is considered a function _iff_ it is
-			// an identifier followed by a left parenthesis.
-			if (!Tokens.isLeftParen(futureChar(offset))) return null;
-
-			// Consume the function token.
-			final String token = parseToken(length);
-
-			// Consume the following whitespace and associated left parenthesis.
-			parseWhitespace();
-			pos.assertThat(Tokens.isLeftParen(parseLeftParen()),
-				"Left parenthesis expected after function");
-
-			return new Function(token);
-		}
-
-		/**
 		 * Attempts to parse a variable.
 		 *
 		 * @return The parsed variable name, or null if the next token is not one.
@@ -397,17 +301,24 @@ public class ExpressionParser {
 		 * @return The parsed operator, or null if the next token is not one.
 		 */
 		public Operator parseOperator() {
-			for (final Operator operator : operators) {
-				final String symbol = operator.getToken();
-				if (!expression.startsWith(symbol, pos.get())) continue;
-				// Ensure the operator is appropriate to the current context.
-				if (isPrefixOK() && operator.isPrefix() || //
-					isPostfixOK() && operator.isPostfix() || //
-					isInfixOK() && operator.isInfix())
-				{
-					pos.inc(symbol.length());
-					return operator;
-				}
+			for (final Operator op : operators) {
+				final String symbol = op.getToken();
+				if (operatorMatches(op, symbol)) return op;
+			}
+			return null;
+		}
+
+		/**
+		 * Attempts to parse a group terminator symbol.
+		 *
+		 * @return The group, or null if the next token is not a group terminator.
+		 */
+		public Group parseGroupTerminator() {
+			for (final Operator op : operators) {
+				if (!(op instanceof Group)) continue;
+				final Group group = (Group) op;
+				final String symbol = group.getTerminator();
+				if (operatorMatches(op, symbol)) return group;
 			}
 			return null;
 		}
@@ -422,24 +333,6 @@ public class ExpressionParser {
 			if (!infix) return null;
 
 			return parseChar(',');
-		}
-
-		/**
-		 * Attempts to parse a left parenthesis character.
-		 *
-		 * @return The left parenthesis, or null if the next token is not one.
-		 */
-		public Character parseLeftParen() {
-			return parseChar('(');
-		}
-
-		/**
-		 * Attempts to parse a right parenthesis character.
-		 *
-		 * @return The right parenthesis, or null if the next token is not one.
-		 */
-		public Character parseRightParen() {
-			return parseChar(')');
 		}
 
 		/**
@@ -492,15 +385,92 @@ public class ExpressionParser {
 
 		// -- Helper methods --
 
+		private void handleOperator(final Operator o1) {
+			// While there is an operator token, o2, at the top of the stack...
+			final double p1 = o1.getPrecedence();
+			while (!stack.isEmpty() && Tokens.isOperator(stack.peek()) &&
+				!Tokens.isGroup(stack.peek()))
+			{
+				final Operator o2 = (Operator) stack.peek();
+				final double p2 = o2.getPrecedence();
+				// ...and o1 has lower precedence than o2...
+				if (o1.isLeftAssociative() && p1 <= p2 || //
+					o1.isRightAssociative() && p1 < p2)
+				{
+					// Pop o2 off the stack, onto the output queue.
+					outputQueue.add(stack.pop());
+				}
+				else break;
+			}
+			// Push o1 onto the stack.
+			stack.push(o1.instance());
+			// Update the state flag.
+			if (o1.isPrefix() || o1.isInfix()) infix = false;
+			else if (o1.isPostfix()) infix = true;
+			else pos.fail("Impenetrable operator '" + o1 + "'");
+		}
+
+		private void handleGroupSeparator() {
+			// Pop from stack to output queue until function found.
+			while (true) {
+				if (stack.isEmpty()) {
+					pos.die("Misplaced separator or mismatched groups");
+				}
+				if (Tokens.isGroup(stack.peek())) {
+					// Count the completed argument in the group's arity.
+					((Group) stack.peek()).incArity();
+					break;
+				}
+				outputQueue.add(stack.pop());
+			}
+			// Update the state flag.
+			infix = false;
+		}
+
+		private void handleGroupTerminator(final Group group) {
+			// Pop from stack to output queue until matching group found.
+			while (true) {
+				if (stack.isEmpty()) {
+					// No group found: mismatched group symbols!
+					pos.die("Mismatched group terminator '" + group.getTerminator() +
+						"'");
+				}
+				// If token is a group...
+				if (Tokens.isMatchingGroup(stack.peek(), group)) {
+					// Count the completed argument in the group's arity.
+					if (infix) ((Group) stack.peek()).incArity();
+					// Pop the group onto the output queue.
+					outputQueue.add(stack.pop());
+					break;
+				}
+				outputQueue.add(stack.pop());
+			}
+			// Update the state flag.
+			infix = true;
+		}
+
 		private void flushStack() {
 			// While there are still operator tokens in the stack...
 			while (!stack.isEmpty()) {
 				final Object token = stack.pop();
-				// There shouldn't be any parentheses left.
-				if (Tokens.isParen(token)) pos.die("Mismatched parentheses");
+				// There shouldn't be any groups left.
+				if (Tokens.isGroup(token)) pos.die("Mismatched groups");
 				// Pop the operator onto the output queue.
 				outputQueue.add(token);
 			}
+		}
+
+		private boolean operatorMatches(final Operator op, final String symbol) {
+			if (!expression.startsWith(symbol, pos.get())) return false;
+			// Ensure the operator is appropriate to the current context.
+			if (isPrefixOK() && op.isPrefix() || //
+				isPostfixOK() && op.isPostfix() || //
+				isInfixOK() && op.isInfix())
+			{
+				pos.inc(symbol.length());
+				return true;
+			}
+			return false;
 		}
 
 	}

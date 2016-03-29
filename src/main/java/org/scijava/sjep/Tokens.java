@@ -45,8 +45,8 @@ public final class Tokens {
 		return o instanceof Number;
 	}
 
-	public static boolean isFunction(final Object o) {
-		return o instanceof Function;
+	public static boolean isGroup(final Object o) {
+		return o instanceof Group;
 	}
 
 	public static boolean isVariable(final Object o) {
@@ -57,28 +57,15 @@ public final class Tokens {
 		return o instanceof Operator;
 	}
 
-	public static boolean isVerb(final Object o) {
-		return o instanceof Verb;
-	}
-
 	public static boolean isComma(final Object o) {
 		return isCharacter(o, ',');
-	}
-
-	public static boolean isParen(final Object o) {
-		return isLeftParen(o) || isRightParen(o);
-	}
-
-	public static boolean isLeftParen(final Object o) {
-		return isCharacter(o, '(');
-	}
-
-	public static boolean isRightParen(final Object o) {
-		return isCharacter(o, ')');
 	}
 
 	public static boolean isCharacter(final Object o, final Character c) {
 		return o instanceof Character && ((Character) o).equals(c);
 	}
 
+	public static boolean isMatchingGroup(final Object o, final Group g) {
+		return isGroup(o) && ((Group) o).matches(g);
+	}
 }

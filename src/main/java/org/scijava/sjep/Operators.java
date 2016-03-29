@@ -56,6 +56,12 @@ public final class Operators {
 
 	public static final Operator DOT = op(".", 2, LEFT, 16);
 
+	// -- groups --
+
+	public static final Group PARENS = group("(", ")", 16);
+	public static final Group BRACKETS = group("[", "]", 16);
+	public static final Group BRACES = group("{", "}", 16);
+
 	// -- transpose, power --
 
 	public static final Operator TRANSPOSE = op("'", 1, LEFT, 15);
@@ -186,13 +192,19 @@ public final class Operators {
 	private static Operator op(final String symbol, final int arity,
 		final Associativity associativity, final double precedence)
 	{
-		return new DefaultOperator(symbol, arity, associativity, precedence);
+		return new Operator(symbol, arity, associativity, precedence);
+	}
+
+	private static Group group(final String leftSymbol,
+		final String rightSymbol, final double precedence)
+	{
+		return new Group(leftSymbol, rightSymbol, precedence);
 	}
 
 	private static boolean isOperator(final Field f) {
 		final int mods = f.getModifiers();
 		return Modifier.isStatic(mods) && Modifier.isFinal(mods) &&
-			f.getType() == Operator.class;
+			Operator.class.isAssignableFrom(f.getType());
 	}
 
 }

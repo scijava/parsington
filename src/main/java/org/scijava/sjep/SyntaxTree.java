@@ -53,9 +53,9 @@ public class SyntaxTree implements Iterable<SyntaxTree> {
 	 */
 	public SyntaxTree(final LinkedList<Object> tokens) {
 		token = tokens.removeLast();
-		if (Tokens.isVerb(token)) {
-			final Verb verb = (Verb) token;
-			final int arity = verb.getArity();
+		if (Tokens.isOperator(token)) {
+			final Operator op = (Operator) token;
+			final int arity = op.getArity();
 			if (arity > 0) children = new SyntaxTree[arity];
 			for (int i = children.length - 1; i >= 0; i--) {
 				children[i] = new SyntaxTree(tokens);

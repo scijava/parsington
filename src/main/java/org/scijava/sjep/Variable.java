@@ -31,11 +31,11 @@
 package org.scijava.sjep;
 
 /**
- * A token representing a variable.
+ * A "noun" token representing a variable.
  *
  * @author Curtis Rueden
  */
-public final class Variable extends AbstractToken {
+public class Variable extends Token {
 
 	public Variable(final String token) {
 		super(token);

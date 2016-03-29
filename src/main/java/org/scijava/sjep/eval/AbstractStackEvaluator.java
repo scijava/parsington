@@ -36,9 +36,9 @@ import java.util.LinkedList;
 
 import org.scijava.sjep.ExpressionParser;
 import org.scijava.sjep.Function;
+import org.scijava.sjep.Group;
 import org.scijava.sjep.Operator;
 import org.scijava.sjep.Tokens;
-import org.scijava.sjep.Verb;
 
 /**
  * Base class for {@link StackEvaluator} implementations.
@@ -66,8 +66,8 @@ public abstract class AbstractStackEvaluator extends AbstractEvaluator
 		while (!queue.isEmpty()) {
 			final Object token = queue.removeFirst();
 			final Object result;
-			if (Tokens.isVerb(token)) {
-				result = execute((Verb) token, stack);
+			if (Tokens.isOperator(token)) {
+				result = execute((Operator) token, stack);
 			}
 			else {
 				// Token is a variable or a literal.
@@ -97,20 +97,21 @@ public abstract class AbstractStackEvaluator extends AbstractEvaluator
 		return arity < ARY.length ? ARY[arity] : arity + "-ary";
 	}
 
-	private static String ary(final Verb verb) {
-		return ary(verb.getArity());
+	private static String ary(final Operator op) {
+		return ary(op.getArity());
 	}
 
 	private static void die(final Object token) {
 		final StringBuilder message = new StringBuilder("Unsupported");
-		if (token instanceof Verb) message.append(" " + ary((Verb) token));
+		if (token instanceof Operator) message.append(" " + ary((Operator) token));
 		message.append(" " + type(token) + ": " + token);
 		throw new IllegalArgumentException(message.toString());
 	}
 
 	private static String type(final Object token) {
-		if (token instanceof Operator) return "operator";
 		if (token instanceof Function) return "function";
+		if (token instanceof Group) return "group";
+		if (token instanceof Operator) return "operator";
 		return "token";
 	}
 
