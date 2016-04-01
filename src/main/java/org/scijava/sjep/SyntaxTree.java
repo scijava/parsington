@@ -30,6 +30,7 @@
 
 package org.scijava.sjep;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -87,6 +88,18 @@ public class SyntaxTree implements Iterable<SyntaxTree> {
 	@Override
 	public String toString() {
 		return toString("");
+	}
+
+	@Override
+	public boolean equals(final Object o) {
+		if (!(o instanceof SyntaxTree)) return false;
+		final SyntaxTree tree = (SyntaxTree) o;
+		return token.equals(tree.token) && Arrays.equals(children, tree.children);
+	}
+
+	@Override
+	public int hashCode() {
+		return token.hashCode() ^ children.hashCode();
 	}
 
 	// -- Iterable methods --
