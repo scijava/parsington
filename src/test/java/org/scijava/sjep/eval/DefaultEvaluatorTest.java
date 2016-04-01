@@ -38,10 +38,14 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.scijava.sjep.AbstractTest;
+import org.scijava.sjep.Operators;
+import org.scijava.sjep.SyntaxTree;
 import org.scijava.sjep.Variable;
 
 /** Tests {@link DefaultEvaluator}. */
@@ -58,6 +62,19 @@ public class DefaultEvaluatorTest extends AbstractTest {
 	@Test
 	public void testEvaluate() {
 		assertEquals(26, e.evaluate("(2*3)+(4*5)"));
+	}
+
+	/**
+	 * Tests that {@link DefaultEvaluator#evaluate(String)} handles the built-in
+	 * {@code postfix} and {@code tree} functions as expected.
+	 */
+	@Test
+	public void testBuiltIns() {
+		final Object[] o = {1, 2, 3, Operators.MUL, Operators.ADD};
+		final List<Object> postfix = Arrays.asList(o);
+		assertEquals(postfix, e.evaluate("postfix('1+2*3')"));
+		final SyntaxTree tree = new SyntaxTree(new LinkedList<Object>(postfix));
+		assertEquals(tree, e.evaluate("tree('1+2*3')"));
 	}
 
 	// -- function --
