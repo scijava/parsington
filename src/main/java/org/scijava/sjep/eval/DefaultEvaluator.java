@@ -564,7 +564,13 @@ public class DefaultEvaluator extends AbstractStandardStackEvaluator {
 	}
 
 	private Object listElement(final Object a, final Object b) {
-		final Object value = value(a);
+		final Object value;
+		try {
+			value = value(a);
+		}
+		catch (final IllegalArgumentException exc) {
+			return null;
+		}
 		if (!(value instanceof List)) return null;
 		final List<?> list = (List<?>) value;
 		if (!(b instanceof List)) return null;
