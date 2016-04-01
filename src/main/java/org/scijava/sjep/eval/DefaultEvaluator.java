@@ -38,6 +38,8 @@ import java.util.List;
 import org.scijava.sjep.ExpressionParser;
 import org.scijava.sjep.Literals;
 import org.scijava.sjep.Operators;
+import org.scijava.sjep.Tokens;
+import org.scijava.sjep.Variable;
 
 /**
  * An expression evaluator for most {@link Operators standard operators} with
@@ -87,6 +89,12 @@ public class DefaultEvaluator extends AbstractStandardStackEvaluator {
 	public Object function(final Object a, final Object b) {
 		final Object element = listElement(a, b);
 		if (element != null) return element;
+
+		if (Tokens.isVariable(a)) {
+			final String name = ((Variable) a).getToken();
+			final Object result = callFunction(name, b);
+			if (result != null) return result;
+		}
 
 		// NB: Unknown function type.
 		return null;
@@ -577,6 +585,19 @@ public class DefaultEvaluator extends AbstractStandardStackEvaluator {
 		final List<?> indices = (List<?>) b;
 		if (indices.size() != 1) return null; // not a 1-D access
 		return list.get(i(indices.get(0)));
+	}
+
+	/** Executes built-in functions. */
+	private Object callFunction(final String name, final Object b) {
+		if (name.equals("postfix") && b instanceof String) {
+			return getParser().parsePostfix((String) b);
+		}
+
+		if (name.equals("tree") && b instanceof String) {
+			return getParser().parseTree((String) b);
+		}
+
+		return null;
 	}
 
 }
