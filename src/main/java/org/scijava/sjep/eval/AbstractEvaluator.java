@@ -59,6 +59,11 @@ public abstract class AbstractEvaluator implements Evaluator {
 	// -- Evaluator methods --
 
 	@Override
+	public ExpressionParser getParser() {
+		return parser;
+	}
+
+	@Override
 	public Object evaluate(final SyntaxTree syntaxTree) {
 		// Convert the syntax tree to postfix.
 		return evaluate(syntaxTree.postfix());

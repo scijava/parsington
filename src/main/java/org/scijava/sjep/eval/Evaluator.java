@@ -33,6 +33,7 @@ package org.scijava.sjep.eval;
 import java.util.LinkedList;
 import java.util.Map;
 
+import org.scijava.sjep.ExpressionParser;
 import org.scijava.sjep.SyntaxTree;
 import org.scijava.sjep.Variable;
 
@@ -42,6 +43,9 @@ import org.scijava.sjep.Variable;
  * @author Curtis Rueden
  */
 public interface Evaluator {
+
+	/** Gets the parser used when evaluating expressions. */
+	ExpressionParser getParser();
 
 	/** Evaluates the given infix expression, returning the result. */
 	Object evaluate(final String expression);
