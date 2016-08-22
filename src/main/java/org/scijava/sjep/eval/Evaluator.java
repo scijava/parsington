@@ -47,6 +47,39 @@ public interface Evaluator {
 	/** Gets the parser used when evaluating expressions. */
 	ExpressionParser getParser();
 
+	/**
+	 * Gets whether the evaluator is operating in strict mode.
+	 * 
+	 * @see #setStrict(boolean)
+	 */
+	boolean isStrict();
+
+	/**
+	 * Sets whether the evaluator is operating in strict mode. Evaluators operate
+	 * in strict mode by default.
+	 * <p>
+	 * When evaluating strictly, usage of an unassigned variable token in a place
+	 * where its value is needed will generate an {@link IllegalArgumentException}
+	 * with an "Unknown variable" message; in non-strict mode, such a variable
+	 * will instead be resolved to an object of type {@link Unresolved} with the
+	 * same name as the original variable.
+	 * </p>
+	 * <p>
+	 * In cases such as assignment, this may be sufficient to complete the
+	 * evaluation; for example, the expression {@code foo=bar} will complete
+	 * successfully in non-strict mode, with the variable {@code foo} containing
+	 * an object of type {@link Unresolved} and token value {@code "bar"}. But in
+	 * cases where the unresolved value is needed as an input for additional
+	 * operations, the evaluation may still ultimately fail of the operation in
+	 * question is not defined for unresolved values. For example, the
+	 * {@link DefaultEvaluator} will fail with an "Unsupported binary operator"
+	 * exception when given the expression {@code foo+bar}, since {@code foo} and
+	 * {@code bar} are unresolved variables, and the {@code +} operator cannot
+	 * handle such objects.
+	 * </p>
+	 */
+	void setStrict(boolean strict);
+
 	/** Evaluates the given infix expression, returning the result. */
 	Object evaluate(final String expression);
 

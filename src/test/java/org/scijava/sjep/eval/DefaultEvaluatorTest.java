@@ -33,6 +33,7 @@ package org.scijava.sjep.eval;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -62,6 +63,22 @@ public class DefaultEvaluatorTest extends AbstractTest {
 	@Test
 	public void testEvaluate() {
 		assertEquals(26, e.evaluate("(2*3)+(4*5)"));
+	}
+
+	/** Tests strict mode; see {@link Evaluator#setStrict(boolean)}. */
+	@Test(expected = IllegalArgumentException.class)
+	public void testStrict() {
+		e.evaluate("foo=bar");
+	}
+
+	/** Tests non-strict mode; see {@link Evaluator#setStrict(boolean)}. */
+	@Test
+	public void testNonStrict() {
+		e.setStrict(false);
+		e.evaluate("foo=bar");
+		final Object bar = e.get(new Variable("foo"));
+		assertTrue(bar instanceof Unresolved);
+		assertEquals("bar", ((Unresolved) bar).getToken());
 	}
 
 	/**

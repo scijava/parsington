@@ -48,6 +48,8 @@ public abstract class AbstractEvaluator implements Evaluator {
 	private final HashMap<String, Object> vars = new HashMap<String, Object>();
 	private final ExpressionParser parser;
 
+	private boolean strict = true;
+
 	public AbstractEvaluator() {
 		this(new ExpressionParser());
 	}
@@ -61,6 +63,16 @@ public abstract class AbstractEvaluator implements Evaluator {
 	@Override
 	public ExpressionParser getParser() {
 		return parser;
+	}
+
+	@Override
+	public boolean isStrict() {
+		return strict;
+	}
+
+	@Override
+	public void setStrict(final boolean strict) {
+		this.strict = strict;
 	}
 
 	@Override
@@ -84,7 +96,8 @@ public abstract class AbstractEvaluator implements Evaluator {
 	public Object get(final Variable v) {
 		final String name = v.getToken();
 		if (vars.containsKey(name)) return vars.get(name);
-		throw new IllegalArgumentException("Unknown variable: " + name);
+		if (strict) throw new IllegalArgumentException("Unknown variable: " + name);
+		return new Unresolved(name);
 	}
 
 	@Override
