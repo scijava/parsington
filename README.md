@@ -4,10 +4,9 @@
 # Parsington
 
 Parsington is an infix-to-postfix (or infix-to-syntax-tree) expression parser
-for mathematical expressions written in Java.
-
-It is simple yet fancy, handling (customizable) operators, functions, variables
-and constants in a similar way to what the Java language itself supports.
+for mathematical expressions written in Java. It is simple yet fancy, handling
+(customizable) operators, functions, variables and constants in a similar way
+to what the Java language itself supports.
 
 Parsington is part of the [SciJava](http://scijava.org/) project
 for scientific computing in Java.
@@ -47,18 +46,70 @@ In your POM `<dependencies>`:
   <version>1.0.0</version>
 </dependency>
 ```
+
+### Postfix queues
+
 To parse an infix expression to a postfix queue:
 ```java
 LinkedList<Object> queue = new ExpressionParser().parsePostfix("a+b*c^f(1,2)'");
+// queue = [a, b, c, f, 1, 2, (2), <Fn>, ^, ', *, +]
 ```
+
+### Suffix trees
+
 To parse an infix expression to a suffix tree:
 ```java
 SuffixTree tree = new ExpressionParser().parseTree("a+b*c^f(1,2)'");
 ```
+```
+       +-------+
+       |   +   |
+       +---+---+
+           |
+    +------+------+
+    |             |
++---+---+     +---+---+
+|   a   |     |   *   |
++-------+     +---+---+
+                  |
+           +------+------+
+           |             |
+       +---+---+     +---+---+
+       |   b   |     |   '   |
+       +-------+     +---+---+
+                         |
+                         |
+                     +---+---+
+                     |   ^   |
+                     +---+---+
+                         |
+                  +------+------+
+                  |             |
+              +---+---+     +---+---+
+              |   c   |     | <Fn>  |
+              +-------+     +---+---+
+                                |
+                         +------+------+
+                         |             |
+                     +---+---+     +---+---+
+                     |   f   |     |  (2)  |
+                     +-------+     +---+---+
+                                       |
+                                +------+------+
+                                |             |
+                            +---+---+     +---+---+
+                            |   1   |     |   2   |
+                            +-------+     +-------+
+```
+
+### Evaluation
+
 To evaluate an expression involving basic types:
 ```java
 Object result = new DefaultEvaluator().evaluate("6.5*7.8^2.3");
 ```
+
+### Interactive console
 
 There is also an [interactive console
 shell](src/main/java/org/scijava/parse/Main.java) you can play with:
@@ -66,4 +117,24 @@ shell](src/main/java/org/scijava/parse/Main.java) you can play with:
 ```shell
 mvn
 java -jar target/parsington-*-SNAPSHOT.jar
+```
+```
+> 6.5*7.8^2.3
+732.3706691398969
+> postfix('6.5*7.8^2.3')
+6.5
+7.8
+2.3
+^
+*
+> tree('6.5*7.8^2.3')
+ '*'
+ - '6.5'
+ - '^'
+  -- '7.8'
+  -- '2.3'
+
+> 2*3,4
+      ^
+Misplaced separator or mismatched groups at index 4
 ```
