@@ -63,6 +63,7 @@
 	</ciManagement>
 
 	<properties>
+		<scijava.jvm.version>1.6</scijava.jvm.version>
 		<main-class>org.scijava.parse.Main</main-class>
 		<package-name>org.scijava.parse</package-name>
 
