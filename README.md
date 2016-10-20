@@ -6,8 +6,8 @@
 Parsington is an infix-to-postfix (or infix-to-syntax-tree) expression parser
 for mathematical expressions written in Java.
 
-It handles (customizable) operators, functions, variables and constants in a
-similar way to what the Java language itself supports.
+It is simple yet fancy, handling (customizable) operators, functions, variables
+and constants in a similar way to what the Java language itself supports.
 
 Parsington is part of the [SciJava](http://scijava.org/) project
 for scientific computing in Java.
