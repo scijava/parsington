@@ -1,24 +1,28 @@
-[![](https://img.shields.io/maven-central/v/org.scijava/scijava-expression-parser.svg)](http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22org.scijava%22%20AND%20a%3A%22scijava-expression-parser%22)
-[![](http://jenkins.imagej.net/job/SciJava-expression-parser/lastBuild/badge/icon)](http://jenkins.imagej.net/job/SciJava-expression-parser/)
+[![](https://img.shields.io/maven-central/v/org.scijava/parsington.svg)](http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22org.scijava%22%20AND%20a%3A%22parsington%22)
+[![](http://jenkins.imagej.net/job/Parsington/lastBuild/badge/icon)](http://jenkins.imagej.net/job/Parsington/)
 
-# SciJava Expression Parser (SJEP)
+# Parsington
 
-The SciJava Expression Parser is an infix-to-postfix (or infix-to-syntax-tree)
-expression parser for mathematical expressions written in Java. It handles
-(customizable) operators, functions, variables and constants in a similar way
-to what the Java language itself supports.
+Parsington is an infix-to-postfix (or infix-to-syntax-tree) expression parser
+for mathematical expressions written in Java.
+
+It handles (customizable) operators, functions, variables and constants in a
+similar way to what the Java language itself supports.
+
+Parsington is part of the [SciJava](http://scijava.org/) project
+for scientific computing in Java.
 
 ## Rationale
 
 Expression parsers are as old as the hills; what makes this one different?
 
 * __No dependencies.__
-* __[Available on Maven Central](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.scijava%22%20AND%20a%3A%22scijava-expression-parser%22).__
+* __[Available on Maven Central](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.scijava%22%20AND%20a%3A%22parsington%22).__
 * __Permissive BSD-2 license.__ See [LICENSE.txt](LICENSE.txt).
-* __Separation of concerns.__ SJEP is a _parser_, not an _evaluator_. Once you
-  have the postfix queue and/or syntax tree, what you do with it is your
-  business (though there is a [small evaluation API in the eval
-  subpackage](src/main/java/org/scijava/sjep/eval) if that appeals to you).
+* __Separation of concerns.__ Parsington is a _parser_, not an _evaluator_.
+  Once you have the postfix queue and/or syntax tree, what you do with it is
+  your business (though there is a [small evaluation API in the eval
+  subpackage](src/main/java/org/scijava/parser/eval) if that appeals to you).
   In general, there is no assumption that your variables will consist of any
   particular data type, numerical or otherwise.
 * __Clean, well-commented codebase with unit tests.__ 'Nuff said!
@@ -31,7 +35,7 @@ primitive doubles, or one that conflated parsing with evaluation, or one
 licensed in a restrictive way. Just a simple infix parser: a nice shunting yard
 implementation, or maybe some lovely recursive descent. Something on GitHub,
 with no dependencies, available on Maven Central. But surprisingly, there was
-only tumbleweed. So SJEP was born, and all our problems are now over!
+only tumbleweed. So Parsington was born, and all our problems are now over!
 
 ## Usage
 
@@ -39,8 +43,8 @@ In your POM `<dependencies>`:
 ```xml
 <dependency>
   <groupId>org.scijava</groupId>
-  <artifactId>scijava-expression-parser</artifactId>
-  <version>3.0.0</version>
+  <artifactId>parsington</artifactId>
+  <version>1.0.0</version>
 </dependency>
 ```
 To parse an infix expression to a postfix queue:
@@ -57,9 +61,9 @@ Object result = new DefaultEvaluator().evaluate("6.5*7.8^2.3");
 ```
 
 There is also an [interactive console
-shell](src/main/java/org/scijava/sjep/Main.java) you can play with:
+shell](src/main/java/org/scijava/parse/Main.java) you can play with:
 
 ```shell
 mvn
-java -jar target/scijava-expression-parser-*-SNAPSHOT.jar
+java -jar target/parsington-*-SNAPSHOT.jar
 ```

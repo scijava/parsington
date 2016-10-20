@@ -9,12 +9,12 @@
 		<relativePath />
 	</parent>
 
-	<artifactId>scijava-expression-parser</artifactId>
-	<version>3.1.1-SNAPSHOT</version>
+	<artifactId>parsington</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
 
-	<name>SciJava Expression Parser</name>
+	<name>Parsington: The SciJava Expression Parser</name>
 	<description>A general-purpose mathematical expression parser, which converts infix expression strings into postfix queues and/or syntax trees.</description>
-	<url>https://github.com/scijava/scijava-expression-parser</url>
+	<url>https://github.com/scijava/parsington</url>
 	<inceptionYear>2015</inceptionYear>
 	<licenses>
 		<license>
@@ -48,22 +48,22 @@
 	</contributors>
 
 	<scm>
-		<connection>scm:git:git://github.com/scijava/scijava-expression-parser</connection>
-		<developerConnection>scm:git:git@github.com:scijava/scijava-expression-parser</developerConnection>
+		<connection>scm:git:git://github.com/scijava/parsington</connection>
+		<developerConnection>scm:git:git@github.com:scijava/parsington</developerConnection>
 		<tag>HEAD</tag>
-		<url>https://github.com/scijava/scijava-expression-parser</url>
+		<url>https://github.com/scijava/parsington</url>
 	</scm>
 	<issueManagement>
 		<system>GitHub Issues</system>
-		<url>https://github.com/scijava/scijava-expression-parser/issues</url>
+		<url>https://github.com/scijava/parsington/issues</url>
 	</issueManagement>
 	<ciManagement>
 		<system>Jenkins</system>
-		<url>http://jenkins.imagej.net/job/SciJava-expression-parser/</url>
+		<url>http://jenkins.imagej.net/job/Parsington/</url>
 	</ciManagement>
 
 	<properties>
-		<main-class>org.scijava.sjep.Main</main-class>
+		<main-class>org.scijava.parse.Main</main-class>
 	</properties>
 
 	<dependencies>
@@ -83,7 +83,7 @@
 					<archive>
 						<manifest>
 							<mainClass>${main-class}</mainClass>
-							<packageName>org.scijava.sjep</packageName>
+							<packageName>org.scijava.parse</packageName>
 						</manifest>
 					</archive>
 				</configuration>
@@ -95,7 +95,7 @@
 					<licenseName>bsd_2</licenseName>
 					<organizationName>Board of Regents of the University of
 Wisconsin-Madison.</organizationName>
-					<projectName>SciJava mathematical expression parser.</projectName>
+					<projectName>Parsington: the SciJava mathematical expression parser.</projectName>
 				</configuration>
 			</plugin>
 		</plugins>
