@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.scijava</groupId>
 		<artifactId>pom-scijava</artifactId>
-		<version>9.0.0</version>
+		<version>11.5.0</version>
 		<relativePath />
 	</parent>
 
@@ -64,6 +64,12 @@
 
 	<properties>
 		<main-class>org.scijava.parse.Main</main-class>
+		<package-name>org.scijava.parse</package-name>
+
+		<license.licenseName>bsd_2</license.licenseName>
+		<license.projectName>Parsington: the SciJava mathematical expression parser.</license.projectName>
+		<license.copyrightOwners>Board of Regents of the University of
+Wisconsin-Madison.</license.copyrightOwners>
 	</properties>
 
 	<dependencies>
@@ -74,30 +80,4 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-
-	<build>
-		<plugins>
-			<plugin>
-				<artifactId>maven-jar-plugin</artifactId>
-				<configuration>
-					<archive>
-						<manifest>
-							<mainClass>${main-class}</mainClass>
-							<packageName>org.scijava.parse</packageName>
-						</manifest>
-					</archive>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>license-maven-plugin</artifactId>
-				<configuration>
-					<licenseName>bsd_2</licenseName>
-					<organizationName>Board of Regents of the University of
-Wisconsin-Madison.</organizationName>
-					<projectName>Parsington: the SciJava mathematical expression parser.</projectName>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
 </project>
