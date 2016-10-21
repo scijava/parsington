@@ -21,7 +21,7 @@ Expression parsers are as old as the hills; what makes this one different?
 * __Separation of concerns.__ Parsington is a _parser_, not an _evaluator_.
   Once you have the postfix queue and/or syntax tree, what you do with it is
   your business (though there is a [small evaluation API in the eval
-  subpackage](src/main/java/org/scijava/parser/eval) if that appeals to you).
+  subpackage](src/main/java/org/scijava/parse/eval) if that appeals to you).
   In general, there is no assumption that your variables will consist of any
   particular data type, numerical or otherwise.
 * __Clean, well-commented codebase with unit tests.__ 'Nuff said!
