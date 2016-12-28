@@ -41,10 +41,12 @@
 	</developers>
 	<contributors>
 		<!--
-		NB: Need a least one element to override the parent.
+		NB: Need at least one element to override the parent.
 		See: https://issues.apache.org/jira/browse/MNG-5220
 		-->
-		<contributor><name>None</name></contributor>
+		<contributor>
+			<name>None</name>
+		</contributor>
 	</contributors>
 
 	<scm>
