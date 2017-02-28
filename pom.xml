@@ -60,8 +60,8 @@
 		<url>https://github.com/scijava/parsington/issues</url>
 	</issueManagement>
 	<ciManagement>
-		<system>Jenkins</system>
-		<url>http://jenkins.imagej.net/job/Parsington/</url>
+		<system>Travis CI</system>
+		<url>https://travis-ci.org/scijava/parsington</url>
 	</ciManagement>
 
 	<properties>
