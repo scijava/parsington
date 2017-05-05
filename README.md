@@ -112,8 +112,14 @@ Object result = new DefaultEvaluator().evaluate("6.5*7.8^2.3");
 ### Interactive console
 
 There is also an [interactive console
-shell](src/main/java/org/scijava/parse/Main.java) you can play with:
+shell](src/main/java/org/scijava/parse/Main.java) you can play with.
 
+Run it easily using [jrun](https://github.com/ctrueden/jrun):
+```
+jrun org.scijava:parsington
+```
+
+Or run from source, after cloning this repository:
 ```shell
 mvn
 java -jar target/parsington-*-SNAPSHOT.jar
