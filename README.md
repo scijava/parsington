@@ -55,11 +55,11 @@ LinkedList<Object> queue = new ExpressionParser().parsePostfix("a+b*c^f(1,2)'");
 // queue = [a, b, c, f, 1, 2, (2), <Fn>, ^, ', *, +]
 ```
 
-### Suffix trees
+### Syntax trees
 
-To parse an infix expression to a suffix tree:
+To parse an infix expression to a syntax tree:
 ```java
-SuffixTree tree = new ExpressionParser().parseTree("a+b*c^f(1,2)'");
+SyntaxTree tree = new ExpressionParser().parseTree("a+b*c^f(1,2)'");
 ```
 ```
        +-------+
