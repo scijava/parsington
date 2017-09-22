@@ -1,5 +1,5 @@
 language: java
-jdk: openjdk6
+jdk: openjdk7
 branches:
   only: master
 install: true
