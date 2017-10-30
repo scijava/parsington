@@ -1,12 +1,11 @@
 language: java
 jdk: openjdk7
 branches:
-  only: master
+  only:
+  - master
+  - "/.*-[0-9]+\\..*/"
 install: true
 script: ".travis/build.sh"
-after_success: ".travis/notify.sh Travis-Success"
-after_failure: ".travis/notify.sh Travis-Failure"
-env:
-  global:
-  - secure: ZuGY1ziNimZG6yhkEjUGmS4hCgcq5TxuZ4hTdlp8xJimnrdp9JCVFprAwldq/gUH7LPEoMuwq+cOlr7DnFHfGfVMmx+grreQ7HmucvEHWpET/vyfSa6/P+mJa2AVRLmnPutP6O0OkgD+NsZ8cqd3EAwgQUM1okZ3lx1XhgU2MRg=
-  - secure: YDcd0PGzvzwVmqv1iyLuSpoRt3B2I/MaCnye8E+0NCvvF4IBGVG60dUsEAumraFo5Spvk4gPzPYGCVgrN6BbGUjZ4h4fXoXPDDgb+2wNX6HcyJB3DdIMx/065AThlkmgzT+v7x+AwBZlBXh+G1NiblsDn35s/eQYGPk78Xd6sWw=
+cache:
+  directories:
+  - "~/.m2/repository"
