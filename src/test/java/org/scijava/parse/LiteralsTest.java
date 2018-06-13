@@ -215,7 +215,9 @@ public class LiteralsTest extends AbstractTest {
 		// Test scientific notation.
 		assertNumber(1e2, Literals.parseDecimal("1e2"));
 		assertNumber(1.2e3, Literals.parseDecimal("1.2e3"));
+		assertNumber(4.5e-6, Literals.parseDecimal("4.5e-6"));
 		assertNumber(1.2e3f, Literals.parseDecimal("1.2e3f"));
+		assertNumber(4.5e-6f, Literals.parseDecimal("4.5e-6f"));
 	}
 
 	@Test

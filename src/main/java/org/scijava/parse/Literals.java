@@ -54,7 +54,7 @@ public final class Literals {
 		"(([-+]?)0([0-7]+)([Ll]?)).*");
 
 	private static final Pattern DECIMAL = Pattern.compile(
-		"(([-+]?[0-9]+(\\.[0-9]*)?([Ee][0-9]+)?)([Dd]|[Ff]|[Ll])?).*");
+		"(([-+]?[0-9]+(\\.[0-9]*)?([Ee][-+]?[0-9]+)?)([Dd]|[Ff]|[Ll])?).*");
 
 	private Literals() {
 		// NB: Prevent instantiation of utility class.
