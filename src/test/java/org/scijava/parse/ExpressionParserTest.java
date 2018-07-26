@@ -829,6 +829,20 @@ public class ExpressionParserTest extends AbstractTest {
 		assertSame(Operators.SUB, queue.pop());
 	}
 
+	/** Tests expressions ending in whitespace. */
+	@Test
+	public void testWhitespace() {
+		final ExpressionParser parser = new ExpressionParser();
+
+		assertTrue(parser.parsePostfix(" ").isEmpty());
+		assertTrue(parser.parsePostfix("  \t \n  \r").isEmpty());
+
+		final LinkedList<Object> queue = parser.parsePostfix(" 3 ");
+		assertNotNull(queue);
+		assertEquals(1, queue.size());
+		assertSame(3, queue.pop());
+	}
+
 	/** Tests that parsing an invalid expression fails appropriately. */
 	@Test
 	public void testInvalid() {

@@ -148,11 +148,13 @@ public class ExpressionParser {
 		 * Polish notation</a> (i.e., postfix notation).
 		 */
 		public LinkedList<Object> parsePostfix() {
-			// While there are tokens to be read...
-			while (pos.get() < expression.length()) {
+			while (true) {
 				// PROTIP: Put a breakpoint here, and watch the expression
 				// parser do its thing piece by piece in your debugger!
 				parseWhitespace();
+
+				// Stop if there are no more tokens to be read.
+				if (pos.get() == expression.length()) break;
 
 				// If next token is a literal, add it to the output queue.
 				final Object literal = parseLiteral();
