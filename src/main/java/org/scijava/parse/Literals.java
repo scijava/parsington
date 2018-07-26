@@ -456,7 +456,9 @@ public final class Literals {
 	{
 		final int i = pos.get();
 		final boolean sign = s.charAt(i) == '-' || s.charAt(i) == '+';
-		final char digit = s.charAt(sign ? i + 1 : i);
+		final int digitIndex = sign ? i + 1 : i;
+		if (digitIndex >= s.length()) return false; // at end of string
+		final char digit = s.charAt(digitIndex);
 		return digit >= '0' && digit <= '9';
 	}
 

@@ -807,6 +807,27 @@ public class ExpressionParserTest extends AbstractTest {
 		assertEquals(0, parser.parsePostfix("").size());
 	}
 
+	/** Tests expression ending with a unary minus. */
+	@Test
+	public void testTrailingUnaryMinus() {
+		final ExpressionParser parser = new ExpressionParser();
+		final LinkedList<Object> queue = parser.parsePostfix("-");
+		assertNotNull(queue);
+		assertEquals(1, queue.size());
+		assertSame(Operators.NEG, queue.pop());
+	}
+
+	/** Tests expression ending with a binary minus. */
+	@Test
+	public void testTrailingBinaryMinus() {
+		final ExpressionParser parser = new ExpressionParser();
+		final LinkedList<Object> queue = parser.parsePostfix("1-");
+		assertNotNull(queue);
+		assertEquals(2, queue.size());
+		assertSame(1, queue.pop());
+		assertSame(Operators.SUB, queue.pop());
+	}
+
 	/** Tests that parsing an invalid expression fails appropriately. */
 	@Test
 	public void testInvalid() {
