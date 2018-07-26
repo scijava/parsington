@@ -33,6 +33,7 @@ package org.scijava.parse;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.LinkedList;
@@ -804,7 +805,7 @@ public class ExpressionParserTest extends AbstractTest {
 	@Test
 	public void testEmpty() {
 		final ExpressionParser parser = new ExpressionParser();
-		assertEquals(0, parser.parsePostfix("").size());
+		assertTrue(parser.parsePostfix("").isEmpty());
 	}
 
 	/** Tests expression ending with a unary minus. */
