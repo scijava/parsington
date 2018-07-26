@@ -31,9 +31,10 @@
 package org.scijava.parse;
 
 /**
- * A mathematical operator is a "verb": a special infix (in the case of binary
- * or greater arity) or prefix (in the case of unary) symbol which defines a
- * relation between "nouns" (i.e.: literals and variables).
+ * A mathematical operator is a special symbol or "verb" which defines a
+ * relation between "nouns" (i.e.: literals and variables). For binary
+ * operators, it is infix (between the nouns); for unary operators, it is either
+ * prefix (preceding the noun) or postfix (following the noun).
  *
  * @author Curtis Rueden
  */
