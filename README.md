@@ -134,7 +134,7 @@ Simple example invocations with the console's default evaluator:
 Misplaced separator or mismatched groups at index 4
 ```
 
-The `postfix` built-in function you introspect a parsed postfix queue:
+The `postfix` built-in function lets you introspect a parsed postfix queue:
 ```
 > postfix('6.5*7.8^2.3')
 6.5 : java.lang.Double
