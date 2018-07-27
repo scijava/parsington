@@ -124,23 +124,67 @@ Or run from source, after cloning this repository:
 mvn
 java -jar target/parsington-*-SNAPSHOT.jar
 ```
+
+Simple example invocations with the console's default evaluator:
 ```
 > 6.5*7.8^2.3
-732.3706691398969
-> postfix('6.5*7.8^2.3')
-6.5
-7.8
-2.3
-^
-*
-> tree('6.5*7.8^2.3')
- '*'
- - '6.5'
- - '^'
-  -- '7.8'
-  -- '2.3'
-
+732.3706691398969 : java.lang.Double
 > 2*3,4
       ^
 Misplaced separator or mismatched groups at index 4
+```
+
+The `postfix` built-in function you introspect a parsed postfix queue:
+> postfix('6.5*7.8^2.3')
+6.5 : java.lang.Double
+7.8 : java.lang.Double
+2.3 : java.lang.Double
+^ : org.scijava.parse.Operator
+* : org.scijava.parse.Operator
+> postfix('[1, 2f, 3d, 4., 5L, 123456789987654321, 9987654321234567899]')
+1 : java.lang.Integer
+2.0 : java.lang.Float
+3.0 : java.lang.Double
+4.0 : java.lang.Double
+5 : java.lang.Long
+123456789987654321 : java.lang.Long
+9987654321234567899 : java.math.BigInteger
+[7] : org.scijava.parse.Group
+> postfix('f(x, y) = x*y')
+f : org.scijava.parse.Variable
+x : org.scijava.parse.Variable
+y : org.scijava.parse.Variable
+(2) : org.scijava.parse.Group
+<Fn> : org.scijava.parse.Function
+x : org.scijava.parse.Variable
+y : org.scijava.parse.Variable
+* : org.scijava.parse.Operator
+= : org.scijava.parse.Operator
+> postfix('math.pow(q) = q^q')
+math : org.scijava.parse.Variable
+pow : org.scijava.parse.Variable
+. : org.scijava.parse.Operator
+q : org.scijava.parse.Variable
+(1) : org.scijava.parse.Group
+<Fn> : org.scijava.parse.Function
+q : org.scijava.parse.Variable
+q : org.scijava.parse.Variable
+^ : org.scijava.parse.Operator
+= : org.scijava.parse.Operator
+```
+
+The `tree` function is another way to introspect, in syntax tree form:
+```
+> tree('math.pow(q) = q^q')
+ '='
+ - '<Fn>'
+  -- '.'
+   --- 'math'
+   --- 'pow'
+  -- '(1)'
+   --- 'q'
+ - '^'
+  -- 'q'
+  -- 'q'
+ : org.scijava.parse.SyntaxTree
 ```
