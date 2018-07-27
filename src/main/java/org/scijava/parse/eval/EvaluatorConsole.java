@@ -87,6 +87,8 @@ public class EvaluatorConsole {
 		}
 	}
 
+	// -- Helper methods --
+
 	private void printResult(final Object o) {
 		if (o instanceof List) {
 			for (final Object item : (List<?>) o) {
@@ -99,17 +101,15 @@ public class EvaluatorConsole {
 		else println(o);
 	}
 
-	public void print(final Object o) {
+	private void print(final Object o) {
 		System.out.print(o);
 	}
 
-	public void println(final Object o) {
+	private void println(final Object o) {
 		System.out.println(o);
 	}
 
-	// -- Helper methods --
-
-	private static String caret(final int index) {
+	private String caret(final int index) {
 		final StringBuilder sb = new StringBuilder();
 		final int count = PROMPT.length() + index;
 		for (int i = 0; i < count; i++) {
