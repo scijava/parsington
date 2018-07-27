@@ -135,6 +135,7 @@ Misplaced separator or mismatched groups at index 4
 ```
 
 The `postfix` built-in function you introspect a parsed postfix queue:
+```
 > postfix('6.5*7.8^2.3')
 6.5 : java.lang.Double
 7.8 : java.lang.Double
