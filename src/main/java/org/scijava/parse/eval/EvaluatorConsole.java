@@ -71,6 +71,7 @@ public class EvaluatorConsole {
 			if (line == null) break;
 			try {
 				final Object result = evaluator.evaluate(line);
+				evaluator.setStrict(false);
 				if (result != null) printResult(result);
 			}
 			catch (final IllegalArgumentException exc) {
@@ -96,9 +97,15 @@ public class EvaluatorConsole {
 			}
 		}
 		else if (Tokens.isVariable(o)) {
-			println(o + " = " + evaluator.value(o));
+			final Object value = evaluator.value(o);
+			if (value instanceof Unresolved) println(valueAndType(o));
+			else println(valueAndType(o) + " = " + valueAndType(value));
 		}
-		else println(o);
+		else println(valueAndType(o));
+	}
+
+	private String valueAndType(final Object o) {
+		return o + " : " + o.getClass().getName();
 	}
 
 	private void print(final Object o) {
