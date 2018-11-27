@@ -32,6 +32,7 @@ package org.scijava.parse;
 
 import java.io.IOException;
 
+import org.scijava.parse.eval.DefaultEvaluator;
 import org.scijava.parse.eval.EvaluatorConsole;
 
 /**
@@ -49,7 +50,22 @@ public final class Main {
 	// -- Main method --
 
 	public static void main(final String[] args) throws IOException {
-		new EvaluatorConsole().showConsole();
+		final DefaultEvaluator evaluator = new DefaultEvaluator();
+		if (args.length > 0) {
+			// Evaluate the given expressions.
+			for (final String expression : args) {
+				Object result = evaluator.evaluate(expression);
+				if (result instanceof Variable) {
+					// Unwrap the variable.
+					result = evaluator.get((Variable) result);
+				}
+				System.out.println(result);
+			}
+		}
+		else {
+			// Show the REPL.
+			new EvaluatorConsole(evaluator).showConsole();
+		}
 	}
 
 }
