@@ -114,9 +114,9 @@ Object result = new DefaultEvaluator().evaluate("6.5*7.8^2.3");
 There is also an [interactive console
 shell](src/main/java/org/scijava/parse/Main.java) you can play with.
 
-Run it easily using [jrun](https://github.com/ctrueden/jrun):
+Run it easily using [jgo](https://github.com/scijava/jgo):
 ```
-jrun org.scijava:parsington
+jgo org.scijava:parsington
 ```
 
 Or run from source, after cloning this repository:
