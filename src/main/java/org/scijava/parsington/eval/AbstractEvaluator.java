@@ -34,7 +34,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.scijava.parsington.ExpressionParser;
-import org.scijava.parsington.SyntaxTree;
 import org.scijava.parsington.Tokens;
 import org.scijava.parsington.Variable;
 
@@ -73,18 +72,6 @@ public abstract class AbstractEvaluator implements Evaluator {
 	@Override
 	public void setStrict(final boolean strict) {
 		this.strict = strict;
-	}
-
-	@Override
-	public Object evaluate(final SyntaxTree syntaxTree) {
-		// Convert the syntax tree to postfix.
-		return evaluate(syntaxTree.postfix());
-	}
-
-	@Override
-	public Object evaluate(final String expression) {
-		// Convert the expression to postfix.
-		return evaluate(parser.parsePostfix(expression));
 	}
 
 	@Override
