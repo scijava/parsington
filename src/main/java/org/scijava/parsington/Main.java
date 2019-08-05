@@ -32,7 +32,7 @@ package org.scijava.parsington;
 
 import java.io.IOException;
 
-import org.scijava.parsington.eval.DefaultEvaluator;
+import org.scijava.parsington.eval.DefaultTreeEvaluator;
 import org.scijava.parsington.eval.EvaluatorConsole;
 
 /**
@@ -50,7 +50,7 @@ public final class Main {
 	// -- Main method --
 
 	public static void main(final String[] args) throws IOException {
-		final DefaultEvaluator evaluator = new DefaultEvaluator();
+		final DefaultTreeEvaluator evaluator = new DefaultTreeEvaluator();
 		if (args.length > 0) {
 			// Evaluate the given expressions.
 			for (final String expression : args) {

@@ -44,34 +44,15 @@ import org.scijava.parsington.Variable;
 /**
  * An expression evaluator for most {@link Operators standard operators} with
  * common built-in types (i.e.: {@link Boolean}s, {@link String}s and
- * {@link Number}s). <h2>Caveats</h2>
+ * {@link Number}s).
  * <p>
- * This class is a big bag of case logic for various operators and types.
- * Looking at it, you might think: "It sure would be nice to modularize this,
- * with each operation in its own class, with properly declared types, and
- * called dynamically at runtime as appropriate."
- * </p>
- * <p>
- * "Great idea!" I would reply. Then I would suggest you have a look at the <a
- * href="https://github.com/scijava/scijava-ops">SciJava Ops</a> and <a
- * href="https://github.com/imagej/imagej-ops">ImageJ Ops</a> projects, which do
- * exactly that in an extensible way.
- * </p>
- * <p>
- * Or maybe you are thinking: "This can't possibly work as well as awesome
- * JVM-based scripting languages like <a href="http://jython.org/">Jython</a>
- * and <a href="http://groovy.codehaus.org/">Groovy</a>..."
- * </p>
- * <p>
- * To which I would reply: "You are absolutely right! This class is mostly just
- * a demonstration of an extensible, working evaluator built using the
- * {@link org.scijava.parsington.eval} package. If your use case is only concerned
- * with feature-rich evaluation of standard types, then building on top of a
- * scripting language might make more sense."
+ * It is recommended to use {@link DefaultTreeEvaluator} instead, unless your
+ * expression's syntax tree is so deep it exceeds the maximum recursion depth.
  * </p>
  *
  * @author Curtis Rueden
- * @see org.scijava.parsington.Main The main class, to give it a spin.
+ * @see DefaultTreeEvaluator For an evaluator that supports ternary
+ *      short-circuiting.
  */
 public class DefaultEvaluator extends AbstractStandardStackEvaluator {
 
