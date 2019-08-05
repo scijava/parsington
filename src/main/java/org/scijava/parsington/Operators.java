@@ -49,7 +49,10 @@ import org.scijava.parsington.Operator.Associativity;
  * >MATLAB standard operators</a>.
  * <p>
  * Note that the {@code ^} operator is assigned MATLAB's meaning of
- * exponentiation, rather than Java's meaning of bitwise XOR.
+ * exponentiation, rather than Java's meaning of bitwise XOR. And the {@code :}
+ * operator&mdash;which in MATLAB resides at a precedence between the shift and
+ * relational operators&mdash;is instead assigned a lower precedence to
+ * facilitate support for a Java-like ternary {@code ?:} operation.
  * </p>
  *
  * @author Curtis Rueden
@@ -108,10 +111,6 @@ public final class Operators {
 	public static final Operator RIGHT_SHIFT = op(">>", 2, LEFT, 10);
 	public static final Operator UNSIGNED_RIGHT_SHIFT = op(">>>", 2, LEFT, 10);
 
-	// -- colon --
-
-	public static final Operator COLON = op(":", 2, LEFT, 9);
-
 	// -- relational --
 
 	public static final Operator LESS_THAN = op("<", 2, LEFT, 8);
@@ -148,7 +147,10 @@ public final class Operators {
 
 	// -- ternary --
 
-	// NB: Ternary (? :) operator is not currently supported.
+	// NB: These will not be parsed as true ternary operators.
+	// But the behavior can be simulated at evaluation time.
+	public static final Operator QUESTION = op("?", 2, LEFT, 1);
+	public static final Operator COLON = op(":", 2, LEFT, 1.5);
 
 	// -- assignment --
 

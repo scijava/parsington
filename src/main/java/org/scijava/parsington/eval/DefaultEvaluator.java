@@ -374,14 +374,6 @@ public class DefaultEvaluator extends AbstractStandardStackEvaluator {
 	public int unsignedRightShift(final int a, final int b) { return a >>> b; }
 	public long unsignedRightShift(final long a, final long b) { return a >>> b; }
 
-	// -- colon --
-
-	@Override
-	public Object colon(final Object a, final Object b) {
-		// NB: Unimplemented.
-		return null;
-	}
-
 	// -- relational --
 
 	@Override

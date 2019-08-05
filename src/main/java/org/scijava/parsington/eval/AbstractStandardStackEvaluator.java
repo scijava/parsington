@@ -96,6 +96,20 @@ public abstract class AbstractStandardStackEvaluator extends
 		return result;
 	}
 
+	// -- ternary --
+
+	@Override
+	public Object question(final Object a, final Object b) {
+		// NB: Unimplemented.
+		return null;
+	}
+
+	@Override
+	public Object colon(final Object a, final Object b) {
+		// NB: Unimplemented.
+		return null;
+	}
+
 	// -- assignment --
 
 	@Override
@@ -223,7 +237,6 @@ public abstract class AbstractStandardStackEvaluator extends
 		if (op == Operators.LEFT_SHIFT) return leftShift(a, b);
 		if (op == Operators.RIGHT_SHIFT) return rightShift(a, b);
 		if (op == Operators.UNSIGNED_RIGHT_SHIFT) return unsignedRightShift(a, b);
-		if (op == Operators.COLON) return colon(a, b);
 		if (op == Operators.LESS_THAN) return lessThan(a, b);
 		if (op == Operators.GREATER_THAN) return greaterThan(a, b);
 		if (op == Operators.LESS_THAN_OR_EQUAL) return lessThanOrEqual(a, b);
@@ -235,6 +248,8 @@ public abstract class AbstractStandardStackEvaluator extends
 		if (op == Operators.BITWISE_OR) return bitwiseOr(a, b);
 		if (op == Operators.LOGICAL_AND) return logicalAnd(a, b);
 		if (op == Operators.LOGICAL_OR) return logicalOr(a, b);
+		if (op == Operators.QUESTION) return question(a, b);
+		if (op == Operators.COLON) return colon(a, b);
 		if (op == Operators.ASSIGN) return assign(a, b);
 		if (op == Operators.POW_ASSIGN) return powAssign(a, b);
 		if (op == Operators.DOT_POW_ASSIGN) return dotPowAssign(a, b);

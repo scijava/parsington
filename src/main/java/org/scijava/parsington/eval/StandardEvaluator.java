@@ -146,11 +146,6 @@ public interface StandardEvaluator extends Evaluator {
 	/** Applies the {@link Operators#UNSIGNED_RIGHT_SHIFT} operator. */
 	Object unsignedRightShift(Object a, Object b);
 
-	// -- colon --
-
-	/** Applies the {@link Operators#COLON} operator. */
-	Object colon(Object a, Object b);
-
 	// -- relational --
 
 	/** Applies the {@link Operators#LESS_THAN} operator. */
@@ -191,6 +186,14 @@ public interface StandardEvaluator extends Evaluator {
 
 	/** Applies the {@link Operators#LOGICAL_OR} operator. */
 	Object logicalOr(Object a, Object b);
+
+	// -- ternary --
+
+	/** Applies the {@link Operators#QUESTION} operator. */
+	Object question(Object a, Object b);
+
+	/** Applies the {@link Operators#COLON} operator. */
+	Object colon(Object a, Object b);
 
 	// -- assignment --
 
