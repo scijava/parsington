@@ -47,6 +47,10 @@ import org.scijava.parse.Operator.Associativity;
  * >Java standard operators</a> and <a href=
  * "http://www.mathworks.com/help/matlab/matlab_prog/operator-precedence.html"
  * >MATLAB standard operators</a>.
+ * <p>
+ * Note that the {@code ^} operator is assigned MATLAB's meaning of
+ * exponentiation, rather than Java's meaning of bitwise XOR.
+ * </p>
  *
  * @author Curtis Rueden
  */
