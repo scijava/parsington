@@ -108,6 +108,25 @@ public class SyntaxTreeTest extends AbstractTest {
 		assertSameLists(expected, tree.postfix());
 	}
 
+	@Test
+	public void testNullaryFunction() {
+		// infix: f()
+		// postfix: f (0) <Fn>
+		final LinkedList<Object> queue = queue(var("f"), group(Operators.PARENS, 0), func());
+
+		// NB: SyntaxTree constructor consumes the queue, so save a copy.
+		final LinkedList<Object> expected = new LinkedList<Object>(queue);
+
+		final SyntaxTree tree = new SyntaxTree(queue);
+
+		assertNotNull(tree);
+		assertFunction(token(tree));
+		assertVariable("f", token(tree, 0));
+		assertGroup(Operators.PARENS, 0, token(tree, 1));
+
+		assertSameLists(expected, tree.postfix());
+	}
+
 	// -- Helper methods --
 
 	private LinkedList<Object> queue(final Object... args) {

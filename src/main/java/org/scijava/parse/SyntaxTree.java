@@ -57,9 +57,11 @@ public class SyntaxTree implements Iterable<SyntaxTree> {
 		if (Tokens.isOperator(token)) {
 			final Operator op = (Operator) token;
 			final int arity = op.getArity();
-			if (arity > 0) children = new SyntaxTree[arity];
-			for (int i = children.length - 1; i >= 0; i--) {
-				children[i] = new SyntaxTree(tokens);
+			if (arity > 0) {
+				children = new SyntaxTree[arity];
+				for (int i = children.length - 1; i >= 0; i--) {
+					children[i] = new SyntaxTree(tokens);
+				}
 			}
 		}
 	}
