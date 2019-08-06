@@ -1,4 +1,4 @@
-[![](https://img.shields.io/maven-central/v/org.scijava/parsington.svg)](http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22org.scijava%22%20AND%20a%3A%22parsington%22)
+[![](https://img.shields.io/maven-central/v/org.scijava/parsington.svg)](https://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22org.scijava%22%20AND%20a%3A%22parsington%22)
 [![](https://travis-ci.org/scijava/parsington.svg?branch=master)](https://travis-ci.org/scijava/parsington)
 
 # Parsington
@@ -8,7 +8,7 @@ for mathematical expressions written in Java. It is simple yet fancy, handling
 (customizable) operators, functions, variables and constants in a similar way
 to what the Java language itself supports.
 
-Parsington is part of the [SciJava](http://scijava.org/) project
+Parsington is part of the [SciJava](https://scijava.org/) project
 for scientific computing in Java.
 
 ## Rationale
@@ -16,7 +16,7 @@ for scientific computing in Java.
 Expression parsers are as old as the hills; what makes this one different?
 
 * __No dependencies.__
-* __[Available on Maven Central](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.scijava%22%20AND%20a%3A%22parsington%22).__
+* __[Available on Maven Central](https://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.scijava%22%20AND%20a%3A%22parsington%22).__
 * __Permissive BSD-2 license.__ See [LICENSE.txt](LICENSE.txt).
 * __Separation of concerns.__ Parsington is a _parser_, not an _evaluator_.
   Once you have the postfix queue and/or syntax tree, what you do with it is
