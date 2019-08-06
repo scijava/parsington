@@ -24,7 +24,9 @@ Expression parsers are as old as the hills; what makes this one different?
   subpackage](src/main/java/org/scijava/parse/eval) if that appeals to you).
   In general, there is no assumption that your variables will consist of any
   particular data type, numerical or otherwise.
-* __Clean, well-commented codebase with unit tests.__ 'Nuff said!
+* __Clean, well-commented codebase with unit tests.__ Import the source into
+  your favorite IDE and watch Parsington in action by putting a breakpoint
+  [here](/scijava/parsington/blob/parsington-1.0.5/src/main/java/org/scijava/parse/ExpressionParser.java#L152-L154).
 
 ## History
 
