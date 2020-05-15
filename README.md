@@ -21,17 +21,17 @@ Expression parsers are as old as the hills; what makes this one different?
 * __Separation of concerns.__ Parsington is a _parser_, not an _evaluator_.
   Once you have the postfix queue and/or syntax tree, what you do with it is
   your business (though there is a [small evaluation API in the eval
-  subpackage](src/main/java/org/scijava/parse/eval) if that appeals to you).
+  subpackage](src/main/java/org/scijava/parsington/eval) if that appeals to you).
   In general, there is no assumption that your variables will consist of any
   particular data type, numerical or otherwise.
 * __Extensibility.__ The
-  [default operators](src/main/java/org/scijava/parse/Operators.java), a
+  [default operators](src/main/java/org/scijava/parsington/Operators.java), a
   synthesis of Java and MATLAB syntax, work well. But if you need something
   else, you can define your own unary and binary operators with whatever
   symbols, precedence and associativity you desire.
 * __Clean, well-commented codebase with unit tests.__ Import the source into
   your favorite IDE and watch Parsington in action by putting a breakpoint
-  [here](/scijava/parsington/blob/parsington-1.0.5/src/main/java/org/scijava/parse/ExpressionParser.java#L152-L154).
+  [here](/scijava/parsington/blob/parsington-2.0.0/src/main/java/org/scijava/parsington/ExpressionParser.java#L152-L154).
 
 ## History
 
@@ -50,7 +50,7 @@ In your POM `<dependencies>`:
 <dependency>
   <groupId>org.scijava</groupId>
   <artifactId>parsington</artifactId>
-  <version>1.0.5</version>
+  <version>2.0.0</version>
 </dependency>
 ```
 
@@ -119,7 +119,7 @@ Object result = new DefaultEvaluator().evaluate("6.5*7.8^2.3");
 ### Interactive console
 
 There is also an [interactive console
-shell](src/main/java/org/scijava/parse/Main.java) you can play with.
+shell](src/main/java/org/scijava/parsington/Main.java) you can play with.
 
 Run it easily using [jgo](https://github.com/scijava/jgo):
 ```
@@ -147,8 +147,8 @@ The `postfix` built-in function lets you introspect a parsed postfix queue:
 6.5 : java.lang.Double
 7.8 : java.lang.Double
 2.3 : java.lang.Double
-^ : org.scijava.parse.Operator
-* : org.scijava.parse.Operator
+^ : org.scijava.parsington.Operator
+* : org.scijava.parsington.Operator
 > postfix('[1, 2f, 3d, 4., 5L, 123456789987654321, 9987654321234567899]')
 1 : java.lang.Integer
 2.0 : java.lang.Float
@@ -157,28 +157,28 @@ The `postfix` built-in function lets you introspect a parsed postfix queue:
 5 : java.lang.Long
 123456789987654321 : java.lang.Long
 9987654321234567899 : java.math.BigInteger
-[7] : org.scijava.parse.Group
+[7] : org.scijava.parsington.Group
 > postfix('f(x, y) = x*y')
-f : org.scijava.parse.Variable
-x : org.scijava.parse.Variable
-y : org.scijava.parse.Variable
-(2) : org.scijava.parse.Group
-<Fn> : org.scijava.parse.Function
-x : org.scijava.parse.Variable
-y : org.scijava.parse.Variable
-* : org.scijava.parse.Operator
-= : org.scijava.parse.Operator
+f : org.scijava.parsington.Variable
+x : org.scijava.parsington.Variable
+y : org.scijava.parsington.Variable
+(2) : org.scijava.parsington.Group
+<Fn> : org.scijava.parsington.Function
+x : org.scijava.parsington.Variable
+y : org.scijava.parsington.Variable
+* : org.scijava.parsington.Operator
+= : org.scijava.parsington.Operator
 > postfix('math.pow(q) = q^q')
-math : org.scijava.parse.Variable
-pow : org.scijava.parse.Variable
-. : org.scijava.parse.Operator
-q : org.scijava.parse.Variable
-(1) : org.scijava.parse.Group
-<Fn> : org.scijava.parse.Function
-q : org.scijava.parse.Variable
-q : org.scijava.parse.Variable
-^ : org.scijava.parse.Operator
-= : org.scijava.parse.Operator
+math : org.scijava.parsington.Variable
+pow : org.scijava.parsington.Variable
+. : org.scijava.parsington.Operator
+q : org.scijava.parsington.Variable
+(1) : org.scijava.parsington.Group
+<Fn> : org.scijava.parsington.Function
+q : org.scijava.parsington.Variable
+q : org.scijava.parsington.Variable
+^ : org.scijava.parsington.Operator
+= : org.scijava.parsington.Operator
 ```
 
 The `tree` function is another way to introspect, in syntax tree form:
@@ -194,5 +194,5 @@ The `tree` function is another way to introspect, in syntax tree form:
  - '^'
   -- 'q'
   -- 'q'
- : org.scijava.parse.SyntaxTree
+ : org.scijava.parsington.SyntaxTree
 ```
