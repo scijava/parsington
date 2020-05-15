@@ -101,7 +101,7 @@ public class SyntaxTree implements Iterable<SyntaxTree> {
 
 	@Override
 	public int hashCode() {
-		return token.hashCode() ^ children.hashCode();
+		return token.hashCode() ^ Arrays.deepHashCode(children);
 	}
 
 	// -- Iterable methods --
