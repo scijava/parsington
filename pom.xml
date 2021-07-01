@@ -74,8 +74,8 @@
 		<url>https://github.com/scijava/parsington/issues</url>
 	</issueManagement>
 	<ciManagement>
-		<system>Travis CI</system>
-		<url>https://travis-ci.org/scijava/parsington</url>
+		<system>GitHub Actions</system>
+		<url>https://github.com/scijava/parsington/actions</url>
 	</ciManagement>
 
 	<properties>

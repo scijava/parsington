@@ -1,5 +1,5 @@
 [![](https://img.shields.io/maven-central/v/org.scijava/parsington.svg)](https://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22org.scijava%22%20AND%20a%3A%22parsington%22)
-[![](https://travis-ci.org/scijava/parsington.svg?branch=master)](https://travis-ci.org/scijava/parsington)
+[![](https://github.com/scijava/parsington/actions/workflows/build-main.yml/badge.svg)](https://github.com/scijava/parsington/actions/workflows/build-main.yml)
 
 # Parsington
 
