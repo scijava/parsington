@@ -44,12 +44,14 @@
 		</developer>
 	</developers>
 	<contributors>
-		<!--
-		NB: Need at least one element to override the parent.
-		See: https://issues.apache.org/jira/browse/MNG-5220
-		-->
 		<contributor>
-			<name>None</name>
+			<name>Jan Eglinger</name>
+			<url>https://imagej.net/people/imagejan</url>
+			<properties><id>imagejan</id></properties>
+		</contributor>
+		<contributor>
+			<name>Matthew Miner</name>
+			<properties><id>mminer</id></properties>
 		</contributor>
 	</contributors>
 
