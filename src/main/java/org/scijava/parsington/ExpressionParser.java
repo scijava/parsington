@@ -55,9 +55,15 @@ public class ExpressionParser {
 
 	private final List<Operator> operators;
 
+	private final ParserChain parserChain;
+
 	/** Creates an expression parser with the default set of operators. */
 	public ExpressionParser() {
-		this(Operators.standardList());
+		this(Operators.standardList(), Parsers.standardChain());
+	}
+
+	public ExpressionParser(final Collection<? extends Operator> operators) {
+		this(operators,Parsers.standardChain());
 	}
 
 	/**
@@ -65,7 +71,7 @@ public class ExpressionParser {
 	 *
 	 * @param operators The collection of operators available to expressions.
 	 */
-	public ExpressionParser(final Collection<? extends Operator> operators) {
+	public ExpressionParser(final Collection<? extends Operator> operators, ParserChain parserChain) {
 		this.operators = new ArrayList<Operator>(operators);
 
 		// NB: Ensure operators with longer symbols come first.
@@ -83,6 +89,8 @@ public class ExpressionParser {
 				return t1.compareTo(t2);
 			}
 		});
+
+		this.parserChain = parserChain;
 	}
 
 	// -- ExpressionParser methods --
@@ -260,7 +268,7 @@ public class ExpressionParser {
 			// operators, or a quoted string with a quote operator.
 			if (infix) return null;
 
-			return Literals.parseLiteral(expression, pos);
+			return parserChain.fromStart().doParser(expression, pos);
 		}
 
 		/**

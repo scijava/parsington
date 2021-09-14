@@ -7,13 +7,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -436,11 +436,11 @@ public final class Literals {
 
 	// -- Helper methods --
 
-	private static boolean isOctal(final char c) {
+	public static boolean isOctal(final char c) {
 		return c >= '0' && c <= '7';
 	}
 
-	private static char hex(final CharSequence s, final Position pos,
+	public static char hex(final CharSequence s, final Position pos,
 		final int index)
 	{
 		final char c = pos.ch(s, index);
@@ -564,7 +564,7 @@ public final class Literals {
 		return result;
 	}
 
-	private static boolean isWord(final CharSequence s, final Position pos,
+	public static boolean isWord(final CharSequence s, final Position pos,
 		final String word)
 	{
 		if (s.length() - pos.get() < word.length()) return false;
