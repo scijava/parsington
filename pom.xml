@@ -66,7 +66,7 @@
 	</mailingLists>
 
 	<scm>
-		<connection>scm:git:git://github.com/scijava/parsington</connection>
+		<connection>scm:git:https://github.com/scijava/parsington</connection>
 		<developerConnection>scm:git:git@github.com:scijava/parsington</developerConnection>
 		<tag>HEAD</tag>
 		<url>https://github.com/scijava/parsington</url>
