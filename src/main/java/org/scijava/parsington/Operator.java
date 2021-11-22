@@ -59,44 +59,92 @@ public class Operator extends Token implements Comparable<Operator> {
 
 	// -- Operator methods --
 
-	/** 1 for unary, 2 for binary, etc. */
+	/**
+	 * Gets the operator's arity.
+	 * 
+	 * @return The arity of the operator: 1 for unary, 2 for binary, etc.
+	 */
 	public int getArity() {
 		return arity;
 	}
 
+	/**
+	 * Gets the operator's associativity.
+	 * 
+	 * @return One of {@link Associativity#EITHER}, {@link Associativity#LEFT},
+	 *         {@link Associativity#RIGHT}, or {@link Associativity#NONE}.
+	 */
 	public Associativity getAssociativity() {
 		return associativity;
 	}
 
+	/**
+	 * Gets whether the operator is left associative.
+	 * 
+	 * @return True iff the operator's associativity is {@link Associativity#LEFT}
+	 *         or {@link Associativity#EITHER}.
+	 */
 	public boolean isLeftAssociative() {
 		final Associativity a = getAssociativity();
 		return a == Associativity.LEFT || a == Associativity.EITHER;
 	}
 
+	/**
+	 * Gets whether the operator is right associative.
+	 * 
+	 * @return True iff the operator's associativity is
+	 *         {@link Associativity#RIGHT} or {@link Associativity#EITHER}.
+	 */
 	public boolean isRightAssociative() {
 		final Associativity a = getAssociativity();
 		return a == Associativity.RIGHT || a == Associativity.EITHER;
 	}
 
-	/** True iff the operator is an infix operator (e.g., {@code a-b}). */
+	/**
+	 * Gets whether the operator is an infix operator (e.g., {@code a-b}).
+	 * 
+	 * @return True iff the operator is an infix operator.
+	 */
 	public boolean isInfix() {
 		return getArity() > 1;
 	}
 
-	/** True iff the operator is a prefix operator (e.g., {@code -a}). */
+	/**
+	 * Gets whether the operator is a prefix operator (e.g., {@code -a}).
+	 * 
+	 * @return True iff the operator is a prefix operator.
+	 */
 	public boolean isPrefix() {
 		return getArity() == 1 && isRightAssociative();
 	}
 
-	/** True iff the operator is a postfix operator (e.g., {@code a'}). */
+	/**
+	 * Gets whether the operator is a postfix operator (e.g., {@code a'}).
+	 * 
+	 * @return True iff the operator is a postfix operator.
+	 */
 	public boolean isPostfix() {
 		return getArity() == 1 && isLeftAssociative();
 	}
 
+	/**
+	 * Gets the operator precedence. Larger is higher.
+	 * 
+	 * @return The operator precedence.
+	 */
 	public double getPrecedence() {
 		return precedence;
 	}
 
+	/**
+	 * Gets an instance of the operator, using this one as a template.
+	 * <p>
+	 * For stateless operators, no copy will be made. But for operators with state
+	 * (e.g. {@link Group}), a new instance will be returned.
+	 * </p>
+	 * 
+	 * @return {@code this} or a new instance, depending on the type of operator.
+	 */
 	public Operator instance() {
 		// NB: Properties are immutable, so instance can be reused.
 		return this;

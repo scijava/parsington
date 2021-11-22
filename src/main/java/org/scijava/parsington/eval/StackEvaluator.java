@@ -48,8 +48,11 @@ import org.scijava.parsington.Tokens;
 public interface StackEvaluator extends Evaluator {
 
 	/**
-	 * Executes the given {@link Operator operation} with the specified value
-	 * stack.
+	 * Executes an {@link Operator operation} with the specified value stack.
+	 * 
+	 * @param op The operator to execute.
+	 * @param stack The value stack containing the arguments to pass.
+	 * @return The result of the operation.
 	 */
 	Object execute(final Operator op, final Deque<Object> stack);
 

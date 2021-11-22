@@ -65,18 +65,37 @@ public class Position {
 		return i < s.length() ? s.charAt(i) : '\0';
 	}
 
-	/** Throws {@link IllegalArgumentException} when syntax is incorrect. */
+	/**
+	 * Throws an exception with an informative message. Called by the parsing
+	 * infrastructure when syntax is incorrect.
+	 * 
+	 * @param message The text to use as a basis for the error message.
+	 * @throws IllegalArgumentException Always.
+	 */
 	public void die(final String message) {
 		throw new IllegalArgumentException(messageWithDetails(message));
 	}
 
-	/** Throws {@link IllegalStateException} if something goes wrong. */
+	/**
+	 * Calls {@link #fail(String)} if a condition is not met. Called by the
+	 * parsing infrastructure to assert that things are going OK.
+	 * 
+	 * @param condition If false, throw the exception.
+	 * @param message The text to use as a basis for the error message.
+	 * @throws IllegalStateException If the condition is not met.
+	 */
 	public void assertThat(final boolean condition, final String message) {
 		if (condition) return;
 		fail(message);
 	}
 
-	/** Throws {@link IllegalStateException} when something is wrong. */
+	/**
+	 * Throws an exception. Called by the parsing infrastructure when something
+	 * goes wrong.
+	 * 
+	 * @param message The text to use as a basis for the error message.
+	 * @throws IllegalStateException Always.
+	 */
 	public void fail(final String message) {
 		throw new IllegalStateException(messageWithDetails(message));
 	}

@@ -44,8 +44,12 @@ import org.scijava.parsington.Tokens;
 public interface TreeEvaluator extends Evaluator {
 
 	/**
-	 * Executes the given {@link Operator operation} on the specified
-	 * {@link SyntaxTree syntax tree}'s children.
+	 * Executes an {@link Operator operation} on the specified {@link SyntaxTree
+	 * syntax tree}'s children.
+	 * 
+	 * @param op The operator to execute.
+	 * @param tree The syntax tree containing the arguments to pass.
+	 * @return The result of the operation.
 	 */
 	Object execute(final Operator op, final SyntaxTree tree);
 

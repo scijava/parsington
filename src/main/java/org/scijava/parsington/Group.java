@@ -46,6 +46,13 @@ public class Group extends Operator {
 
 	private int arity;
 
+	/**
+	 * Creates a new group.
+	 * 
+	 * @param initiator The lefthand symbol signaling the start of the group.
+	 * @param terminator The righthand symbol signaling the end of the group.
+	 * @param precedence The group's operator precedence.
+	 */
 	public Group(final String initiator, final String terminator,
 		final double precedence)
 	{
@@ -55,16 +62,23 @@ public class Group extends Operator {
 
 	// -- Group methods --
 
+	/**
+	 * Gets the group's terminator symbol. (Use {@link #getToken()} to obtain the
+	 * initiator symbol.)
+	 * 
+	 * @return The terminator symbol.
+	 */
 	public String getTerminator() {
 		return terminator;
 	}
 
+	/** Increments the group's arity. */
 	public void incArity() {
 		arity++;
 	}
 
 	/**
-	 * Returns true iff the given group is the same as this one, in terms of token
+	 * Gets whether the given group is the same as this one, in terms of token
 	 * (lefthand symbol), terminator (righthand symbol) and precedence.
 	 * <p>
 	 * Note that this method intentionally does not compare arity; the idea is
@@ -72,6 +86,10 @@ public class Group extends Operator {
 	 * it, that copy will match this one, even though the copy initially starts at
 	 * arity 0.
 	 * </p>
+	 * 
+	 * @param g The group to compare with this one.
+	 * @return True iff the given group is the same as this one, in terms of
+	 *         token, terminator, and precedence.
 	 */
 	public boolean matches(final Group g) {
 		return getToken().equals(g.getToken()) &&

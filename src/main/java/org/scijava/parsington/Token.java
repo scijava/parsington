@@ -51,7 +51,11 @@ public abstract class Token {
 
 	// -- Token methods --
 
-	/** Gets the token's sequence of characters. */
+	/**
+	 * Gets the token's sequence of characters.
+	 * 
+	 * @return The token's character sequence.
+	 */
 	public String getToken() {
 		return token;
 	}

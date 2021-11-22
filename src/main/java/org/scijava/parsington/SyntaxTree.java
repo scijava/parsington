@@ -78,7 +78,11 @@ public class SyntaxTree implements Iterable<SyntaxTree> {
 		return children == null ? 0 : children.length;
 	}
 
-	/** Converts the syntax tree into a token queue in postfix order. */
+	/**
+	 * Converts the syntax tree into a token queue in postfix order.
+	 * 
+	 * @return Token queue representation of the syntax tree.
+	 */
 	public LinkedList<Object> postfix() {
 		final LinkedList<Object> queue = new LinkedList<>();
 		postfix(queue);

@@ -176,7 +176,12 @@ public final class Operators {
 		// NB: Prevent instantiation of utility class.
 	}
 
-	/** Gets the standard list of operators. */
+	/**
+	 * Gets the standard list of operators.
+	 * 
+	 * @return A new list containing each operator constant from this
+	 *         {@link Operators} class, in declaration order.
+	 */
 	public static List<Operator> standardList() {
 		// Build the standard list from all available Operator constants.
 		final ArrayList<Operator> ops = new ArrayList<>();
