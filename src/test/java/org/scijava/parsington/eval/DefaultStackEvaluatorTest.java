@@ -30,8 +30,11 @@
 
 package org.scijava.parsington.eval;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
+import java.util.List;
 
 import org.junit.Test;
 
@@ -41,6 +44,26 @@ public class DefaultStackEvaluatorTest extends AbstractStandardEvaluatorTest {
 	@Override
 	public StandardEvaluator createEvaluator() {
 		return new DefaultStackEvaluator();
+	}
+
+	@Test
+	public void testNonShortCircuitingAnd() {
+		final Object result = e.evaluate("(x = 1, (++x > 2) && (++x > 3))");
+		// Both sides of the above AND expression evaluate to false.
+		// But for short circuiting AND, only the left side would
+		// execute, leaving the value of x afterward at 2, not 3.
+		final Object v = ((List<?>) result).get(0); // First element of tuple.
+		assertEquals(3, e.value(v));
+	}
+
+	@Test
+	public void testNonShortCircuitingOr() {
+		final Object result = e.evaluate("(x = 1, (++x == 2) || (++x == 3))");
+		// Both sides of the above OR expression evaluate to true.
+		// But for short circuiting OR, only the left side would
+		// execute, leaving the value of x afterward at 2, not 3.
+		final Object v = ((List<?>) result).get(0); // First element of tuple.
+		assertEquals(3, e.value(v));
 	}
 
 	@Test

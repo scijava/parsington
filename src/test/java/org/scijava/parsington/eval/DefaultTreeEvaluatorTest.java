@@ -32,6 +32,8 @@ package org.scijava.parsington.eval;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.List;
+
 import org.junit.Test;
 
 /** Tests {@link DefaultTreeEvaluator}. */
@@ -40,6 +42,26 @@ public class DefaultTreeEvaluatorTest extends AbstractStandardEvaluatorTest {
 	@Override
 	public StandardEvaluator createEvaluator() {
 		return new DefaultTreeEvaluator();
+	}
+
+	@Test
+	public void testShortCircuitingAnd() {
+		final Object result = e.evaluate("(x = 1, (++x > 2) && (++x > 3))");
+		// Both sides of the above AND expression evaluate to false.
+		// But for short circuiting AND, only the left side should
+		// execute, leaving the value of x afterward at 2, not 3.
+		final Object v = ((List<?>) result).get(0); // First element of tuple.
+		assertEquals(2, e.value(v));
+	}
+
+	@Test
+	public void testShortCircuitingOr() {
+		final Object result = e.evaluate("(x = 1, (++x == 2) || (++x == 3))");
+		// Both sides of the above OR expression evaluate to true.
+		// But for short circuiting OR, only the left side should
+		// execute, leaving the value of x afterward at 2, not 3.
+		final Object v = ((List<?>) result).get(0); // First element of tuple.
+		assertEquals(2, e.value(v));
 	}
 
 	@Test

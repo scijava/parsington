@@ -48,7 +48,25 @@ public interface StandardTreeEvaluator extends StandardEvaluator,
 	@Override
 	default Object execute(final Operator op, final SyntaxTree tree) {
 		// Handle short-circuiting operators first.
-		if (op == Operators.QUESTION) {
+		if (op == Operators.LOGICAL_AND) {
+			final Object leftValue = value(evaluate(tree.child(0)));
+			if (leftValue instanceof Boolean && !((Boolean) leftValue).booleanValue()) {
+				// Left side is false, so entire expression will be false.
+				return false;
+			}
+			final Object rightValue = value(evaluate(tree.child(1)));
+			return execute(op, new Object[] {leftValue, rightValue});
+		}
+		else if (op == Operators.LOGICAL_OR) {
+			final Object leftValue = value(evaluate(tree.child(0)));
+			if (leftValue instanceof Boolean && ((Boolean) leftValue).booleanValue()) {
+				// Left side is true, so entire expression will be true.
+				return true;
+			}
+			final Object rightValue = value(evaluate(tree.child(1)));
+			return execute(op, new Object[] {leftValue, rightValue});
+		}
+		else if (op == Operators.QUESTION) {
 			final SyntaxTree conditional = tree.child(0);
 			final SyntaxTree consequent = tree.child(1);
 			if (consequent.token() != Operators.COLON || consequent.count() != 2) {
