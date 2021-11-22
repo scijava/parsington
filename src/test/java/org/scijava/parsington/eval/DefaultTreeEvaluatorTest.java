@@ -30,28 +30,23 @@
 
 package org.scijava.parsington.eval;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-/** Tests {@link DefaultStackEvaluator}. */
-public class DefaultStackEvaluatorTest extends AbstractStandardEvaluatorTest {
+/** Tests {@link DefaultTreeEvaluator}. */
+public class DefaultTreeEvaluatorTest extends AbstractStandardEvaluatorTest {
 
 	@Override
 	public StandardEvaluator createEvaluator() {
-		return new DefaultStackEvaluator();
+		return new DefaultTreeEvaluator();
 	}
 
 	@Test
-	public void testUnimplementedTernary() {
-		try {
-			e.evaluate("2 < 3 ? 'yes' : 'no'");
-			fail("Evaluation of ternary expression erroneously succeeded");
-		}
-		catch (final IllegalArgumentException exc) {
-			assertTrue(exc.getMessage().equals("Unsupported binary operator: :"));
-		}
+	public void testShortCircuitingTernary() {
+		final Object result = e.evaluate("2 < 3 ? (x = 'yes') : (x += 'no')");
+		System.out.println("result = " + result + " " + result.getClass());
+		assertEquals("yes", e.value(result));
 	}
 
 }
