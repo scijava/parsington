@@ -44,7 +44,7 @@ import org.scijava.parsington.Variable;
  */
 public abstract class AbstractEvaluator implements Evaluator {
 
-	private final HashMap<String, Object> vars = new HashMap<String, Object>();
+	private final HashMap<String, Object> vars = new HashMap<>();
 	private final ExpressionParser parser;
 
 	private boolean strict = true;

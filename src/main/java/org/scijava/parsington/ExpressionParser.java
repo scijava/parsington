@@ -66,7 +66,7 @@ public class ExpressionParser {
 	 * @param operators The collection of operators available to expressions.
 	 */
 	public ExpressionParser(final Collection<? extends Operator> operators) {
-		this.operators = new ArrayList<Operator>(operators);
+		this.operators = new ArrayList<>(operators);
 
 		// NB: Ensure operators with longer symbols come first.
 		// This prevents e.g. '-' from being matched before '-=' and '--'.
@@ -120,8 +120,8 @@ public class ExpressionParser {
 
 		private final String expression;
 		private final Position pos = new Position();
-		private final Deque<Object> stack = new ArrayDeque<Object>();
-		private final LinkedList<Object> outputQueue = new LinkedList<Object>();
+		private final Deque<Object> stack = new ArrayDeque<>();
+		private final LinkedList<Object> outputQueue = new LinkedList<>();
 
 		/**
 		 * State flag for parsing context.

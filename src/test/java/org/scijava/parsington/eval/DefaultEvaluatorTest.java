@@ -90,7 +90,7 @@ public class DefaultEvaluatorTest extends AbstractTest {
 		final Object[] o = {1, 2, 3, Operators.MUL, Operators.ADD};
 		final List<Object> postfix = Arrays.asList(o);
 		assertEquals(postfix, e.evaluate("postfix('1+2*3')"));
-		final SyntaxTree tree = new SyntaxTree(new LinkedList<Object>(postfix));
+		final SyntaxTree tree = new SyntaxTree(new LinkedList<>(postfix));
 		assertEquals(tree, e.evaluate("tree('1+2*3')"));
 	}
 

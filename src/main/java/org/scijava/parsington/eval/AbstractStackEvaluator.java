@@ -75,7 +75,7 @@ public abstract class AbstractStackEvaluator extends AbstractEvaluator
 	@Override
 	public Object evaluate(final LinkedList<Object> queue) {
 		// Process the postfix token queue.
-		final Deque<Object> stack = new ArrayDeque<Object>();
+		final Deque<Object> stack = new ArrayDeque<>();
 		while (!queue.isEmpty()) {
 			final Object token = queue.removeFirst();
 			final Object result;
@@ -93,7 +93,7 @@ public abstract class AbstractStackEvaluator extends AbstractEvaluator
 		if (stack.isEmpty()) return null;
 		if (stack.size() == 1) return stack.pop();
 
-		final LinkedList<Object> resultList = new LinkedList<Object>();
+		final LinkedList<Object> resultList = new LinkedList<>();
 		while (!stack.isEmpty()) {
 			resultList.addFirst(stack.pop());
 		}
