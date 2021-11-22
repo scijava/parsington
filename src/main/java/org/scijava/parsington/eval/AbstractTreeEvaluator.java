@@ -2,7 +2,7 @@
  * #%L
  * Parsington: the SciJava mathematical expression parser.
  * %%
- * Copyright (C) 2015 - 2021 Board of Regents of the University of
+ * Copyright (C) 2015 - 2019 Board of Regents of the University of
  * Wisconsin-Madison.
  * %%
  * Redistribution and use in source and binary forms, with or without
@@ -30,71 +30,57 @@
 
 package org.scijava.parsington.eval;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.LinkedList;
 
 import org.scijava.parsington.ExpressionParser;
+import org.scijava.parsington.Operator;
+import org.scijava.parsington.SyntaxTree;
 import org.scijava.parsington.Tokens;
-import org.scijava.parsington.Variable;
 
 /**
- * Base class for {@link Evaluator} implementations.
+ * Base class for {@link Evaluator} implementations that evaluate
+ * {@link SyntaxTree}s recursively.
  *
  * @author Curtis Rueden
  */
-public abstract class AbstractEvaluator implements Evaluator {
+public abstract class AbstractTreeEvaluator extends AbstractEvaluator implements
+	TreeEvaluator
+{
 
-	private final HashMap<String, Object> vars = new HashMap<String, Object>();
-	private final ExpressionParser parser;
-
-	private boolean strict = true;
-
-	public AbstractEvaluator() {
-		this(new ExpressionParser());
+	public AbstractTreeEvaluator() {
+		super();
 	}
 
-	public AbstractEvaluator(final ExpressionParser parser) {
-		this.parser = parser;
+	public AbstractTreeEvaluator(final ExpressionParser parser) {
+		super(parser);
 	}
 
 	// -- Evaluator methods --
 
 	@Override
-	public ExpressionParser getParser() {
-		return parser;
+	public Object evaluate(final String expression) {
+		// Convert the expression to a syntax tree.
+		return evaluate(getParser().parseTree(expression));
 	}
 
 	@Override
-	public boolean isStrict() {
-		return strict;
+	public Object evaluate(final LinkedList<Object> queue) {
+		// Convert the postfix queue to a syntax tree.
+		return evaluate(new SyntaxTree(queue));
 	}
 
 	@Override
-	public void setStrict(final boolean strict) {
-		this.strict = strict;
-	}
-
-	@Override
-	public Object value(final Object token) {
-		return Tokens.isVariable(token) ? get((Variable) token) : token;
-	}
-
-	@Override
-	public Object get(final Variable v) {
-		final String name = v.getToken();
-		if (vars.containsKey(name)) return vars.get(name);
-		if (strict) throw new IllegalArgumentException("Unknown variable: " + name);
-		return new Unresolved(name);
-	}
-
-	@Override
-	public void set(final Variable v, final Object value) {
-		vars.put(v.getToken(), value);
-	}
-
-	@Override
-	public void setAll(final Map<? extends String, ? extends Object> map) {
-		vars.putAll(map);
+	public Object evaluate(final SyntaxTree syntaxTree) {
+		// Evaluate the syntax tree recursively.
+		final Object token = syntaxTree.token();
+		if (Tokens.isOperator(token)) {
+			final Operator op = (Operator) token;
+			assert op.getArity() == syntaxTree.count();
+			return execute(op, syntaxTree);
+		}
+		// Token is a variable or a literal.
+		assert syntaxTree.count() == 0;
+		return token;
 	}
 
 }

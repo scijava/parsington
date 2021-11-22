@@ -2,7 +2,7 @@
  * #%L
  * Parsington: the SciJava mathematical expression parser.
  * %%
- * Copyright (C) 2015 - 2021 Board of Regents of the University of
+ * Copyright (C) 2015 - 2019 Board of Regents of the University of
  * Wisconsin-Madison.
  * %%
  * Redistribution and use in source and binary forms, with or without
@@ -30,29 +30,28 @@
 
 package org.scijava.parsington.eval;
 
-import java.util.Deque;
-
 import org.scijava.parsington.ExpressionParser;
 import org.scijava.parsington.Function;
 import org.scijava.parsington.Operator;
 import org.scijava.parsington.Operators;
+import org.scijava.parsington.SyntaxTree;
 import org.scijava.parsington.Tokens;
 import org.scijava.parsington.Variable;
 
 /**
- * Base class for stack-based evaluators which support the standard operators.
+ * Base class for tree-based evaluators which support the standard operators.
  *
  * @author Curtis Rueden
  */
-public abstract class AbstractStandardStackEvaluator extends
-	AbstractStackEvaluator implements StandardEvaluator
+public abstract class AbstractStandardTreeEvaluator extends
+	AbstractTreeEvaluator implements StandardEvaluator
 {
 
-	public AbstractStandardStackEvaluator() {
+	public AbstractStandardTreeEvaluator() {
 		super();
 	}
 
-	public AbstractStandardStackEvaluator(final ExpressionParser parser) {
+	public AbstractStandardTreeEvaluator(final ExpressionParser parser) {
 		super(parser);
 	}
 
@@ -194,15 +193,30 @@ public abstract class AbstractStandardStackEvaluator extends
 		return assign(a, unsignedRightShift(a, b));
 	}
 
-	// -- StackEvaluator methods --
+	// -- TreeEvaluator methods --
 
 	@Override
-	public Object execute(final Operator op, final Deque<Object> stack) {
-		// Pop the arguments.
-		final int arity = op.getArity();
-		final Object[] args = new Object[arity];
-		for (int i = args.length - 1; i >= 0; i--) {
-			args[i] = stack.pop();
+	public Object execute(final Operator op, final SyntaxTree tree) {
+		// Handle short-circuiting operators first.
+		if (op == Operators.QUESTION) {
+			final SyntaxTree conditional = tree.child(0);
+			final SyntaxTree consequent = tree.child(1);
+			if (consequent.token() != Operators.COLON || consequent.count() != 2) {
+				throw new IllegalArgumentException("Invalid ternary operator syntax");
+			}
+			final Object conditionalValue = value(evaluate(conditional));
+			if (!(conditionalValue instanceof Boolean)) {
+				throw new IllegalArgumentException("Invalid ternary operator conditional expression");
+			}
+			return ((Boolean) conditionalValue) ? evaluate(consequent.child(0))
+				: evaluate(consequent.child(1));
+		}
+
+		// Recursively evaluate the subtrees. None of the remaining operators
+		// benefit from short-circuiting, so we can evaluate subexpressions eagerly.
+		final Object[] args = new Object[tree.count()];
+		for (int i = 0; i < args.length; i++) {
+			args[i] = evaluate(tree.child(i));
 		}
 		final Object a = args.length > 0 ? args[0] : null;
 		final Object b = args.length > 1 ? args[1] : null;

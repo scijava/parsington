@@ -2,7 +2,7 @@
  * #%L
  * Parsington: the SciJava mathematical expression parser.
  * %%
- * Copyright (C) 2015 - 2021 Board of Regents of the University of
+ * Copyright (C) 2015 - 2019 Board of Regents of the University of
  * Wisconsin-Madison.
  * %%
  * Redistribution and use in source and binary forms, with or without
@@ -28,44 +28,22 @@
  * #L%
  */
 
-package org.scijava.parsington;
+package org.scijava.parsington.eval;
 
-import java.io.IOException;
-
-import org.scijava.parsington.eval.DefaultTreeEvaluator;
-import org.scijava.parsington.eval.EvaluatorConsole;
+import org.scijava.parsington.Operator;
+import org.scijava.parsington.SyntaxTree;
 
 /**
- * Launches the console-driven expression evaluator.
+ * Interface for tree-based expression evaluators.
  *
  * @author Curtis Rueden
- * @see EvaluatorConsole
  */
-public final class Main {
+public interface TreeEvaluator extends Evaluator {
 
-	private Main() {
-		// Prevent instantiation of utility class.
-	}
-
-	// -- Main method --
-
-	public static void main(final String[] args) throws IOException {
-		final DefaultTreeEvaluator evaluator = new DefaultTreeEvaluator();
-		if (args.length > 0) {
-			// Evaluate the given expressions.
-			for (final String expression : args) {
-				Object result = evaluator.evaluate(expression);
-				if (result instanceof Variable) {
-					// Unwrap the variable.
-					result = evaluator.get((Variable) result);
-				}
-				System.out.println(result);
-			}
-		}
-		else {
-			// Show the REPL.
-			new EvaluatorConsole(evaluator).showConsole();
-		}
-	}
+	/**
+	 * Executes the given {@link Operator operation} on the specified
+	 * {@link SyntaxTree syntax tree}'s children.
+	 */
+	Object execute(final Operator op, final SyntaxTree tree);
 
 }
