@@ -43,7 +43,7 @@ import org.scijava.parsington.Tokens;
  * @author Curtis Rueden
  */
 public abstract class AbstractStandardTreeEvaluator extends
-	AbstractTreeEvaluator implements StandardEvaluator
+	AbstractEvaluator implements StandardEvaluator, TreeEvaluator
 {
 
 	public AbstractStandardTreeEvaluator() {

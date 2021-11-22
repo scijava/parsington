@@ -44,7 +44,7 @@ import org.scijava.parsington.Tokens;
  * @author Curtis Rueden
  */
 public abstract class AbstractStandardStackEvaluator extends
-	AbstractStackEvaluator implements StandardEvaluator
+	AbstractEvaluator implements StandardEvaluator, StackEvaluator
 {
 
 	public AbstractStandardStackEvaluator() {
