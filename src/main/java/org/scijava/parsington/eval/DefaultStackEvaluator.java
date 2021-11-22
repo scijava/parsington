@@ -54,15 +54,15 @@ import org.scijava.parsington.Variable;
  * @see DefaultTreeEvaluator For an evaluator that supports ternary
  *      short-circuiting.
  */
-public class DefaultEvaluator extends AbstractEvaluator implements
+public class DefaultStackEvaluator extends AbstractEvaluator implements
 	StandardStackEvaluator
 {
 
-	public DefaultEvaluator() {
+	public DefaultStackEvaluator() {
 		super();
 	}
 
-	public DefaultEvaluator(final ExpressionParser parser) {
+	public DefaultStackEvaluator(final ExpressionParser parser) {
 		super(parser);
 	}
 

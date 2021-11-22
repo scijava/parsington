@@ -49,17 +49,17 @@ import org.scijava.parsington.Operators;
 import org.scijava.parsington.SyntaxTree;
 import org.scijava.parsington.Variable;
 
-/** Tests {@link DefaultEvaluator}. */
-public class DefaultEvaluatorTest extends AbstractTest {
+/** Tests {@link DefaultStackEvaluator}. */
+public class DefaultStackEvaluatorTest extends AbstractTest {
 
-	private DefaultEvaluator e;
+	private DefaultStackEvaluator e;
 
 	@Before
 	public void setUp() {
-		e = new DefaultEvaluator();
+		e = new DefaultStackEvaluator();
 	}
 
-	/** Tests {@link DefaultEvaluator#evaluate(String)}. */
+	/** Tests {@link DefaultStackEvaluator#evaluate(String)}. */
 	@Test
 	public void testEvaluate() {
 		assertEquals(26, e.evaluate("(2*3)+(4*5)"));
@@ -82,7 +82,7 @@ public class DefaultEvaluatorTest extends AbstractTest {
 	}
 
 	/**
-	 * Tests that {@link DefaultEvaluator#evaluate(String)} handles the built-in
+	 * Tests that {@link DefaultStackEvaluator#evaluate(String)} handles the built-in
 	 * {@code postfix} and {@code tree} functions as expected.
 	 */
 	@Test
@@ -96,7 +96,7 @@ public class DefaultEvaluatorTest extends AbstractTest {
 
 	// -- function --
 
-	/** Tests {@link DefaultEvaluator#function(Object, Object)}. */
+	/** Tests {@link DefaultStackEvaluator#function(Object, Object)}. */
 	@Test
 	public void testFunction() {
 		// test list access
@@ -111,7 +111,7 @@ public class DefaultEvaluatorTest extends AbstractTest {
 
 	// -- dot --
 
-	/** Tests {@link DefaultEvaluator#dot(Object, Object)}. */
+	/** Tests {@link DefaultStackEvaluator#dot(Object, Object)}. */
 	@Test
 	public void testDot() {
 		assertNull(e.dot(o(0), o(1)));
@@ -119,7 +119,7 @@ public class DefaultEvaluatorTest extends AbstractTest {
 
 	// -- groups --
 
-	/** Tests {@link DefaultEvaluator#parens(Object[])}. */
+	/** Tests {@link DefaultStackEvaluator#parens(Object[])}. */
 	@Test
 	public void testParens() {
 		final Object[] o = {1, 2, 3};
@@ -132,7 +132,7 @@ public class DefaultEvaluatorTest extends AbstractTest {
 		assertEquals(4, e.parens(new Object[] {4}));
 	}
 
-	/** Tests {@link DefaultEvaluator#brackets(Object[])}. */
+	/** Tests {@link DefaultStackEvaluator#brackets(Object[])}. */
 	@Test
 	public void testBrackets() {
 		final Object[] o = {1, 2, 3};
@@ -142,7 +142,7 @@ public class DefaultEvaluatorTest extends AbstractTest {
 		assertEquals(Collections.emptyList(), e.brackets(new Object[0]));
 	}
 
-	/** Tests {@link DefaultEvaluator#braces(Object[])}. */
+	/** Tests {@link DefaultStackEvaluator#braces(Object[])}. */
 	@Test
 	public void testBraces() {
 		final Object[] o = {1, 2, 3};
@@ -154,19 +154,19 @@ public class DefaultEvaluatorTest extends AbstractTest {
 
 	// -- transpose, power --
 
-	/** Tests {@link DefaultEvaluator#transpose(Object)}. */
+	/** Tests {@link DefaultStackEvaluator#transpose(Object)}. */
 	@Test
 	public void testTranspose() {
 		assertNull(e.transpose(o(0)));
 	}
 
-	/** Tests {@link DefaultEvaluator#dotTranspose(Object)}. */
+	/** Tests {@link DefaultStackEvaluator#dotTranspose(Object)}. */
 	@Test
 	public void testDotTranspose() {
 		assertNull(e.dotTranspose(o(0)));
 	}
 
-	/** Tests {@link DefaultEvaluator#pow(Object, Object)}. */
+	/** Tests {@link DefaultStackEvaluator#pow(Object, Object)}. */
 	@Test
 	public void testPow() {
 		assertNumber(15.625d, e.pow(o(2.5d), o(3d)));
@@ -174,7 +174,7 @@ public class DefaultEvaluatorTest extends AbstractTest {
 		assertNumber(bd(15.625), e.pow(o(bd(2.5d)), o(3)));
 	}
 
-	/** Tests {@link DefaultEvaluator#dotPow(Object, Object)}. */
+	/** Tests {@link DefaultStackEvaluator#dotPow(Object, Object)}. */
 	@Test
 	public void testDotPow() {
 		assertNull(e.dotPow(o(0), o(0)));
@@ -182,7 +182,7 @@ public class DefaultEvaluatorTest extends AbstractTest {
 
 	// -- postfix --
 
-	/** Tests {@link DefaultEvaluator#postInc(Object)}. */
+	/** Tests {@link DefaultStackEvaluator#postInc(Object)}. */
 	@Test
 	public void testPostInc() {
 		final Variable v = new Variable("v");
@@ -194,7 +194,7 @@ public class DefaultEvaluatorTest extends AbstractTest {
 		e.set(v, bd(12)); assertEquals(bd(12), e.postInc(v)); assertEquals(bd(13), e.get(v));
 	}
 
-	/** Tests {@link DefaultEvaluator#postDec(Object)}. */
+	/** Tests {@link DefaultStackEvaluator#postDec(Object)}. */
 	@Test
 	public void testPostDec() {
 		final Variable v = new Variable("v");
@@ -208,7 +208,7 @@ public class DefaultEvaluatorTest extends AbstractTest {
 
 	// -- unary --
 
-	/** Tests {@link DefaultEvaluator#preInc(Object)}. */
+	/** Tests {@link DefaultStackEvaluator#preInc(Object)}. */
 	@Test
 	public void testPreInc() {
 		final Variable v = new Variable("v");
@@ -220,7 +220,7 @@ public class DefaultEvaluatorTest extends AbstractTest {
 		e.set(v, bd(12)); assertEquals(bd(13), e.preInc(v)); assertEquals(bd(13), e.get(v));
 	}
 
-	/** Tests {@link DefaultEvaluator#preDec(Object)}. */
+	/** Tests {@link DefaultStackEvaluator#preDec(Object)}. */
 	@Test
 	public void testPreDec() {
 		final Variable v = new Variable("v");
@@ -232,7 +232,7 @@ public class DefaultEvaluatorTest extends AbstractTest {
 		e.set(v, bd(12)); assertEquals(bd(11), e.preDec(v)); assertEquals(bd(11), e.get(v));
 	}
 
-	/** Tests {@link DefaultEvaluator#pos(Object)}. */
+	/** Tests {@link DefaultStackEvaluator#pos(Object)}. */
 	@Test
 	public void testPos() {
 		assertNumber(7, e.pos(o(7)));
@@ -247,7 +247,7 @@ public class DefaultEvaluatorTest extends AbstractTest {
 		assertSame(BigDecimal.TEN, e.pos(BigDecimal.TEN));
 	}
 
-	/** Tests {@link DefaultEvaluator#neg(Object)}. */
+	/** Tests {@link DefaultStackEvaluator#neg(Object)}. */
 	@Test
 	public void testNeg() {
 		assertNumber(7, e.neg(o(-7)));
@@ -264,14 +264,14 @@ public class DefaultEvaluatorTest extends AbstractTest {
 		assertNumber(bd(-7.8), e.neg(o(bd(7.8))));
 	}
 
-	/** Tests {@link DefaultEvaluator#complement(Object)}. */
+	/** Tests {@link DefaultStackEvaluator#complement(Object)}. */
 	@Test
 	public void testComplement() {
 		assertNumber(0x35014541, e.complement(o(0xcafebabe)));
 		assertNumber(0x2152350141104541L, e.complement(o(0xdeadcafebeefbabeL)));
 	}
 
-	/** Tests {@link DefaultEvaluator#not(Object)}. */
+	/** Tests {@link DefaultStackEvaluator#not(Object)}. */
 	@Test
 	public void testNot() {
 		assertSame(false, e.not(o(true)));
@@ -280,7 +280,7 @@ public class DefaultEvaluatorTest extends AbstractTest {
 
 	// -- multiplicative --
 
-	/** Tests {@link DefaultEvaluator#mul(Object, Object)}. */
+	/** Tests {@link DefaultStackEvaluator#mul(Object, Object)}. */
 	@Test
 	public void testMul() {
 		assertNumber(24, e.mul(o(4), o(6)));
@@ -291,7 +291,7 @@ public class DefaultEvaluatorTest extends AbstractTest {
 		assertNumber(bd(8.75), e.mul(o(bd(2.5)), o(bd(3.5))));
 	}
 
-	/** Tests {@link DefaultEvaluator#div(Object, Object)}. */
+	/** Tests {@link DefaultStackEvaluator#div(Object, Object)}. */
 	@Test
 	public void testDiv() {
 		assertNumber(4, e.div(o(27), o(6)));
@@ -302,7 +302,7 @@ public class DefaultEvaluatorTest extends AbstractTest {
 		assertNumber(bd(2.5), e.div(o(bd(8.75)), o(bd(3.5))));
 	}
 
-	/** Tests {@link DefaultEvaluator#mod(Object, Object)}. */
+	/** Tests {@link DefaultStackEvaluator#mod(Object, Object)}. */
 	@Test
 	public void testMod() {
 		assertNumber(3, e.mod(o(27), o(6)));
@@ -313,19 +313,19 @@ public class DefaultEvaluatorTest extends AbstractTest {
 		assertNumber(bd(1.75), e.mod(o(bd(8.75)), o(bd(3.5))));
 	}
 
-	/** Tests {@link DefaultEvaluator#rightDiv(Object, Object)}. */
+	/** Tests {@link DefaultStackEvaluator#rightDiv(Object, Object)}. */
 	@Test
 	public void testRightDiv() {
 		assertNull(e.rightDiv(o(0), o(0)));
 	}
 
-	/** Tests {@link DefaultEvaluator#dotDiv(Object, Object)}. */
+	/** Tests {@link DefaultStackEvaluator#dotDiv(Object, Object)}. */
 	@Test
 	public void testDotDiv() {
 		assertNull(e.dotDiv(o(0), o(0)));
 	}
 
-	/** Tests {@link DefaultEvaluator#dotRightDiv(Object, Object)}. */
+	/** Tests {@link DefaultStackEvaluator#dotRightDiv(Object, Object)}. */
 	@Test
 	public void testDotRightDiv() {
 		assertNull(e.dotRightDiv(o(0), o(0)));
@@ -333,7 +333,7 @@ public class DefaultEvaluatorTest extends AbstractTest {
 
 	// -- additive --
 
-	/** Tests {@link DefaultEvaluator#add(Object, Object)}. */
+	/** Tests {@link DefaultStackEvaluator#add(Object, Object)}. */
 	@Test
 	public void testAdd() {
 		assertEquals("Hello, world", e.add(o("Hello,"), o(" world")));
@@ -345,7 +345,7 @@ public class DefaultEvaluatorTest extends AbstractTest {
 		assertNumber(bd(3.6), e.add(o(bd(1.5)), o(bd(2.1))));
 	}
 
-	/** Tests {@link DefaultEvaluator#sub(Object, Object)}. */
+	/** Tests {@link DefaultStackEvaluator#sub(Object, Object)}. */
 	@Test
 	public void testSub() {
 		assertNumber(4, e.sub(o(10), o(6)));
@@ -358,7 +358,7 @@ public class DefaultEvaluatorTest extends AbstractTest {
 
 	// -- shift --
 
-	/** Tests {@link DefaultEvaluator#leftShift(Object, Object)}. */
+	/** Tests {@link DefaultStackEvaluator#leftShift(Object, Object)}. */
 	@Test
 	public void testLeftShift() {
 		assertNumber(0xafebabe0, e.leftShift(o(0xcafebabe), o(4)));
@@ -366,7 +366,7 @@ public class DefaultEvaluatorTest extends AbstractTest {
 		assertNumber(bi(7296), e.leftShift(o(bi(57)), o(7)));
 	}
 
-	/** Tests {@link DefaultEvaluator#rightShift(Object, Object)}. */
+	/** Tests {@link DefaultStackEvaluator#rightShift(Object, Object)}. */
 	@Test
 	public void testRightShift() {
 		assertNumber(0xfcafebab, e.rightShift(o(0xcafebabe), o(4)));
@@ -374,7 +374,7 @@ public class DefaultEvaluatorTest extends AbstractTest {
 		assertNumber(bi(278), e.rightShift(o(bi(8920)), o(5)));
 	}
 
-	/** Tests {@link DefaultEvaluator#unsignedRightShift(Object, Object)}. */
+	/** Tests {@link DefaultStackEvaluator#unsignedRightShift(Object, Object)}. */
 	@Test
 	public void testUnsignedRightShift() {
 		assertNumber(0x0cafebab, e.unsignedRightShift(o(0xcafebabe), o(4)));
@@ -383,7 +383,7 @@ public class DefaultEvaluatorTest extends AbstractTest {
 
 	// -- colon --
 
-	/** Tests {@link DefaultEvaluator#colon(Object, Object)}. */
+	/** Tests {@link DefaultStackEvaluator#colon(Object, Object)}. */
 	@Test
 	public void testColon() {
 		assertNull(e.colon(o(0), o(0)));
@@ -391,7 +391,7 @@ public class DefaultEvaluatorTest extends AbstractTest {
 
 	// -- relational --
 
-	/** Tests {@link DefaultEvaluator#lessThan(Object, Object)}. */
+	/** Tests {@link DefaultStackEvaluator#lessThan(Object, Object)}. */
 	@Test
 	public void testLessThan() {
 		assertSame(true, e.lessThan(o(false), o(true)));
@@ -427,7 +427,7 @@ public class DefaultEvaluatorTest extends AbstractTest {
 		assertSame(false, e.lessThan(o(bd(17)), o(bd(16))));
 	}
 
-	/** Tests {@link DefaultEvaluator#greaterThan(Object, Object)}. */
+	/** Tests {@link DefaultStackEvaluator#greaterThan(Object, Object)}. */
 	@Test
 	public void testGreaterThan() {
 		assertSame(false, e.greaterThan(o(false), o(true)));
@@ -463,7 +463,7 @@ public class DefaultEvaluatorTest extends AbstractTest {
 		assertSame(true, e.greaterThan(o(bd(17)), o(bd(16))));
 	}
 
-	/** Tests {@link DefaultEvaluator#lessThanOrEqual(Object, Object)}. */
+	/** Tests {@link DefaultStackEvaluator#lessThanOrEqual(Object, Object)}. */
 	@Test
 	public void testLessThanOrEqual() {
 		assertSame(true, e.lessThanOrEqual(o(false), o(true)));
@@ -499,7 +499,7 @@ public class DefaultEvaluatorTest extends AbstractTest {
 		assertSame(false, e.lessThanOrEqual(o(bd(17)), o(bd(16))));
 	}
 
-	/** Tests {@link DefaultEvaluator#greaterThanOrEqual(Object, Object)}. */
+	/** Tests {@link DefaultStackEvaluator#greaterThanOrEqual(Object, Object)}. */
 	@Test
 	public void testGreaterThanOrEqual() {
 		assertSame(false, e.greaterThanOrEqual(o(false), o(true)));
@@ -535,7 +535,7 @@ public class DefaultEvaluatorTest extends AbstractTest {
 		assertSame(true, e.greaterThanOrEqual(o(bd(17)), o(bd(16))));
 	}
 
-	/** Tests {@link DefaultEvaluator#instanceOf(Object, Object)}. */
+	/** Tests {@link DefaultStackEvaluator#instanceOf(Object, Object)}. */
 	@Test
 	public void testInstanceOf() {
 		assertNull(e.instanceOf(o(0), o(0)));
@@ -543,7 +543,7 @@ public class DefaultEvaluatorTest extends AbstractTest {
 
 	// -- equality --
 
-	/** Tests {@link DefaultEvaluator#equal(Object, Object)}. */
+	/** Tests {@link DefaultStackEvaluator#equal(Object, Object)}. */
 	@Test
 	public void testEqual() {
 		assertSame(false, e.equal(o(false), o(true)));
@@ -579,7 +579,7 @@ public class DefaultEvaluatorTest extends AbstractTest {
 		assertSame(false, e.equal(o(bd(17)), o(bd(16))));
 	}
 
-	/** Tests {@link DefaultEvaluator#notEqual(Object, Object)}. */
+	/** Tests {@link DefaultStackEvaluator#notEqual(Object, Object)}. */
 	@Test
 	public void testNotEqual() {
 		assertSame(true, e.notEqual(o(false), o(true)));
@@ -617,7 +617,7 @@ public class DefaultEvaluatorTest extends AbstractTest {
 
 	// -- bitwise --
 
-	/** Tests {@link DefaultEvaluator#bitwiseAnd(Object, Object)}. */
+	/** Tests {@link DefaultStackEvaluator#bitwiseAnd(Object, Object)}. */
 	@Test
 	public void testBitwiseAnd() {
 		assertNumber(0xcaacbaae, e.bitwiseAnd(o(0xcafebabe), o(0xdeadbeef)));
@@ -625,7 +625,7 @@ public class DefaultEvaluatorTest extends AbstractTest {
 		assertNumber(bi(0xcaacbaae), e.bitwiseAnd(o(bi(0xcafebabe)), o(bi(0xdeadbeef))));
 	}
 
-	/** Tests {@link DefaultEvaluator#bitwiseOr(Object, Object)}. */
+	/** Tests {@link DefaultStackEvaluator#bitwiseOr(Object, Object)}. */
 	@Test
 	public void testBitwiseOr() {
 		assertNumber(0xdeffbeff, e.bitwiseOr(o(0xcafebabe), o(0xdeadbeef)));
@@ -635,7 +635,7 @@ public class DefaultEvaluatorTest extends AbstractTest {
 
 	// -- logical --
 
-	/** Tests {@link DefaultEvaluator#logicalAnd(Object, Object)}. */
+	/** Tests {@link DefaultStackEvaluator#logicalAnd(Object, Object)}. */
 	@Test
 	public void testLogicalAnd() {
 		assertSame(false, e.logicalAnd(o(false), o(false)));
@@ -644,7 +644,7 @@ public class DefaultEvaluatorTest extends AbstractTest {
 		assertSame(true, e.logicalAnd(o(true), o(true)));
 	}
 
-	/** Tests {@link DefaultEvaluator#logicalOr(Object, Object)}. */
+	/** Tests {@link DefaultStackEvaluator#logicalOr(Object, Object)}. */
 	@Test
 	public void testLogicalOr() {
 		assertSame(false, e.logicalOr(o(false), o(false)));
@@ -655,7 +655,7 @@ public class DefaultEvaluatorTest extends AbstractTest {
 
 	// -- assignment --
 
-	/** Tests {@link DefaultEvaluator#assign(Object, Object)}. */
+	/** Tests {@link DefaultStackEvaluator#assign(Object, Object)}. */
 	@Test
 	public void testAssign() {
 		final Variable v = new Variable("v");
@@ -669,7 +669,7 @@ public class DefaultEvaluatorTest extends AbstractTest {
 		assertAssigned(bd(6), v, e.assign(v, bd(6)));
 	}
 
-	/** Tests {@link DefaultEvaluator#powAssign(Object, Object)}. */
+	/** Tests {@link DefaultStackEvaluator#powAssign(Object, Object)}. */
 	@Test
 	public void testPowAssign() {
 		final Variable v = new Variable("v");
@@ -678,13 +678,13 @@ public class DefaultEvaluatorTest extends AbstractTest {
 		e.set(v, bd(2.5)); assertAssigned(bd(15.625), v, e.powAssign(v, 3));
 	}
 
-	/** Tests {@link DefaultEvaluator#dotPowAssign(Object, Object)}. */
+	/** Tests {@link DefaultStackEvaluator#dotPowAssign(Object, Object)}. */
 	@Test
 	public void testDotPowAssign() {
 		// NB: Nothing to test; dotPow is unimplemented.
 	}
 
-	/** Tests {@link DefaultEvaluator#mulAssign(Object, Object)}. */
+	/** Tests {@link DefaultStackEvaluator#mulAssign(Object, Object)}. */
 	@Test
 	public void testMulAssign() {
 		final Variable v = new Variable("v");
@@ -696,7 +696,7 @@ public class DefaultEvaluatorTest extends AbstractTest {
 		e.set(v, bd(2.5)); assertAssigned(bd(8.75), v, e.mulAssign(v, bd(3.5)));
 	}
 
-	/** Tests {@link DefaultEvaluator#divAssign(Object, Object)}. */
+	/** Tests {@link DefaultStackEvaluator#divAssign(Object, Object)}. */
 	@Test
 	public void testDivAssign() {
 		final Variable v = new Variable("v");
@@ -708,7 +708,7 @@ public class DefaultEvaluatorTest extends AbstractTest {
 		e.set(v, bd(8.75)); assertAssigned(bd(2.5), v, e.divAssign(v, bd(3.5)));
 	}
 
-	/** Tests {@link DefaultEvaluator#modAssign(Object, Object)}. */
+	/** Tests {@link DefaultStackEvaluator#modAssign(Object, Object)}. */
 	@Test
 	public void testModAssign() {
 		final Variable v = new Variable("v");
@@ -720,25 +720,25 @@ public class DefaultEvaluatorTest extends AbstractTest {
 		e.set(v, bd(8.75)); assertAssigned(bd(1.75), v, e.modAssign(v, bd(3.5)));
 	}
 
-	/** Tests {@link DefaultEvaluator#rightDivAssign(Object, Object)}. */
+	/** Tests {@link DefaultStackEvaluator#rightDivAssign(Object, Object)}. */
 	@Test
 	public void testRightDivAssign() {
 		// NB: Nothing to test; rightDiv is unimplemented.
 	}
 
-	/** Tests {@link DefaultEvaluator#dotDivAssign(Object, Object)}. */
+	/** Tests {@link DefaultStackEvaluator#dotDivAssign(Object, Object)}. */
 	@Test
 	public void testDotDivAssign() {
 		// NB: Nothing to test; dotDiv is unimplemented.
 	}
 
-	/** Tests {@link DefaultEvaluator#dotRightDivAssign(Object, Object)}. */
+	/** Tests {@link DefaultStackEvaluator#dotRightDivAssign(Object, Object)}. */
 	@Test
 	public void testDotRightDivAssign() {
 		// NB: Nothing to test; dotRightDiv is unimplemented.
 	}
 
-	/** Tests {@link DefaultEvaluator#addAssign(Object, Object)}. */
+	/** Tests {@link DefaultStackEvaluator#addAssign(Object, Object)}. */
 	@Test
 	public void testAddAssign() {
 		final Variable v = new Variable("v");
@@ -752,7 +752,7 @@ public class DefaultEvaluatorTest extends AbstractTest {
 		e.set(v, bd(1.5)); assertAssigned(bd(3.6), v, e.addAssign(v, bd(2.1)));
 	}
 
-	/** Tests {@link DefaultEvaluator#subAssign(Object, Object)}. */
+	/** Tests {@link DefaultStackEvaluator#subAssign(Object, Object)}. */
 	@Test
 	public void testSubAssign() {
 		final Variable v = new Variable("v");
@@ -764,7 +764,7 @@ public class DefaultEvaluatorTest extends AbstractTest {
 		e.set(v, bd(3.6)); assertAssigned(bd(1.5), v, e.subAssign(v, bd(2.1)));
 	}
 
-	/** Tests {@link DefaultEvaluator#andAssign(Object, Object)}. */
+	/** Tests {@link DefaultStackEvaluator#andAssign(Object, Object)}. */
 	@Test
 	public void testAndAssign() {
 		final Variable v = new Variable("v");
@@ -773,7 +773,7 @@ public class DefaultEvaluatorTest extends AbstractTest {
 		e.set(v, bi(0xcafebabeL)); assertAssigned(bi(0xcaacbaaeL), v, e.andAssign(v, bi(0xdeadbeefL)));
 	}
 
-	/** Tests {@link DefaultEvaluator#orAssign(Object, Object)}. */
+	/** Tests {@link DefaultStackEvaluator#orAssign(Object, Object)}. */
 	@Test
 	public void testOrAssign() {
 		final Variable v = new Variable("v");
@@ -782,7 +782,7 @@ public class DefaultEvaluatorTest extends AbstractTest {
 		e.set(v, bi(0xcafebabeL)); assertAssigned(bi(0xdeffbeffL), v, e.orAssign(v, bi(0xdeadbeefL)));
 	}
 
-	/** Tests {@link DefaultEvaluator#leftShiftAssign(Object, Object)}. */
+	/** Tests {@link DefaultStackEvaluator#leftShiftAssign(Object, Object)}. */
 	@Test
 	public void testLeftShiftAssign() {
 		final Variable v = new Variable("v");
@@ -791,7 +791,7 @@ public class DefaultEvaluatorTest extends AbstractTest {
 		e.set(v, bi(57)); assertAssigned(bi(7296), v, e.leftShiftAssign(v, 7));
 	}
 
-	/** Tests {@link DefaultEvaluator#rightShiftAssign(Object, Object)}. */
+	/** Tests {@link DefaultStackEvaluator#rightShiftAssign(Object, Object)}. */
 	@Test
 	public void testRightShiftAssign() {
 		final Variable v = new Variable("v");
@@ -800,7 +800,7 @@ public class DefaultEvaluatorTest extends AbstractTest {
 		e.set(v, bi(8920)); assertAssigned(bi(278), v, e.rightShiftAssign(v, 5));
 	}
 
-	/** Tests {@link DefaultEvaluator#unsignedRightShiftAssign(Object, Object)}. */
+	/** Tests {@link DefaultStackEvaluator#unsignedRightShiftAssign(Object, Object)}. */
 	@Test
 	public void testUnsignedRightShiftAssign() {
 		final Variable v = new Variable("v");

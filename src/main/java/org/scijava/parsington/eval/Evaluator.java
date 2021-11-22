@@ -73,7 +73,7 @@ public interface Evaluator {
 	 * cases where the unresolved value is needed as an input for additional
 	 * operations, the evaluation may still ultimately fail of the operation in
 	 * question is not defined for unresolved values. For example, the
-	 * {@link DefaultEvaluator} will fail with an "Unsupported binary operator"
+	 * {@link DefaultStackEvaluator} will fail with an "Unsupported binary operator"
 	 * exception when given the expression {@code foo+bar}, since {@code foo} and
 	 * {@code bar} are unresolved variables, and the {@code +} operator cannot
 	 * handle such objects.
