@@ -32,6 +32,7 @@ package org.scijava.parsington.eval;
 
 import org.scijava.parsington.Function;
 import org.scijava.parsington.Operators;
+import org.scijava.parsington.Variable;
 
 /**
  * Interface for expression evaluators which support the {@link Operators
@@ -79,18 +80,40 @@ public interface StandardEvaluator extends Evaluator {
 	// -- postfix --
 
 	/** Applies the {@link Operators#POST_INC} operator. */
-	Object postInc(Object a);
+	default Object postInc(final Object a) {
+		final Variable v = var(a);
+		final Object value = value(v);
+		if (value == null) return null;
+		set(v, add(a, 1));
+		return value;
+	}
 
 	/** Applies the {@link Operators#POST_DEC} operator. */
-	Object postDec(Object a);
+	default Object postDec(final Object a) {
+		final Variable v = var(a);
+		final Object value = value(v);
+		if (value == null) return null;
+		set(v, sub(a, 1));
+		return value;
+	}
 
 	// -- unary --
 
 	/** Applies the {@link Operators#PRE_INC} operator. */
-	Object preInc(Object a);
+	default Object preInc(final Object a) {
+		final Variable v = var(a);
+		final Object result = add(a, 1);
+		set(v, result);
+		return result;
+	}
 
 	/** Applies the {@link Operators#PRE_DEC} operator. */
-	Object preDec(Object a);
+	default Object preDec(final Object a) {
+		final Variable v = var(a);
+		final Object result = sub(a, 1);
+		set(v, result);
+		return result;
+	}
 
 	/** Applies the {@link Operators#POS} operator. */
 	Object pos(Object a);
@@ -198,51 +221,85 @@ public interface StandardEvaluator extends Evaluator {
 	// -- assignment --
 
 	/** Applies the {@link Operators#ASSIGN} operator. */
-	Object assign(Object a, Object b);
+	default Object assign(final Object a, final Object b) {
+		final Variable v = var(a);
+		set(v, value(b));
+		return v;
+	}
 
 	/** Applies the {@link Operators#POW_ASSIGN} operator. */
-	Object powAssign(Object a, Object b);
+	default Object powAssign(final Object a, final Object b) {
+		return assign(a, pow(a, b));
+	}
 
 	/** Applies the {@link Operators#DOT_POW_ASSIGN} operator. */
-	Object dotPowAssign(Object a, Object b);
+	default Object dotPowAssign(final Object a, final Object b) {
+		return assign(a, dotPow(a, b));
+	}
 
 	/** Applies the {@link Operators#MUL_ASSIGN} operator. */
-	Object mulAssign(Object a, Object b);
+	default Object mulAssign(final Object a, final Object b) {
+		return assign(a, mul(a, b));
+	}
 
 	/** Applies the {@link Operators#DIV_ASSIGN} operator. */
-	Object divAssign(Object a, Object b);
+	default Object divAssign(final Object a, final Object b) {
+		return assign(a, div(a, b));
+	}
 
 	/** Applies the {@link Operators#MOD_ASSIGN} operator. */
-	Object modAssign(Object a, Object b);
+	default Object modAssign(final Object a, final Object b) {
+		return assign(a, mod(a, b));
+	}
 
 	/** Applies the {@link Operators#RIGHT_DIV_ASSIGN} operator. */
-	Object rightDivAssign(Object a, Object b);
+	default Object rightDivAssign(final Object a, final Object b) {
+		return assign(a, rightDiv(a, b));
+	}
 
 	/** Applies the {@link Operators#DOT_DIV_ASSIGN} operator. */
-	Object dotDivAssign(Object a, Object b);
+	default Object dotDivAssign(final Object a, final Object b) {
+		return assign(a, dotDiv(a, b));
+	}
 
 	/** Applies the {@link Operators#DOT_RIGHT_DIV_ASSIGN} operator. */
-	Object dotRightDivAssign(Object a, Object b);
+	default Object dotRightDivAssign(final Object a, final Object b) {
+		return assign(a, dotRightDiv(a, b));
+	}
 
 	/** Applies the {@link Operators#ADD_ASSIGN} operator. */
-	Object addAssign(Object a, Object b);
+	default Object addAssign(final Object a, final Object b) {
+		return assign(a, add(a, b));
+	}
 
 	/** Applies the {@link Operators#SUB_ASSIGN} operator. */
-	Object subAssign(Object a, Object b);
+	default Object subAssign(final Object a, final Object b) {
+		return assign(a, sub(a, b));
+	}
 
 	/** Applies the {@link Operators#AND_ASSIGN} operator. */
-	Object andAssign(Object a, Object b);
+	default Object andAssign(final Object a, final Object b) {
+		return assign(a, bitwiseAnd(a, b));
+	}
 
 	/** Applies the {@link Operators#OR_ASSIGN} operator. */
-	Object orAssign(Object a, Object b);
+	default Object orAssign(final Object a, final Object b) {
+		return assign(a, bitwiseOr(a, b));
+	}
 
 	/** Applies the {@link Operators#LEFT_SHIFT_ASSIGN} operator. */
-	Object leftShiftAssign(Object a, Object b);
+	default Object leftShiftAssign(final Object a, final Object b) {
+		return assign(a, leftShift(a, b));
+	}
 
 	/** Applies the {@link Operators#RIGHT_SHIFT_ASSIGN} operator. */
-	Object rightShiftAssign(Object a, Object b);
+	default Object rightShiftAssign(final Object a, final Object b) {
+		return assign(a, rightShift(a, b));
+	}
 
 	/** Applies the {@link Operators#UNSIGNED_RIGHT_SHIFT_ASSIGN} operator. */
-	Object unsignedRightShiftAssign(Object a, Object b);
+	default Object unsignedRightShiftAssign(final Object a, final Object b) {
+		return assign(a, unsignedRightShift(a, b));
+	}
 
 }

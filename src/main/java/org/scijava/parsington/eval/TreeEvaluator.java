@@ -30,11 +30,14 @@
 
 package org.scijava.parsington.eval;
 
+import java.util.LinkedList;
+
 import org.scijava.parsington.Operator;
 import org.scijava.parsington.SyntaxTree;
+import org.scijava.parsington.Tokens;
 
 /**
- * Interface for tree-based expression evaluators.
+ * Interface for tree-based expression evaluators, operating on syntax trees.
  *
  * @author Curtis Rueden
  */
@@ -45,5 +48,33 @@ public interface TreeEvaluator extends Evaluator {
 	 * {@link SyntaxTree syntax tree}'s children.
 	 */
 	Object execute(final Operator op, final SyntaxTree tree);
+
+	// -- Evaluator methods --
+
+	@Override
+	default Object evaluate(final String expression) {
+		// Convert the expression to a syntax tree.
+		return evaluate(getParser().parseTree(expression));
+	}
+
+	@Override
+	default Object evaluate(final LinkedList<Object> queue) {
+		// Convert the postfix queue to a syntax tree.
+		return evaluate(new SyntaxTree(queue));
+	}
+
+	@Override
+	default Object evaluate(final SyntaxTree syntaxTree) {
+		// Evaluate the syntax tree recursively.
+		final Object token = syntaxTree.token();
+		if (Tokens.isOperator(token)) {
+			final Operator op = (Operator) token;
+			assert op.getArity() == syntaxTree.count();
+			return execute(op, syntaxTree);
+		}
+		// Token is a variable or a literal.
+		assert syntaxTree.count() == 0;
+		return token;
+	}
 
 }

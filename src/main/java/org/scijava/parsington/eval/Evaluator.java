@@ -35,6 +35,7 @@ import java.util.Map;
 
 import org.scijava.parsington.ExpressionParser;
 import org.scijava.parsington.SyntaxTree;
+import org.scijava.parsington.Tokens;
 import org.scijava.parsington.Variable;
 
 /**
@@ -94,7 +95,20 @@ public interface Evaluator {
 	 * variable, throwing an exception if the variable is not set. For literals,
 	 * returns the token itself.
 	 */
-	Object value(Object token);
+	default Object value(Object token) {
+		return Tokens.isVariable(token) ? get((Variable) token) : token;
+	}
+
+	/**
+	 * Casts the given token to a variable.
+	 * 
+	 * @throw IllegalArgumentException if the given token is not a
+	 *        {@link Variable}.
+	 */
+	default Variable var(final Object token) {
+		if (Tokens.isVariable(token)) return (Variable) token;
+		throw new IllegalArgumentException("Not a variable: " + token);
+	}
 
 	/** Gets the value of the given variable. */
 	Object get(Variable v);

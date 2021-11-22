@@ -34,7 +34,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.scijava.parsington.ExpressionParser;
-import org.scijava.parsington.Tokens;
 import org.scijava.parsington.Variable;
 
 /**
@@ -72,11 +71,6 @@ public abstract class AbstractEvaluator implements Evaluator {
 	@Override
 	public void setStrict(final boolean strict) {
 		this.strict = strict;
-	}
-
-	@Override
-	public Object value(final Object token) {
-		return Tokens.isVariable(token) ? get((Variable) token) : token;
 	}
 
 	@Override

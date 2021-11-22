@@ -30,16 +30,7 @@
 
 package org.scijava.parsington.eval;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.LinkedList;
-
 import org.scijava.parsington.ExpressionParser;
-import org.scijava.parsington.Function;
-import org.scijava.parsington.Group;
-import org.scijava.parsington.Operator;
-import org.scijava.parsington.SyntaxTree;
-import org.scijava.parsington.Tokens;
 
 /**
  * Base class for {@link StackEvaluator} implementations.
@@ -56,76 +47,6 @@ public abstract class AbstractStackEvaluator extends AbstractEvaluator
 
 	public AbstractStackEvaluator(final ExpressionParser parser) {
 		super(parser);
-	}
-
-	// -- Evaluator methods --
-
-	@Override
-	public Object evaluate(final String expression) {
-		// Convert the expression to postfix.
-		return evaluate(getParser().parsePostfix(expression));
-	}
-
-	@Override
-	public Object evaluate(final SyntaxTree syntaxTree) {
-		// Convert the syntax tree to postfix.
-		return evaluate(syntaxTree.postfix());
-	}
-
-	@Override
-	public Object evaluate(final LinkedList<Object> queue) {
-		// Process the postfix token queue.
-		final Deque<Object> stack = new ArrayDeque<>();
-		while (!queue.isEmpty()) {
-			final Object token = queue.removeFirst();
-			final Object result;
-			if (Tokens.isOperator(token)) {
-				result = execute((Operator) token, stack);
-			}
-			else {
-				// Token is a variable or a literal.
-				result = token;
-			}
-			if (result == null) die(token);
-			stack.push(result);
-		}
-
-		if (stack.isEmpty()) return null;
-		if (stack.size() == 1) return stack.pop();
-
-		final LinkedList<Object> resultList = new LinkedList<>();
-		while (!stack.isEmpty()) {
-			resultList.addFirst(stack.pop());
-		}
-		return resultList;
-	}
-
-	// -- Helper methods --
-
-	private static final String[] ARY = { "nullary", "unary", "binary",
-		"ternary", "quaternary", "quinary", "senary", "septenary", "octary",
-		"nonary" };
-
-	private static String ary(final int arity) {
-		return arity < ARY.length ? ARY[arity] : arity + "-ary";
-	}
-
-	private static String ary(final Operator op) {
-		return ary(op.getArity());
-	}
-
-	private static void die(final Object token) {
-		final StringBuilder message = new StringBuilder("Unsupported");
-		if (token instanceof Operator) message.append(" " + ary((Operator) token));
-		message.append(" " + type(token) + ": " + token);
-		throw new IllegalArgumentException(message.toString());
-	}
-
-	private static String type(final Object token) {
-		if (token instanceof Function) return "function";
-		if (token instanceof Group) return "group";
-		if (token instanceof Operator) return "operator";
-		return "token";
 	}
 
 }

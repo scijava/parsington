@@ -36,7 +36,6 @@ import org.scijava.parsington.Operator;
 import org.scijava.parsington.Operators;
 import org.scijava.parsington.SyntaxTree;
 import org.scijava.parsington.Tokens;
-import org.scijava.parsington.Variable;
 
 /**
  * Base class for tree-based evaluators which support the standard operators.
@@ -57,44 +56,6 @@ public abstract class AbstractStandardTreeEvaluator extends
 
 	// -- StandardEvaluator methods --
 
-	// -- postfix --
-
-	@Override
-	public Object postInc(final Object a) {
-		final Variable v = var(a);
-		final Object value = value(v);
-		if (value == null) return null;
-		set(v, add(a, 1));
-		return value;
-	}
-
-	@Override
-	public Object postDec(final Object a) {
-		final Variable v = var(a);
-		final Object value = value(v);
-		if (value == null) return null;
-		set(v, sub(a, 1));
-		return value;
-	}
-
-	// -- unary --
-
-	@Override
-	public Object preInc(final Object a) {
-		final Variable v = var(a);
-		final Object result = add(a, 1);
-		set(v, result);
-		return result;
-	}
-
-	@Override
-	public Object preDec(final Object a) {
-		final Variable v = var(a);
-		final Object result = sub(a, 1);
-		set(v, result);
-		return result;
-	}
-
 	// -- ternary --
 
 	@Override
@@ -107,90 +68,6 @@ public abstract class AbstractStandardTreeEvaluator extends
 	public Object colon(final Object a, final Object b) {
 		// NB: Unimplemented.
 		return null;
-	}
-
-	// -- assignment --
-
-	@Override
-	public Object assign(final Object a, final Object b) {
-		final Variable v = var(a);
-		set(v, value(b));
-		return v;
-	}
-
-	@Override
-	public Object powAssign(final Object a, final Object b) {
-		return assign(a, pow(a, b));
-	}
-
-	@Override
-	public Object dotPowAssign(final Object a, final Object b) {
-		return assign(a, dotPow(a, b));
-	}
-
-	@Override
-	public Object mulAssign(final Object a, final Object b) {
-		return assign(a, mul(a, b));
-	}
-
-	@Override
-	public Object divAssign(final Object a, final Object b) {
-		return assign(a, div(a, b));
-	}
-
-	@Override
-	public Object modAssign(final Object a, final Object b) {
-		return assign(a, mod(a, b));
-	}
-
-	@Override
-	public Object rightDivAssign(final Object a, final Object b) {
-		return assign(a, rightDiv(a, b));
-	}
-
-	@Override
-	public Object dotDivAssign(final Object a, final Object b) {
-		return assign(a, dotDiv(a, b));
-	}
-
-	@Override
-	public Object dotRightDivAssign(final Object a, final Object b) {
-		return assign(a, dotRightDiv(a, b));
-	}
-
-	@Override
-	public Object addAssign(final Object a, final Object b) {
-		return assign(a, add(a, b));
-	}
-
-	@Override
-	public Object subAssign(final Object a, final Object b) {
-		return assign(a, sub(a, b));
-	}
-
-	@Override
-	public Object andAssign(final Object a, final Object b) {
-		return assign(a, bitwiseAnd(a, b));
-	}
-
-	@Override
-	public Object orAssign(final Object a, final Object b) {
-		return assign(a, bitwiseOr(a, b));
-	}
-
-	@Override
-	public Object leftShiftAssign(final Object a, final Object b) {
-		return assign(a, leftShift(a, b));
-	}
-
-	@Override
-	public Object rightShiftAssign(final Object a, final Object b) {
-		return assign(a, rightShift(a, b));
-	}
-
-	@Override
-	public Object unsignedRightShiftAssign(final Object a, final Object b) {
-		return assign(a, unsignedRightShift(a, b));
 	}
 
 	// -- TreeEvaluator methods --
@@ -283,14 +160,6 @@ public abstract class AbstractStandardTreeEvaluator extends
 
 		// Unknown operator.
 		return null;
-	}
-
-	// -- Helper methods --
-
-	/** Casts the given token to a variable. */
-	private Variable var(final Object token) {
-		if (Tokens.isVariable(token)) return (Variable) token;
-		throw new IllegalArgumentException("Not a variable: " + token);
 	}
 
 }

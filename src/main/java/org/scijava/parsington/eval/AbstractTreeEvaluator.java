@@ -30,16 +30,10 @@
 
 package org.scijava.parsington.eval;
 
-import java.util.LinkedList;
-
 import org.scijava.parsington.ExpressionParser;
-import org.scijava.parsington.Operator;
-import org.scijava.parsington.SyntaxTree;
-import org.scijava.parsington.Tokens;
 
 /**
- * Base class for {@link Evaluator} implementations that evaluate
- * {@link SyntaxTree}s recursively.
+ * Base class for {@link TreeEvaluator} implementations.
  *
  * @author Curtis Rueden
  */
@@ -53,34 +47,6 @@ public abstract class AbstractTreeEvaluator extends AbstractEvaluator implements
 
 	public AbstractTreeEvaluator(final ExpressionParser parser) {
 		super(parser);
-	}
-
-	// -- Evaluator methods --
-
-	@Override
-	public Object evaluate(final String expression) {
-		// Convert the expression to a syntax tree.
-		return evaluate(getParser().parseTree(expression));
-	}
-
-	@Override
-	public Object evaluate(final LinkedList<Object> queue) {
-		// Convert the postfix queue to a syntax tree.
-		return evaluate(new SyntaxTree(queue));
-	}
-
-	@Override
-	public Object evaluate(final SyntaxTree syntaxTree) {
-		// Evaluate the syntax tree recursively.
-		final Object token = syntaxTree.token();
-		if (Tokens.isOperator(token)) {
-			final Operator op = (Operator) token;
-			assert op.getArity() == syntaxTree.count();
-			return execute(op, syntaxTree);
-		}
-		// Token is a variable or a literal.
-		assert syntaxTree.count() == 0;
-		return token;
 	}
 
 }
