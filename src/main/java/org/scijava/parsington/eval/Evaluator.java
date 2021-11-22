@@ -35,6 +35,7 @@ import java.util.Map;
 
 import org.scijava.parsington.ExpressionParser;
 import org.scijava.parsington.SyntaxTree;
+import org.scijava.parsington.Tokens;
 import org.scijava.parsington.Variable;
 
 /**
@@ -72,7 +73,7 @@ public interface Evaluator {
 	 * cases where the unresolved value is needed as an input for additional
 	 * operations, the evaluation may still ultimately fail of the operation in
 	 * question is not defined for unresolved values. For example, the
-	 * {@link DefaultEvaluator} will fail with an "Unsupported binary operator"
+	 * {@link DefaultStackEvaluator} will fail with an "Unsupported binary operator"
 	 * exception when given the expression {@code foo+bar}, since {@code foo} and
 	 * {@code bar} are unresolved variables, and the {@code +} operator cannot
 	 * handle such objects.
@@ -94,7 +95,20 @@ public interface Evaluator {
 	 * variable, throwing an exception if the variable is not set. For literals,
 	 * returns the token itself.
 	 */
-	Object value(Object token);
+	default Object value(Object token) {
+		return Tokens.isVariable(token) ? get((Variable) token) : token;
+	}
+
+	/**
+	 * Casts the given token to a variable.
+	 * 
+	 * @throw IllegalArgumentException if the given token is not a
+	 *        {@link Variable}.
+	 */
+	default Variable var(final Object token) {
+		if (Tokens.isVariable(token)) return (Variable) token;
+		throw new IllegalArgumentException("Not a variable: " + token);
+	}
 
 	/** Gets the value of the given variable. */
 	Object get(Variable v);

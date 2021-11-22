@@ -179,7 +179,7 @@ public final class Operators {
 	/** Gets the standard list of operators. */
 	public static List<Operator> standardList() {
 		// Build the standard list from all available Operator constants.
-		final ArrayList<Operator> ops = new ArrayList<Operator>();
+		final ArrayList<Operator> ops = new ArrayList<>();
 		for (final Field f : Operators.class.getFields()) {
 			if (!isOperator(f)) continue;
 			try {

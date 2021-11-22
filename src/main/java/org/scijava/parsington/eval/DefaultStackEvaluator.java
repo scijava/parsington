@@ -30,57 +30,32 @@
 
 package org.scijava.parsington.eval;
 
-import java.util.LinkedList;
-
 import org.scijava.parsington.ExpressionParser;
-import org.scijava.parsington.Operator;
-import org.scijava.parsington.SyntaxTree;
-import org.scijava.parsington.Tokens;
+import org.scijava.parsington.Operators;
 
 /**
- * Base class for {@link Evaluator} implementations that evaluate
- * {@link SyntaxTree}s recursively.
+ * An expression evaluator for most {@link Operators standard operators} with
+ * common built-in types (i.e.: {@link Boolean}s, {@link String}s and
+ * {@link Number}s). Does not handle short circuiting of ternary expressions.
+ * <p>
+ * It is recommended to use {@link DefaultTreeEvaluator} instead, unless your
+ * expression's syntax tree is so deep it exceeds the maximum recursion depth.
+ * </p>
  *
  * @author Curtis Rueden
+ * @see DefaultTreeEvaluator For an evaluator that supports ternary
+ *      short-circuiting.
  */
-public abstract class AbstractTreeEvaluator extends AbstractEvaluator implements
-	TreeEvaluator
+public class DefaultStackEvaluator extends AbstractStandardEvaluator implements
+	StandardStackEvaluator
 {
 
-	public AbstractTreeEvaluator() {
+	public DefaultStackEvaluator() {
 		super();
 	}
 
-	public AbstractTreeEvaluator(final ExpressionParser parser) {
+	public DefaultStackEvaluator(final ExpressionParser parser) {
 		super(parser);
-	}
-
-	// -- Evaluator methods --
-
-	@Override
-	public Object evaluate(final String expression) {
-		// Convert the expression to a syntax tree.
-		return evaluate(getParser().parseTree(expression));
-	}
-
-	@Override
-	public Object evaluate(final LinkedList<Object> queue) {
-		// Convert the postfix queue to a syntax tree.
-		return evaluate(new SyntaxTree(queue));
-	}
-
-	@Override
-	public Object evaluate(final SyntaxTree syntaxTree) {
-		// Evaluate the syntax tree recursively.
-		final Object token = syntaxTree.token();
-		if (Tokens.isOperator(token)) {
-			final Operator op = (Operator) token;
-			assert op.getArity() == syntaxTree.count();
-			return execute(op, syntaxTree);
-		}
-		// Token is a variable or a literal.
-		assert syntaxTree.count() == 0;
-		return token;
 	}
 
 }

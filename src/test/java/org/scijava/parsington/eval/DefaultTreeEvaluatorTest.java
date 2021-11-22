@@ -30,65 +30,45 @@
 
 package org.scijava.parsington.eval;
 
-import java.util.HashMap;
-import java.util.Map;
+import static org.junit.Assert.assertEquals;
 
-import org.scijava.parsington.ExpressionParser;
-import org.scijava.parsington.Variable;
+import java.util.List;
 
-/**
- * Base class for {@link Evaluator} implementations.
- *
- * @author Curtis Rueden
- */
-public abstract class AbstractEvaluator implements Evaluator {
+import org.junit.Test;
 
-	private final HashMap<String, Object> vars = new HashMap<>();
-	private final ExpressionParser parser;
-
-	private boolean strict = true;
-
-	public AbstractEvaluator() {
-		this(new ExpressionParser());
-	}
-
-	public AbstractEvaluator(final ExpressionParser parser) {
-		this.parser = parser;
-	}
-
-	// -- Evaluator methods --
+/** Tests {@link DefaultTreeEvaluator}. */
+public class DefaultTreeEvaluatorTest extends AbstractStandardEvaluatorTest {
 
 	@Override
-	public ExpressionParser getParser() {
-		return parser;
+	public StandardEvaluator createEvaluator() {
+		return new DefaultTreeEvaluator();
 	}
 
-	@Override
-	public boolean isStrict() {
-		return strict;
+	@Test
+	public void testShortCircuitingAnd() {
+		final Object result = e.evaluate("(x = 1, (++x > 2) && (++x > 3))");
+		// Both sides of the above AND expression evaluate to false.
+		// But for short circuiting AND, only the left side should
+		// execute, leaving the value of x afterward at 2, not 3.
+		final Object v = ((List<?>) result).get(0); // First element of tuple.
+		assertEquals(2, e.value(v));
 	}
 
-	@Override
-	public void setStrict(final boolean strict) {
-		this.strict = strict;
+	@Test
+	public void testShortCircuitingOr() {
+		final Object result = e.evaluate("(x = 1, (++x == 2) || (++x == 3))");
+		// Both sides of the above OR expression evaluate to true.
+		// But for short circuiting OR, only the left side should
+		// execute, leaving the value of x afterward at 2, not 3.
+		final Object v = ((List<?>) result).get(0); // First element of tuple.
+		assertEquals(2, e.value(v));
 	}
 
-	@Override
-	public Object get(final Variable v) {
-		final String name = v.getToken();
-		if (vars.containsKey(name)) return vars.get(name);
-		if (strict) throw new IllegalArgumentException("Unknown variable: " + name);
-		return new Unresolved(name);
-	}
-
-	@Override
-	public void set(final Variable v, final Object value) {
-		vars.put(v.getToken(), value);
-	}
-
-	@Override
-	public void setAll(final Map<? extends String, ? extends Object> map) {
-		vars.putAll(map);
+	@Test
+	public void testShortCircuitingTernary() {
+		final Object result = e.evaluate("2 < 3 ? (x = 'yes') : (x += 'no')");
+		System.out.println("result = " + result + " " + result.getClass());
+		assertEquals("yes", e.value(result));
 	}
 
 }

@@ -31,7 +31,10 @@
 package org.scijava.parsington.eval;
 
 import org.scijava.parsington.Function;
+import org.scijava.parsington.Operator;
 import org.scijava.parsington.Operators;
+import org.scijava.parsington.Tokens;
+import org.scijava.parsington.Variable;
 
 /**
  * Interface for expression evaluators which support the {@link Operators
@@ -79,18 +82,40 @@ public interface StandardEvaluator extends Evaluator {
 	// -- postfix --
 
 	/** Applies the {@link Operators#POST_INC} operator. */
-	Object postInc(Object a);
+	default Object postInc(final Object a) {
+		final Variable v = var(a);
+		final Object value = value(v);
+		if (value == null) return null;
+		set(v, add(a, 1));
+		return value;
+	}
 
 	/** Applies the {@link Operators#POST_DEC} operator. */
-	Object postDec(Object a);
+	default Object postDec(final Object a) {
+		final Variable v = var(a);
+		final Object value = value(v);
+		if (value == null) return null;
+		set(v, sub(a, 1));
+		return value;
+	}
 
 	// -- unary --
 
 	/** Applies the {@link Operators#PRE_INC} operator. */
-	Object preInc(Object a);
+	default Object preInc(final Object a) {
+		final Variable v = var(a);
+		final Object result = add(a, 1);
+		set(v, result);
+		return result;
+	}
 
 	/** Applies the {@link Operators#PRE_DEC} operator. */
-	Object preDec(Object a);
+	default Object preDec(final Object a) {
+		final Variable v = var(a);
+		final Object result = sub(a, 1);
+		set(v, result);
+		return result;
+	}
 
 	/** Applies the {@link Operators#POS} operator. */
 	Object pos(Object a);
@@ -198,51 +223,154 @@ public interface StandardEvaluator extends Evaluator {
 	// -- assignment --
 
 	/** Applies the {@link Operators#ASSIGN} operator. */
-	Object assign(Object a, Object b);
+	default Object assign(final Object a, final Object b) {
+		final Variable v = var(a);
+		set(v, value(b));
+		return v;
+	}
 
 	/** Applies the {@link Operators#POW_ASSIGN} operator. */
-	Object powAssign(Object a, Object b);
+	default Object powAssign(final Object a, final Object b) {
+		return assign(a, pow(a, b));
+	}
 
 	/** Applies the {@link Operators#DOT_POW_ASSIGN} operator. */
-	Object dotPowAssign(Object a, Object b);
+	default Object dotPowAssign(final Object a, final Object b) {
+		return assign(a, dotPow(a, b));
+	}
 
 	/** Applies the {@link Operators#MUL_ASSIGN} operator. */
-	Object mulAssign(Object a, Object b);
+	default Object mulAssign(final Object a, final Object b) {
+		return assign(a, mul(a, b));
+	}
 
 	/** Applies the {@link Operators#DIV_ASSIGN} operator. */
-	Object divAssign(Object a, Object b);
+	default Object divAssign(final Object a, final Object b) {
+		return assign(a, div(a, b));
+	}
 
 	/** Applies the {@link Operators#MOD_ASSIGN} operator. */
-	Object modAssign(Object a, Object b);
+	default Object modAssign(final Object a, final Object b) {
+		return assign(a, mod(a, b));
+	}
 
 	/** Applies the {@link Operators#RIGHT_DIV_ASSIGN} operator. */
-	Object rightDivAssign(Object a, Object b);
+	default Object rightDivAssign(final Object a, final Object b) {
+		return assign(a, rightDiv(a, b));
+	}
 
 	/** Applies the {@link Operators#DOT_DIV_ASSIGN} operator. */
-	Object dotDivAssign(Object a, Object b);
+	default Object dotDivAssign(final Object a, final Object b) {
+		return assign(a, dotDiv(a, b));
+	}
 
 	/** Applies the {@link Operators#DOT_RIGHT_DIV_ASSIGN} operator. */
-	Object dotRightDivAssign(Object a, Object b);
+	default Object dotRightDivAssign(final Object a, final Object b) {
+		return assign(a, dotRightDiv(a, b));
+	}
 
 	/** Applies the {@link Operators#ADD_ASSIGN} operator. */
-	Object addAssign(Object a, Object b);
+	default Object addAssign(final Object a, final Object b) {
+		return assign(a, add(a, b));
+	}
 
 	/** Applies the {@link Operators#SUB_ASSIGN} operator. */
-	Object subAssign(Object a, Object b);
+	default Object subAssign(final Object a, final Object b) {
+		return assign(a, sub(a, b));
+	}
 
 	/** Applies the {@link Operators#AND_ASSIGN} operator. */
-	Object andAssign(Object a, Object b);
+	default Object andAssign(final Object a, final Object b) {
+		return assign(a, bitwiseAnd(a, b));
+	}
 
 	/** Applies the {@link Operators#OR_ASSIGN} operator. */
-	Object orAssign(Object a, Object b);
+	default Object orAssign(final Object a, final Object b) {
+		return assign(a, bitwiseOr(a, b));
+	}
 
 	/** Applies the {@link Operators#LEFT_SHIFT_ASSIGN} operator. */
-	Object leftShiftAssign(Object a, Object b);
+	default Object leftShiftAssign(final Object a, final Object b) {
+		return assign(a, leftShift(a, b));
+	}
 
 	/** Applies the {@link Operators#RIGHT_SHIFT_ASSIGN} operator. */
-	Object rightShiftAssign(Object a, Object b);
+	default Object rightShiftAssign(final Object a, final Object b) {
+		return assign(a, rightShift(a, b));
+	}
 
 	/** Applies the {@link Operators#UNSIGNED_RIGHT_SHIFT_ASSIGN} operator. */
-	Object unsignedRightShiftAssign(Object a, Object b);
+	default Object unsignedRightShiftAssign(final Object a, final Object b) {
+		return assign(a, unsignedRightShift(a, b));
+	}
+
+	/** Executes the given operator with the specified arguments. */
+	default Object execute(final Operator op, final Object[] args) {
+		final Object a = args.length > 0 ? args[0] : null;
+		final Object b = args.length > 1 ? args[1] : null;
+
+		// Let the case logic begin!
+		if (op instanceof Function) return function(a, b);
+		if (op == Operators.DOT) return dot(a, b);
+		if (Tokens.isMatchingGroup(op, Operators.PARENS)) return parens(args);
+		if (Tokens.isMatchingGroup(op, Operators.BRACKETS)) return brackets(args);
+		if (Tokens.isMatchingGroup(op, Operators.BRACES)) return braces(args);
+		if (op == Operators.TRANSPOSE) return transpose(a);
+		if (op == Operators.DOT_TRANSPOSE) return dotTranspose(a);
+		if (op == Operators.POW) return pow(a, b);
+		if (op == Operators.DOT_POW) return dotPow(a, b);
+		if (op == Operators.POST_INC) return postInc(a);
+		if (op == Operators.POST_DEC) return postDec(a);
+		if (op == Operators.PRE_INC) return preInc(a);
+		if (op == Operators.PRE_DEC) return preDec(a);
+		if (op == Operators.POS) return pos(a);
+		if (op == Operators.NEG) return neg(a);
+		if (op == Operators.COMPLEMENT) return complement(a);
+		if (op == Operators.NOT) return not(a);
+		if (op == Operators.MUL) return mul(a, b);
+		if (op == Operators.DIV) return div(a, b);
+		if (op == Operators.MOD) return mod(a, b);
+		if (op == Operators.RIGHT_DIV) return rightDiv(a, b);
+		if (op == Operators.DOT_MUL) return dotMul(a, b);
+		if (op == Operators.DOT_DIV) return dotDiv(a, b);
+		if (op == Operators.DOT_RIGHT_DIV) return dotRightDiv(a, b);
+		if (op == Operators.ADD) return add(a, b);
+		if (op == Operators.SUB) return sub(a, b);
+		if (op == Operators.LEFT_SHIFT) return leftShift(a, b);
+		if (op == Operators.RIGHT_SHIFT) return rightShift(a, b);
+		if (op == Operators.UNSIGNED_RIGHT_SHIFT) return unsignedRightShift(a, b);
+		if (op == Operators.LESS_THAN) return lessThan(a, b);
+		if (op == Operators.GREATER_THAN) return greaterThan(a, b);
+		if (op == Operators.LESS_THAN_OR_EQUAL) return lessThanOrEqual(a, b);
+		if (op == Operators.GREATER_THAN_OR_EQUAL) return greaterThanOrEqual(a, b);
+		if (op == Operators.INSTANCEOF) return instanceOf(a, b);
+		if (op == Operators.EQUAL) return equal(a, b);
+		if (op == Operators.NOT_EQUAL) return notEqual(a, b);
+		if (op == Operators.BITWISE_AND) return bitwiseAnd(a, b);
+		if (op == Operators.BITWISE_OR) return bitwiseOr(a, b);
+		if (op == Operators.LOGICAL_AND) return logicalAnd(a, b);
+		if (op == Operators.LOGICAL_OR) return logicalOr(a, b);
+		if (op == Operators.QUESTION) return question(a, b);
+		if (op == Operators.COLON) return colon(a, b);
+		if (op == Operators.ASSIGN) return assign(a, b);
+		if (op == Operators.POW_ASSIGN) return powAssign(a, b);
+		if (op == Operators.DOT_POW_ASSIGN) return dotPowAssign(a, b);
+		if (op == Operators.MUL_ASSIGN) return mulAssign(a, b);
+		if (op == Operators.DIV_ASSIGN) return divAssign(a, b);
+		if (op == Operators.MOD_ASSIGN) return modAssign(a, b);
+		if (op == Operators.RIGHT_DIV_ASSIGN) return rightDivAssign(a, b);
+		if (op == Operators.DOT_DIV_ASSIGN) return dotDivAssign(a, b);
+		if (op == Operators.DOT_RIGHT_DIV_ASSIGN) return dotRightDivAssign(a, b);
+		if (op == Operators.ADD_ASSIGN) return addAssign(a, b);
+		if (op == Operators.SUB_ASSIGN) return subAssign(a, b);
+		if (op == Operators.AND_ASSIGN) return andAssign(a, b);
+		if (op == Operators.OR_ASSIGN) return orAssign(a, b);
+		if (op == Operators.LEFT_SHIFT_ASSIGN) return leftShiftAssign(a, b);
+		if (op == Operators.RIGHT_SHIFT_ASSIGN) return rightShiftAssign(a, b);
+		if (op == Operators.UNSIGNED_RIGHT_SHIFT_ASSIGN) return unsignedRightShiftAssign(a, b);
+
+		// Unknown operator.
+		return null;
+	}
 
 }

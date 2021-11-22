@@ -80,7 +80,7 @@ public class SyntaxTree implements Iterable<SyntaxTree> {
 
 	/** Converts the syntax tree into a token queue in postfix order. */
 	public LinkedList<Object> postfix() {
-		final LinkedList<Object> queue = new LinkedList<Object>();
+		final LinkedList<Object> queue = new LinkedList<>();
 		postfix(queue);
 		return queue;
 	}

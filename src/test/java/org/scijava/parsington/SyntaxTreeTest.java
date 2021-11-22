@@ -53,7 +53,7 @@ public class SyntaxTreeTest extends AbstractTest {
 			queue(var("a"), var("b"), var("c"), Operators.MUL, Operators.ADD);
 
 		// NB: SyntaxTree constructor consumes the queue, so save a copy.
-		final LinkedList<Object> expected = new LinkedList<Object>(queue);
+		final LinkedList<Object> expected = new LinkedList<>(queue);
 
 		final SyntaxTree tree = new SyntaxTree(queue);
 
@@ -80,7 +80,7 @@ public class SyntaxTreeTest extends AbstractTest {
 				group(Operators.PARENS, 4), func(), Operators.SUB);
 
 		// NB: SyntaxTree constructor consumes the queue, so save a copy.
-		final LinkedList<Object> expected = new LinkedList<Object>(queue);
+		final LinkedList<Object> expected = new LinkedList<>(queue);
 
 		final SyntaxTree tree = new SyntaxTree(queue);
 
@@ -115,7 +115,7 @@ public class SyntaxTreeTest extends AbstractTest {
 		final LinkedList<Object> queue = queue(var("f"), group(Operators.PARENS, 0), func());
 
 		// NB: SyntaxTree constructor consumes the queue, so save a copy.
-		final LinkedList<Object> expected = new LinkedList<Object>(queue);
+		final LinkedList<Object> expected = new LinkedList<>(queue);
 
 		final SyntaxTree tree = new SyntaxTree(queue);
 
@@ -130,7 +130,7 @@ public class SyntaxTreeTest extends AbstractTest {
 	// -- Helper methods --
 
 	private LinkedList<Object> queue(final Object... args) {
-		return new LinkedList<Object>(Arrays.asList(args));
+		return new LinkedList<>(Arrays.asList(args));
 	}
 
 	private Variable var(final String token) {

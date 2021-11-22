@@ -30,65 +30,31 @@
 
 package org.scijava.parsington.eval;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Deque;
 
-import org.scijava.parsington.ExpressionParser;
-import org.scijava.parsington.Variable;
+import org.scijava.parsington.Operator;
 
 /**
- * Base class for {@link Evaluator} implementations.
+ * Interface for stack-based evaluators which support the standard operators.
  *
  * @author Curtis Rueden
  */
-public abstract class AbstractEvaluator implements Evaluator {
+public interface StandardStackEvaluator extends StandardEvaluator,
+	StackEvaluator
+{
 
-	private final HashMap<String, Object> vars = new HashMap<>();
-	private final ExpressionParser parser;
-
-	private boolean strict = true;
-
-	public AbstractEvaluator() {
-		this(new ExpressionParser());
-	}
-
-	public AbstractEvaluator(final ExpressionParser parser) {
-		this.parser = parser;
-	}
-
-	// -- Evaluator methods --
+	// -- StackEvaluator methods --
 
 	@Override
-	public ExpressionParser getParser() {
-		return parser;
-	}
+	default Object execute(final Operator op, final Deque<Object> stack) {
+		// Pop the arguments.
+		final int arity = op.getArity();
+		final Object[] args = new Object[arity];
+		for (int i = args.length - 1; i >= 0; i--) {
+			args[i] = stack.pop();
+		}
 
-	@Override
-	public boolean isStrict() {
-		return strict;
-	}
-
-	@Override
-	public void setStrict(final boolean strict) {
-		this.strict = strict;
-	}
-
-	@Override
-	public Object get(final Variable v) {
-		final String name = v.getToken();
-		if (vars.containsKey(name)) return vars.get(name);
-		if (strict) throw new IllegalArgumentException("Unknown variable: " + name);
-		return new Unresolved(name);
-	}
-
-	@Override
-	public void set(final Variable v, final Object value) {
-		vars.put(v.getToken(), value);
-	}
-
-	@Override
-	public void setAll(final Map<? extends String, ? extends Object> map) {
-		vars.putAll(map);
+		return execute(op, args);
 	}
 
 }

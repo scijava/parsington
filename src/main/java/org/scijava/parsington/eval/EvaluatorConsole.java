@@ -51,7 +51,7 @@ public class EvaluatorConsole {
 	private final Evaluator evaluator;
 
 	public EvaluatorConsole() {
-		this(new DefaultEvaluator());
+		this(new DefaultStackEvaluator());
 	}
 
 	public EvaluatorConsole(final Evaluator evaluator) {
