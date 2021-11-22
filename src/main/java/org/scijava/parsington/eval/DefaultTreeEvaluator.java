@@ -75,7 +75,9 @@ import org.scijava.parsington.Variable;
  * @author Curtis Rueden
  * @see org.scijava.parsington.Main The main class, to give it a spin.
  */
-public class DefaultTreeEvaluator extends AbstractStandardTreeEvaluator {
+public class DefaultTreeEvaluator extends AbstractEvaluator implements
+	StandardTreeEvaluator
+{
 
 	public DefaultTreeEvaluator() {
 		super();
@@ -503,6 +505,20 @@ public class DefaultTreeEvaluator extends AbstractStandardTreeEvaluator {
 		return null;
 	}
 	public boolean logicalOr(final boolean a, final boolean b) { return a || b; }
+
+	// -- ternary --
+
+	@Override
+	public Object question(final Object a, final Object b) {
+		// NB: Unimplemented.
+		return null;
+	}
+
+	@Override
+	public Object colon(Object a, Object b) {
+		// NB: Unimplemented.
+		return null;
+	}
 
 	// -- Helper methods - type matching --
 

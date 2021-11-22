@@ -54,7 +54,9 @@ import org.scijava.parsington.Variable;
  * @see DefaultTreeEvaluator For an evaluator that supports ternary
  *      short-circuiting.
  */
-public class DefaultEvaluator extends AbstractStandardStackEvaluator {
+public class DefaultEvaluator extends AbstractEvaluator implements
+	StandardStackEvaluator
+{
 
 	public DefaultEvaluator() {
 		super();
@@ -482,6 +484,20 @@ public class DefaultEvaluator extends AbstractStandardStackEvaluator {
 		return null;
 	}
 	public boolean logicalOr(final boolean a, final boolean b) { return a || b; }
+
+	// -- ternary --
+
+	@Override
+	public Object question(final Object a, final Object b) {
+		// NB: Unimplemented.
+		return null;
+	}
+
+	@Override
+	public Object colon(Object a, Object b) {
+		// NB: Unimplemented.
+		return null;
+	}
 
 	// -- Helper methods - type matching --
 

@@ -30,48 +30,23 @@
 
 package org.scijava.parsington.eval;
 
-import org.scijava.parsington.ExpressionParser;
 import org.scijava.parsington.Operator;
 import org.scijava.parsington.Operators;
 import org.scijava.parsington.SyntaxTree;
 
 /**
- * Base class for tree-based evaluators which support the standard operators.
+ * Interface for tree-based evaluators which support the standard operators.
  *
  * @author Curtis Rueden
  */
-public abstract class AbstractStandardTreeEvaluator extends
-	AbstractEvaluator implements StandardEvaluator, TreeEvaluator
+public interface StandardTreeEvaluator extends StandardEvaluator,
+	TreeEvaluator
 {
-
-	public AbstractStandardTreeEvaluator() {
-		super();
-	}
-
-	public AbstractStandardTreeEvaluator(final ExpressionParser parser) {
-		super(parser);
-	}
-
-	// -- StandardEvaluator methods --
-
-	// -- ternary --
-
-	@Override
-	public Object question(final Object a, final Object b) {
-		// NB: Unimplemented.
-		return null;
-	}
-
-	@Override
-	public Object colon(final Object a, final Object b) {
-		// NB: Unimplemented.
-		return null;
-	}
 
 	// -- TreeEvaluator methods --
 
 	@Override
-	public Object execute(final Operator op, final SyntaxTree tree) {
+	default Object execute(final Operator op, final SyntaxTree tree) {
 		// Handle short-circuiting operators first.
 		if (op == Operators.QUESTION) {
 			final SyntaxTree conditional = tree.child(0);

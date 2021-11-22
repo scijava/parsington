@@ -32,44 +32,21 @@ package org.scijava.parsington.eval;
 
 import java.util.Deque;
 
-import org.scijava.parsington.ExpressionParser;
 import org.scijava.parsington.Operator;
 
 /**
- * Base class for stack-based evaluators which support the standard operators.
+ * Interface for stack-based evaluators which support the standard operators.
  *
  * @author Curtis Rueden
  */
-public abstract class AbstractStandardStackEvaluator extends
-	AbstractEvaluator implements StandardEvaluator, StackEvaluator
+public interface StandardStackEvaluator extends StandardEvaluator,
+	StackEvaluator
 {
-
-	public AbstractStandardStackEvaluator() {
-		super();
-	}
-
-	public AbstractStandardStackEvaluator(final ExpressionParser parser) {
-		super(parser);
-	}
-
-	// -- StandardEvaluator methods --
-
-	@Override
-	public Object question(final Object a, final Object b) {
-		// NB: Unimplemented.
-		return null;
-	}
-
-	@Override
-	public Object colon(final Object a, final Object b) {
-		// NB: Unimplemented.
-		return null;
-	}
 
 	// -- StackEvaluator methods --
 
 	@Override
-	public Object execute(final Operator op, final Deque<Object> stack) {
+	default Object execute(final Operator op, final Deque<Object> stack) {
 		// Pop the arguments.
 		final int arity = op.getArity();
 		final Object[] args = new Object[arity];
