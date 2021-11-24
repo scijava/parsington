@@ -165,7 +165,7 @@ public class ParseOperation {
 	}
 
 	/**
-	 * Attempts to parse a numeric literal.
+	 * Attempts to parse a literal (e.g. boolean, string, or number).
 	 *
 	 * @return The parsed literal, or null if the next token is not one.
 	 * @see Literals#parseLiteral
