@@ -74,7 +74,7 @@ public interface StandardEvaluator extends Evaluator {
 	 * @param args The arguments.
 	 * @return The result of the operation.
 	 */
-	Object parens(Object[] args);
+	Object parens(Object... args);
 
 	/**
 	 * Applies the {@link Operators#BRACKETS} operator.
@@ -82,7 +82,7 @@ public interface StandardEvaluator extends Evaluator {
 	 * @param args The arguments.
 	 * @return The result of the operation.
 	 */
-	Object brackets(Object[] args);
+	Object brackets(Object... args);
 
 	/**
 	 * Applies the {@link Operators#BRACES} operator.
@@ -90,7 +90,7 @@ public interface StandardEvaluator extends Evaluator {
 	 * @param args The arguments.
 	 * @return The result of the operation.
 	 */
-	Object braces(Object[] args);
+	Object braces(Object... args);
 
 	// -- transpose, power --
 
@@ -646,7 +646,7 @@ public interface StandardEvaluator extends Evaluator {
 	 * @param args The arguments to pass.
 	 * @return The result of the operation.
 	 */
-	default Object execute(final Operator op, final Object[] args) {
+	default Object execute(final Operator op, final Object... args) {
 		final Object a = args.length > 0 ? args[0] : null;
 		final Object b = args.length > 1 ? args[1] : null;
 
