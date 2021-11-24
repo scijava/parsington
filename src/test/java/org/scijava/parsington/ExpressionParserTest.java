@@ -829,7 +829,7 @@ public class ExpressionParserTest extends AbstractTest {
 		assertSame(Operators.SUB, queue.pop());
 	}
 
-	/** Tests expressions ending in whitespace. */
+	/** Tests expressions with extra whitespace. */
 	@Test
 	public void testWhitespace() {
 		final ExpressionParser parser = new ExpressionParser();
@@ -857,7 +857,7 @@ public class ExpressionParserTest extends AbstractTest {
 		assertInvalid(parser, "(()", "Mismatched groups at index 3");
 	}
 
-	// -- Helper
+	// -- Helper methods --
 
 	private void assertUnary(final ExpressionParser parser, final String var,
 		final Operator op, final String expression)
