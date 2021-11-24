@@ -86,6 +86,14 @@ public class AbstractTest {
 		assertEquals(expected, tree.count());
 	}
 
+	protected void assertUnary(final SyntaxTree tree) {
+		assertCount(1, tree);
+	}
+
+	protected void assertBinary(final SyntaxTree tree) {
+		assertCount(2, tree);
+	}
+
 	protected void assertToken(final String expected, final Object token) {
 		assertNotNull(token);
 		assertEquals(expected, token.toString());
