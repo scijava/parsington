@@ -35,6 +35,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.BiFunction;
 
 /**
  * A parser for mathematical expressions, using Dijkstra's famous <a
@@ -53,6 +54,7 @@ public class ExpressionParser {
 	private final List<Operator> operators;
 	private final String elementSeparator;
 	private final String statementSeparator;
+	private final BiFunction<ExpressionParser, String, ParseOperation> parseOperationFactory;
 
 	/**
 	 * Creates an expression parser with the standard set of operators and default
@@ -84,6 +86,25 @@ public class ExpressionParser {
 	public ExpressionParser(final Collection<? extends Operator> operators,
 		final String elementSeparator, final String statementSeparator)
 	{
+		this(operators, elementSeparator, statementSeparator, ParseOperation::new);
+	}
+
+	/**
+	 * Creates an expression parser maximally customized to your requirements!
+	 *
+	 * @param operators The collection of operators available to expressions.
+	 * @param elementSeparator The symbol to use for separating group elements.
+	 * @param statementSeparator The symbol to use for separating statements.
+	 * @param parseOperationFactory A function producing {@link ParseOperation}
+	 *          objects with behavior customized to your requirements. The typical
+	 *          use case is to subclass {@link ParseOperation} to override one or
+	 *          more of its {@code parseSomething} methods, and then pass
+	 *          {@code MyCustomParseOperation::new} for this argument.
+	 */
+	public ExpressionParser(final Collection<? extends Operator> operators,
+		final String elementSeparator, final String statementSeparator,
+		final BiFunction<ExpressionParser, String, ParseOperation> parseOperationFactory)
+	{
 		final List<Operator> operatorsList = new ArrayList<>(operators);
 
 		// NB: Ensure operators with longer symbols come first.
@@ -101,6 +122,7 @@ public class ExpressionParser {
 		this.operators = Collections.unmodifiableList(operatorsList);
 		this.elementSeparator = elementSeparator;
 		this.statementSeparator = statementSeparator;
+		this.parseOperationFactory = parseOperationFactory;
 	}
 
 	// -- ExpressionParser methods --
@@ -128,7 +150,7 @@ public class ExpressionParser {
 	 *           incorrect.
 	 */
 	public LinkedList<Object> parsePostfix(final String expression) {
-		return new ParseOperation(this, expression).parsePostfix();
+		return parseOperationFactory.apply(this, expression).parsePostfix();
 	}
 
 	/**

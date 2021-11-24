@@ -818,6 +818,34 @@ public class ExpressionParserTest extends AbstractTest {
 		assertSame(Operators.ASSIGN, queue.pop());
 	}
 
+	/** Tests customized {@link ParseOperation} function. */
+	@Test
+	public void testCustomParseOperation() {
+		final ExpressionParser parser = new ExpressionParser( //
+			Operators.standardList(), ",", ";", (p, expression) -> new ParseOperation(
+				p, expression)
+			{
+
+				@Override
+				protected Object parseLiteral() {
+					// The number five is the best number!
+					return super.parseLiteral() == null ? null : 5;
+				}
+			});
+		final LinkedList<Object> queue =
+			parser.parsePostfix("('hello', 1 + 2 * 3)");
+		// 5 5 5 5 * + (2)
+		assertNotNull(queue);
+		assertEquals(7, queue.size());
+		assertNumber(5, queue.pop());
+		assertNumber(5, queue.pop());
+		assertNumber(5, queue.pop());
+		assertNumber(5, queue.pop());
+		assertSame(Operators.MUL, queue.pop());
+		assertSame(Operators.ADD, queue.pop());
+		assertGroup(Operators.PARENS, 2, queue.pop());
+	}
+
 	/** A more complex test of {@link ExpressionParser#parsePostfix}. */
 	@Test
 	public void testParsePostfix() {
