@@ -245,6 +245,7 @@ public class ExpressionParserTest extends AbstractTest {
 	}
 
 	/** Tests all the boolean operators in a single expression. */
+	@Test
 	public void testLogicOperators() {
 		final String expression =
 			"a<b || c>d && e<=f || g>=h && i==j || k!=l && m instanceof n || !o";
@@ -282,7 +283,7 @@ public class ExpressionParserTest extends AbstractTest {
 		assertSame(Operators.INSTANCEOF, queue.pop());
 		assertSame(Operators.LOGICAL_AND, queue.pop());
 		assertSame(Operators.LOGICAL_OR, queue.pop());
-		assertVariable("0", queue.pop());
+		assertVariable("o", queue.pop());
 		assertSame(Operators.NOT, queue.pop());
 		assertSame(Operators.LOGICAL_OR, queue.pop());
 	}
@@ -770,6 +771,79 @@ public class ExpressionParserTest extends AbstractTest {
 		assertVariable("c", queue.pop());
 		assertNumber(3, queue.pop());
 		assertSame(Operators.ASSIGN, queue.pop());
+	}
+
+	/** Tests custom separator. */
+	@Test
+	public void testCustomElementSeparator() {
+		final ExpressionParser parser = new ExpressionParser( //
+			Operators.standardList(), "@@", ";");
+		final LinkedList<Object> queue =
+			parser.parsePostfix("f(2 @@ 3 @@ 4) + (5 @@ 6)");
+		// f 2 3 4 (3) <Fn> 5 6 (2) +
+		assertNotNull(queue);
+		assertEquals(10, queue.size());
+		assertVariable("f", queue.pop());
+		assertNumber(2, queue.pop());
+		assertNumber(3, queue.pop());
+		assertNumber(4, queue.pop());
+		assertGroup(Operators.PARENS, 3, queue.pop());
+		assertFunction(queue.pop());
+		assertNumber(5, queue.pop());
+		assertNumber(6, queue.pop());
+		assertGroup(Operators.PARENS, 2, queue.pop());
+		assertSame(Operators.ADD, queue.pop());
+	}
+
+	/** Tests multiple statements with custom separator. */
+	@Test
+	public void testCustomGroupSeparator() {
+		final ExpressionParser parser = new ExpressionParser( //
+			Operators.standardList(), ",", "@@@");
+		final LinkedList<Object> queue =
+			parser.parsePostfix("x=1 @@@ x += 3 @@@ y = x^2");
+		// x 1 = x 3 += y x 2 ^ =
+		assertNotNull(queue);
+		assertEquals(11, queue.size());
+		assertVariable("x", queue.pop());
+		assertNumber(1, queue.pop());
+		assertSame(Operators.ASSIGN, queue.pop());
+		assertVariable("x", queue.pop());
+		assertNumber(3, queue.pop());
+		assertSame(Operators.ADD_ASSIGN, queue.pop());
+		assertVariable("y", queue.pop());
+		assertVariable("x", queue.pop());
+		assertNumber(2, queue.pop());
+		assertSame(Operators.POW, queue.pop());
+		assertSame(Operators.ASSIGN, queue.pop());
+	}
+
+	/** Tests customized {@link ParseOperation} function. */
+	@Test
+	public void testCustomParseOperation() {
+		final ExpressionParser parser = new ExpressionParser( //
+			Operators.standardList(), ",", ";", (p, expression) -> new ParseOperation(
+				p, expression)
+			{
+
+				@Override
+				protected Object parseLiteral() {
+					// The number five is the best number!
+					return super.parseLiteral() == null ? null : 5;
+				}
+			});
+		final LinkedList<Object> queue =
+			parser.parsePostfix("('hello', 1 + 2 * 3)");
+		// 5 5 5 5 * + (2)
+		assertNotNull(queue);
+		assertEquals(7, queue.size());
+		assertNumber(5, queue.pop());
+		assertNumber(5, queue.pop());
+		assertNumber(5, queue.pop());
+		assertNumber(5, queue.pop());
+		assertSame(Operators.MUL, queue.pop());
+		assertSame(Operators.ADD, queue.pop());
+		assertGroup(Operators.PARENS, 2, queue.pop());
 	}
 
 	/** A more complex test of {@link ExpressionParser#parsePostfix}. */

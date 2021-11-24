@@ -128,10 +128,10 @@ public abstract class AbstractStandardEvaluatorTest extends AbstractTest {
 		assertEquals(Arrays.asList(o), e.parens(o));
 
 		// test empty parentheses
-		assertEquals(Collections.emptyList(), e.parens(new Object[0]));
+		assertEquals(Collections.emptyList(), e.parens());
 
 		// test collapse of single elements
-		assertEquals(4, e.parens(new Object[] {4}));
+		assertEquals(4, e.parens(4));
 	}
 
 	/** Tests {@link StandardEvaluator#brackets(Object[])}. */
@@ -141,7 +141,7 @@ public abstract class AbstractStandardEvaluatorTest extends AbstractTest {
 		assertEquals(Arrays.asList(o), e.brackets(o));
 
 		// test empty brackets
-		assertEquals(Collections.emptyList(), e.brackets(new Object[0]));
+		assertEquals(Collections.emptyList(), e.brackets());
 	}
 
 	/** Tests {@link StandardEvaluator#braces(Object[])}. */
@@ -151,7 +151,7 @@ public abstract class AbstractStandardEvaluatorTest extends AbstractTest {
 		assertEquals(Arrays.asList(o), e.braces(o));
 
 		// test empty braces
-		assertEquals(Collections.emptyList(), e.braces(new Object[0]));
+		assertEquals(Collections.emptyList(), e.braces());
 	}
 
 	// -- transpose, power --

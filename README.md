@@ -31,7 +31,7 @@ Expression parsers are as old as the hills; what makes this one different?
   symbols, precedence and associativity you desire.
 * __Clean, well-commented codebase with unit tests.__ Import the source into
   your favorite IDE and watch Parsington in action by putting a breakpoint
-  [here](src/main/java/org/scijava/parsington/ExpressionParser.java#L152-L154).
+  [here](src/main/java/org/scijava/parsington/ParseOperation.java#L70-L72).
 
 ## History
 
@@ -196,3 +196,11 @@ The `tree` function is another way to introspect, in syntax tree form:
   -- 'q'
  : org.scijava.parsington.SyntaxTree
 ```
+
+## Customization
+
+Parsington supports various kinds of customization, including custom operators,
+custom separator symbols, and even custom parsing of literals and/or other
+expression elements. See the
+[TestExamples](src/test/java/org/scijava/parsington/TestExamples.java) for
+illustrations of these sorts of customizations in practice.

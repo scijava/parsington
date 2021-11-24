@@ -59,10 +59,10 @@ public class SyntaxTreeTest extends AbstractTest {
 
 		assertNotNull(tree);
 		assertSame(Operators.ADD, tree.token());
-		assertCount(2, tree);
+		assertBinary(tree);
 		assertVariable("a", tree.child(0).token());
 		assertSame(Operators.MUL, tree.child(1).token());
-		assertCount(2, tree.child(1));
+		assertBinary(tree.child(1));
 		assertVariable("b", tree.child(1).child(0).token());
 		assertVariable("c", tree.child(1).child(1).token());
 

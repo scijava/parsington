@@ -67,7 +67,6 @@ public class DefaultTreeEvaluatorTest extends AbstractStandardEvaluatorTest {
 	@Test
 	public void testShortCircuitingTernary() {
 		final Object result = e.evaluate("2 < 3 ? (x = 'yes') : (x += 'no')");
-		System.out.println("result = " + result + " " + result.getClass());
 		assertEquals("yes", e.value(result));
 	}
 
