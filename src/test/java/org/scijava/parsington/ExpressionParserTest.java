@@ -245,6 +245,7 @@ public class ExpressionParserTest extends AbstractTest {
 	}
 
 	/** Tests all the boolean operators in a single expression. */
+	@Test
 	public void testLogicOperators() {
 		final String expression =
 			"a<b || c>d && e<=f || g>=h && i==j || k!=l && m instanceof n || !o";
@@ -282,7 +283,7 @@ public class ExpressionParserTest extends AbstractTest {
 		assertSame(Operators.INSTANCEOF, queue.pop());
 		assertSame(Operators.LOGICAL_AND, queue.pop());
 		assertSame(Operators.LOGICAL_OR, queue.pop());
-		assertVariable("0", queue.pop());
+		assertVariable("o", queue.pop());
 		assertSame(Operators.NOT, queue.pop());
 		assertSame(Operators.LOGICAL_OR, queue.pop());
 	}
