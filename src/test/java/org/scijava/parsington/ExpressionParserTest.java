@@ -773,6 +773,51 @@ public class ExpressionParserTest extends AbstractTest {
 		assertSame(Operators.ASSIGN, queue.pop());
 	}
 
+	/** Tests custom separator. */
+	@Test
+	public void testCustomElementSeparator() {
+		final ExpressionParser parser = new ExpressionParser( //
+			Operators.standardList(), "@@", ";");
+		final LinkedList<Object> queue =
+			parser.parsePostfix("f(2 @@ 3 @@ 4) + (5 @@ 6)");
+		// f 2 3 4 (3) <Fn> 5 6 (2) +
+		assertNotNull(queue);
+		assertEquals(10, queue.size());
+		assertVariable("f", queue.pop());
+		assertNumber(2, queue.pop());
+		assertNumber(3, queue.pop());
+		assertNumber(4, queue.pop());
+		assertGroup(Operators.PARENS, 3, queue.pop());
+		assertFunction(queue.pop());
+		assertNumber(5, queue.pop());
+		assertNumber(6, queue.pop());
+		assertGroup(Operators.PARENS, 2, queue.pop());
+		assertSame(Operators.ADD, queue.pop());
+	}
+
+	/** Tests multiple statements with custom separator. */
+	@Test
+	public void testCustomGroupSeparator() {
+		final ExpressionParser parser = new ExpressionParser( //
+			Operators.standardList(), ",", "@@@");
+		final LinkedList<Object> queue =
+			parser.parsePostfix("x=1 @@@ x += 3 @@@ y = x^2");
+		// x 1 = x 3 += y x 2 ^ =
+		assertNotNull(queue);
+		assertEquals(11, queue.size());
+		assertVariable("x", queue.pop());
+		assertNumber(1, queue.pop());
+		assertSame(Operators.ASSIGN, queue.pop());
+		assertVariable("x", queue.pop());
+		assertNumber(3, queue.pop());
+		assertSame(Operators.ADD_ASSIGN, queue.pop());
+		assertVariable("y", queue.pop());
+		assertVariable("x", queue.pop());
+		assertNumber(2, queue.pop());
+		assertSame(Operators.POW, queue.pop());
+		assertSame(Operators.ASSIGN, queue.pop());
+	}
+
 	/** A more complex test of {@link ExpressionParser#parsePostfix}. */
 	@Test
 	public void testParsePostfix() {

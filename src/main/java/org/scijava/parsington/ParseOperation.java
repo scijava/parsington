@@ -33,13 +33,13 @@ package org.scijava.parsington;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.LinkedList;
-import java.util.List;
 
 /** A stateful parsing operation. */
 public class ParseOperation {
 
+	protected final ExpressionParser parser;
 	protected final String expression;
-	protected final List<Operator> operators;
+
 	protected final Position pos = new Position();
 	protected final Deque<Object> stack = new ArrayDeque<>();
 	protected final LinkedList<Object> outputQueue = new LinkedList<>();
@@ -54,11 +54,10 @@ public class ParseOperation {
 	 */
 	protected boolean infix;
 
-	public ParseOperation(final String expression,
-		final List<Operator> operators)
+	public ParseOperation(final ExpressionParser parser, final String expression)
 	{
+		this.parser = parser;
 		this.expression = expression;
-		this.operators = operators;
 	}
 
 	/**
@@ -85,15 +84,13 @@ public class ParseOperation {
 			}
 
 			// If next token is a function argument separator (i.e., a comma)...
-			final Character separator = parseComma();
-			if (separator != null) {
-				handleGroupSeparator();
+			if (parseElementSeparator() != null) {
+				handleElementSeparator();
 				continue;
 			}
 
 			// If next token is a statement separator (i.e., a semicolon)...
-			final Character semicolon = parseSemicolon();
-			if (semicolon != null) {
+			if (parseStatementSeparator() != null) {
 				// Flush the stack and begin a new statement.
 				flushStack();
 				infix = false;
@@ -222,7 +219,7 @@ public class ParseOperation {
 	 * @return The parsed operator, or null if the next token is not one.
 	 */
 	protected Operator parseOperator() {
-		for (final Operator op : operators) {
+		for (final Operator op : parser.operators()) {
 			final String symbol = op.getToken();
 			if (operatorMatches(op, symbol)) return op;
 		}
@@ -235,7 +232,7 @@ public class ParseOperation {
 	 * @return The group, or null if the next token is not a group terminator.
 	 */
 	protected Group parseGroupTerminator() {
-		for (final Operator op : operators) {
+		for (final Operator op : parser.operators()) {
 			if (!(op instanceof Group)) continue;
 			final Group group = (Group) op;
 			final String symbol = group.getTerminator();
@@ -245,24 +242,24 @@ public class ParseOperation {
 	}
 
 	/**
-	 * Attempts to parse a comma character.
+	 * Attempts to parse an element separator symbol.
 	 *
-	 * @return The comma, or null if the next token is not one.
+	 * @return The separator symbol, or null if the next token is not one.
 	 */
-	protected Character parseComma() {
-		// Only accept a comma in the appropriate context.
+	protected String parseElementSeparator() {
+		// Only accept an element separator in the appropriate context.
 		if (!infix) return null;
 
-		return parseChar(',');
+		return parseChars(parser.elementSeparator());
 	}
 
 	/**
-	 * Attempts to parse a semicolon character.
+	 * Attempts to parse a statement separator symbol.
 	 *
-	 * @return The semicolon, or null if the next token is not one.
+	 * @return The separator symbol, or null if the next token is not one.
 	 */
-	protected Character parseSemicolon() {
-		return parseChar(';');
+	protected String parseStatementSeparator() {
+		return parseChars(parser.statementSeparator());
 	}
 
 	/**
@@ -276,6 +273,20 @@ public class ParseOperation {
 			return c;
 		}
 		return null;
+	}
+
+	/**
+	 * Attempts to parse the given characters.
+	 *
+	 * @return The characters, or null if the next tokens are not those
+	 *         characters.
+	 */
+	protected <CS extends CharSequence> CS parseChars(final CS cs) {
+		for (int i = 0; i < cs.length(); i++) {
+			if (futureChar(i) != cs.charAt(i)) return null;
+		}
+		pos.inc(cs.length());
+		return cs;
 	}
 
 	/**
@@ -317,7 +328,7 @@ public class ParseOperation {
 		else pos.fail("Impenetrable operator '" + o1 + "'");
 	}
 
-	private void handleGroupSeparator() {
+	private void handleElementSeparator() {
 		// Pop from stack to output queue until function found.
 		while (true) {
 			if (stack.isEmpty()) {

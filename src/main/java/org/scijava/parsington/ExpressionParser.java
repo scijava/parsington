@@ -51,23 +51,44 @@ import java.util.List;
 public class ExpressionParser {
 
 	private final List<Operator> operators;
+	private final String elementSeparator;
+	private final String statementSeparator;
 
-	/** Creates an expression parser with the default set of operators. */
+	/**
+	 * Creates an expression parser with the standard set of operators and default
+	 * separator symbols ({@code ,} for group elements, {@code ;} for statements).
+	 * 
+	 * @see Operators#standardList()
+	 */
 	public ExpressionParser() {
 		this(Operators.standardList());
 	}
 
 	/**
-	 * Creates an expression parser with the given set of operators.
-	 *
+	 * Creates an expression parser with custom operators and default separator
+	 * symbols ({@code ,} for group elements, {@code ;} for statements).
+	 * 
 	 * @param operators The collection of operators available to expressions.
 	 */
 	public ExpressionParser(final Collection<? extends Operator> operators) {
-		this.operators = new ArrayList<>(operators);
+		this(operators, ",", ";");
+	}
+
+	/**
+	 * Creates an expression parser with custom operators and separator symbols.
+	 *
+	 * @param operators The collection of operators available to expressions.
+	 * @param elementSeparator The symbol to use for separating group elements.
+	 * @param statementSeparator The symbol to use for separating statements.
+	 */
+	public ExpressionParser(final Collection<? extends Operator> operators,
+		final String elementSeparator, final String statementSeparator)
+	{
+		final List<Operator> operatorsList = new ArrayList<>(operators);
 
 		// NB: Ensure operators with longer symbols come first.
 		// This prevents e.g. '-' from being matched before '-=' and '--'.
-		Collections.sort(this.operators, (o1, o2) -> {
+		Collections.sort(operatorsList, (o1, o2) -> {
 			final String t1 = o1.getToken();
 			final String t2 = o2.getToken();
 			final int len1 = t1.length();
@@ -76,6 +97,10 @@ public class ExpressionParser {
 			if (len1 < len2) return 1; // o2 is longer, so o2 comes first.
 			return t1.compareTo(t2);
 		});
+
+		this.operators = Collections.unmodifiableList(operatorsList);
+		this.elementSeparator = elementSeparator;
+		this.statementSeparator = statementSeparator;
 	}
 
 	// -- ExpressionParser methods --
@@ -103,7 +128,36 @@ public class ExpressionParser {
 	 *           incorrect.
 	 */
 	public LinkedList<Object> parsePostfix(final String expression) {
-		return new ParseOperation(expression, operators).parsePostfix();
+		return new ParseOperation(this, expression).parsePostfix();
+	}
+
+	/**
+	 * Gets the list of operators available to expressions.
+	 * 
+	 * @return A read-only view of the operators list.
+	 */
+	public List<Operator> operators() {
+		return operators;
+	}
+
+	/**
+	 * Separator symbol between group elements. The default symbol is comma
+	 * ({@code ,}). Example: {@code f(1, 2)}
+	 * 
+	 * @see ExpressionParser#ExpressionParser(Collection, String, String)
+	 */
+	public String elementSeparator() {
+		return elementSeparator;
+	}
+
+	/**
+	 * Separator symbol between statements. The default symbol is semicolon
+	 * ({@code ;}). Example: {@code x = 1; y = 2; z = x + y}
+	 * 
+	 * @see ExpressionParser#ExpressionParser(Collection, String, String)
+	 */
+	public String statementSeparator() {
+		return statementSeparator;
 	}
 
 }
