@@ -109,7 +109,7 @@ public class LiteralsTest extends AbstractTest {
 	}
 
 	@Test
-	public void testParseHex() {
+	public void testParseHexInteger() {
 		assertNumber(0x123, Literals.parseHex("0x123"));
 		// Test explicit long.
 		assertNumber(0x123L, Literals.parseHex("0x123L"));
@@ -122,7 +122,7 @@ public class LiteralsTest extends AbstractTest {
 	}
 
 	@Test
-	public void testParseHexNegative() {
+	public void testParseHexNegativeInteger() {
 		assertNumber(-0x123, Literals.parseHex("-0x123"));
 		// Test explicit long.
 		assertNumber(-0x123L, Literals.parseHex("-0x123L"));
@@ -132,6 +132,42 @@ public class LiteralsTest extends AbstractTest {
 		final String big = "123456789abcdeffedcba987654321";
 		final Number bigNum = Literals.parseHex("-0x" + big);
 		assertNumber(new BigInteger("-" + big, 16), bigNum);
+	}
+
+	@Test
+	public void testParseHexFloat() {
+		assertNumber(0xfedcba.98765432P-10f, //
+			Literals.parseHex("0xfedcba.98765432P-10f"));
+		assertNumber(0x1.fffffffffffffP+1023, //
+			Literals.parseHex("0x1.fffffffffffffP+1023"));
+		assertNumber(0xff.fP0F, Literals.parseHex("0xff.fP0F"));
+		assertNumber(0x1P+1023, Literals.parseHex("0x1P+1023"));
+		assertNumber(0xfP102, Literals.parseHex("0xfP102"));
+		assertNumber(0xfP-102, Literals.parseHex("0xfP-102"));
+		assertNumber(0xffP-102, Literals.parseHex("0xffP-102"));
+		assertNumber(0x123.456P1, Literals.parseHex("0x123.456P1"));
+		assertNumber(0x123.456P0f, Literals.parseHex("0x123.456P0f"));
+		assertNumber(0x123.456P0d, Literals.parseHex("0x123.456P0d"));
+		assertNumber(0x123.456P-10d, Literals.parseHex("0x123.456P-10d"));
+		assertNumber(0x123.456P+009, Literals.parseHex("0x123.456P+009"));
+	}
+
+	@Test
+	public void testParseHexNegativeFloat() {
+		assertNumber(-0xfedcba.98765432P-10f, //
+			Literals.parseHex("-0xfedcba.98765432P-10f"));
+		assertNumber(-0x1.fffffffffffffP+1023, //
+			Literals.parseHex("-0x1.fffffffffffffP+1023"));
+		assertNumber(-0xff.fP0F, Literals.parseHex("-0xff.fP0F"));
+		assertNumber(-0x1P+1023, Literals.parseHex("-0x1P+1023"));
+		assertNumber(-0xfP102, Literals.parseHex("-0xfP102"));
+		assertNumber(-0xfP-102, Literals.parseHex("-0xfP-102"));
+		assertNumber(-0xffP-102, Literals.parseHex("-0xffP-102"));
+		assertNumber(-0x123.456P1, Literals.parseHex("-0x123.456P1"));
+		assertNumber(-0x123.456P0f, Literals.parseHex("-0x123.456P0f"));
+		assertNumber(-0x123.456P0d, Literals.parseHex("-0x123.456P0d"));
+		assertNumber(-0x123.456P-10d, Literals.parseHex("-0x123.456P-10d"));
+		assertNumber(-0x123.456P+009, Literals.parseHex("-0x123.456P+009"));
 	}
 
 	@Test

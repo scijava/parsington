@@ -45,7 +45,8 @@ import java.util.regex.Pattern;
 public final class Literals {
 
 	private static final Pattern HEX = Pattern.compile(
-		"(([-+]?)0[Xx]([0-9a-fA-F]+)([Ll]?)).*");
+		"(([-+]?)0[Xx]([0-9a-fA-F]+)" +
+			"([Ll]|(\\.[0-9a-fA-F]*)?[Pp]([-+]?)([0-9]+)([Dd]|[Ff]|)|)).*");
 
 	private static final Pattern BINARY = Pattern.compile(
 		"(([-+]?)0[Bb]([01]+)([Ll]?)).*");
@@ -91,13 +92,18 @@ public final class Literals {
 	}
 
 	/**
-	 * Parses a hexidecimal literal (e.g., {@code 0xfedcba9876543210}).
+	 * Parses a hexidecimal literal. Both hexadecimal integer (e.g.,
+	 * {@code 0xfedcba9876543210}) and hexidecimal floating point (e.g.,
+	 * {@code 0xfedcba.98765432p10f}) are supported.
 	 *
 	 * @param s The string from which the numeric literal should be parsed.
-	 * @return The parsed numeric value&mdash;an {@link Integer} if sufficiently
-	 *         small, or a {@link Long} if needed or if the {@code L} suffix is
-	 *         given; or a {@link BigInteger} if the value is too large even for
-	 *         {@code long}.
+	 * @return The parsed numeric value. For hexidecimal integers, returns an
+	 *         {@link Integer} if sufficiently small; or a {@link Long} if needed
+	 *         or if the {@code L} suffix is given; or a {@link BigInteger} if the
+	 *         value is too large even for {@code long}. For hexidecimal floating
+	 *         point, returns a {@link Float} if sufficiently small and the
+	 *         {@code F} suffix is given; or a {@link Double} otherwise (the
+	 *         {@code D} suffix is optional).
 	 */
 	public static Number parseHex(final CharSequence s) {
 		return parseHex(s, new Position());
@@ -290,20 +296,58 @@ public final class Literals {
 	}
 
 	/**
-	 * Parses a hexidecimal literal (e.g., {@code 0xfedcba9876543210}).
+	 * Parses a hexidecimal literal. Both hexadecimal integer (e.g.,
+	 * {@code 0xfedcba9876543210}) and hexidecimal floating point (e.g.,
+	 * {@code 0xfedcba.98765432p10f}) are supported.
 	 *
 	 * @param s The string from which the numeric literal should be parsed.
 	 * @param pos The offset from which the literal should be parsed. If parsing
 	 *          is successful, the position will be advanced to the next index
 	 *          after the parsed literal.
-	 * @return The parsed numeric value&mdash;an {@link Integer} if sufficiently
-	 *         small, or a {@link Long} if needed or if the {@code L} suffix is
-	 *         given; or a {@link BigInteger} if the value is too large even for
-	 *         {@code long}; or {@code null} if the string does not begin with the
-	 *         numeric literal telltale of a 0-9 digit with optional minus.
+	 * @return The parsed numeric value. For hexidecimal integers, returns an
+	 *         {@link Integer} if sufficiently small; or a {@link Long} if needed
+	 *         or if the {@code L} suffix is given; or a {@link BigInteger} if the
+	 *         value is too large even for {@code long}. For hexidecimal floating
+	 *         point, returns a {@link Float} if sufficiently small and the
+	 *         {@code F} suffix is given; or a {@link Double} otherwise (the
+	 *         {@code D} suffix is optional). In either case, returns {@code null}
+	 *         if the string does not begin with the numeric literal telltale of a
+	 *         0-9 digit with optional leading sign.
 	 */
 	public static Number parseHex(final CharSequence s, final Position pos) {
-		return parseInteger(HEX, s, pos, 16);
+		if (!isNumberSyntax(s, pos)) return null;
+
+		final Matcher m = matcher(HEX, s, pos);
+		if (!m.matches()) return null;
+		final String sign = m.group(2);    // + or - or nothing
+		final String integer = m.group(3); // hex digits before decimal point
+		final String suffix = m.group(4);  // L or floating point expression
+		final boolean forceLong = "L".equalsIgnoreCase(suffix);
+
+		final Number result;
+		if (forceLong || suffix.isEmpty()) {
+			// Integer notation.
+			final String number = sign + integer;
+			result = parseInteger(number, forceLong, 16);
+		}
+		else {
+			// Floating point notation.
+			final String token = m.group(1);       // entire matched literal
+			//final String mantissa = m.group(5);  // dot & hex digits after decimal point
+			//final String expSign = m.group(6);   // + or - or nothing
+			//final String exp = m.group(7);       // decimal exponent
+			final String expSuffix = m.group(8);   // f or d or nothing
+			final boolean forceFloat = "F".equalsIgnoreCase(expSuffix);
+			final boolean forceDouble = "D".equalsIgnoreCase(expSuffix);
+			// NB: The BigDecimal code does not understand floating point
+			// hex strings, so the following invocation will never produce
+			// a larger-than-double-precision floating point BigDecimal.
+			// It's a convenient way to support float and double precision,
+			// but for BigDecimal support, we would need to process the
+			// matched groups above, converting hex to base 10 first.
+			result = parseDecimal(token, forceFloat, forceDouble);
+		}
+		return verifyResult(result, m, pos);
 	}
 
 	/**
