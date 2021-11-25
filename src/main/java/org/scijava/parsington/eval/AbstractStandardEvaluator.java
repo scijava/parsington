@@ -112,18 +112,18 @@ public abstract class AbstractStandardEvaluator extends AbstractEvaluator
 	// -- groups --
 
 	@Override
-	public Object parens(final Object[] args) {
+	public Object parens(final Object... args) {
 		if (args.length == 1) return args[0];
 		return Arrays.asList(args);
 	}
 
 	@Override
-	public Object brackets(final Object[] args) {
+	public Object brackets(final Object... args) {
 		return Arrays.asList(args);
 	}
 
 	@Override
-	public Object braces(final Object[] args) {
+	public Object braces(final Object... args) {
 		return Arrays.asList(args);
 	}
 
