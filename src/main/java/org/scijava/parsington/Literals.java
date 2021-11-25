@@ -138,7 +138,7 @@ public final class Literals {
 	 *         for numeric primitives&mdash;or for values outside the normal range
 	 *         of Java primitives, {@link BigInteger} or {@link BigDecimal} as
 	 *         appropriate. Returns null if the string does not begin with the
-	 *         numeric literal telltale of a 0-9 digit with optional minus.
+	 *         numeric literal telltale of a 0-9 digit with optional leading sign.
 	 */
 	public static Number parseDecimal(final CharSequence s) {
 		return parseDecimal(s, new Position());
@@ -156,7 +156,7 @@ public final class Literals {
 	 *         for numeric primitives&mdash;or for values outside the normal range
 	 *         of Java primitives, {@link BigInteger} or {@link BigDecimal} as
 	 *         appropriate. Returns null if the string does not begin with the
-	 *         numeric literal telltale of a 0-9 digit with optional minus.
+	 *         numeric literal telltale of a 0-9 digit with optional leading sign.
 	 */
 	public static Number parseNumber(final CharSequence s) {
 		return parseNumber(s, new Position());
@@ -317,7 +317,7 @@ public final class Literals {
 	 *         small, or a {@link Long} if needed or if the {@code L} suffix is
 	 *         given; or a {@link BigInteger} if the value is too large even for
 	 *         {@code long}; or {@code null} if the string does not begin with the
-	 *         numeric literal telltale of a 0-9 digit with optional minus.
+	 *         numeric literal telltale of a 0-9 digit with optional leading sign.
 	 */
 	public static Number parseBinary(final CharSequence s, final Position pos) {
 		return parseInteger(BINARY, s, pos, 2);
@@ -334,7 +334,7 @@ public final class Literals {
 	 *         small, or a {@link Long} if needed or if the {@code L} suffix is
 	 *         given; or a {@link BigInteger} if the value is too large even for
 	 *         {@code long}; or {@code null} if the string does not begin with the
-	 *         numeric literal telltale of a 0-9 digit with optional minus.
+	 *         numeric literal telltale of a 0-9 digit with optional leading sign.
 	 */
 	public static Number parseOctal(final CharSequence s, final Position pos) {
 		return parseInteger(OCTAL, s, pos, 8);
@@ -351,7 +351,7 @@ public final class Literals {
 	 *         for numeric primitives&mdash;or for values outside the normal range
 	 *         of Java primitives, {@link BigInteger} or {@link BigDecimal} as
 	 *         appropriate. Returns null if the string does not begin with the
-	 *         numeric literal telltale of a 0-9 digit with optional minus.
+	 *         numeric literal telltale of a 0-9 digit with optional leading sign.
 	 */
 	public static Number parseDecimal(final CharSequence s, final Position pos) {
 		if (!isNumberSyntax(s, pos)) return null;
@@ -388,7 +388,7 @@ public final class Literals {
 	 *         for numeric primitives&mdash;or for values outside the normal range
 	 *         of Java primitives, {@link BigInteger} or {@link BigDecimal} as
 	 *         appropriate. Returns null if the string does not begin with the
-	 *         numeric literal telltale of a 0-9 digit with optional minus.
+	 *         numeric literal telltale of a 0-9 digit with optional leading sign.
 	 */
 	public static Number parseNumber(final CharSequence s, final Position pos) {
 		final Number hex = parseHex(s, pos);
