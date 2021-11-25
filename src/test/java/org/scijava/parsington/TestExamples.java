@@ -34,12 +34,15 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.junit.Test;
 import org.scijava.parsington.Operator.Associativity;
+import org.scijava.parsington.eval.DefaultTreeEvaluator;
+import org.scijava.parsington.eval.Evaluator;
 
 /**
  * Working examples of Parsington in action.
@@ -188,6 +191,36 @@ public class TestExamples extends AbstractTest {
 		assertEquals(Arrays.asList("quick", "brown", Operators.LOGICAL_AND, "fox",
 			Operators.LOGICAL_AND, "lazy", "dog", Operators.LOGICAL_AND,
 			Operators.LOGICAL_OR), queue);
+	}
+
+	@Test
+	public void dollarSignPrefixedVariablesAreSpecial() {
+		// Create an expression parser with an additional $ unary operator.
+		final List<Operator> operators = new ArrayList<>();
+		operators.addAll(Operators.standardList());
+		final Operator dollar = new Operator("$", 1, Associativity.RIGHT, 100);
+		operators.add(dollar);
+		final ExpressionParser parser = new ExpressionParser(operators);
+
+		// Create an evaluator that replaces $-prefixed variables
+		// with environment variables from the system.
+		final Evaluator e = new DefaultTreeEvaluator(parser) {
+			@Override
+			public Object execute(final Operator op, final SyntaxTree tree) {
+				if (op == dollar) {
+					assert tree.count() == 1;
+					final Variable v = var(evaluate(tree.child(0)));
+					final String value = System.getenv(v.getToken());
+					return value == null ? "" : value; // Treat undefined as empty string.
+				}
+				return super.execute(op, tree);
+			}
+		};
+
+		// Evaluate an expression using the ubiquitous $PATH.
+		final Object result = e.evaluate("'/etc:' + $PATH + ':/var/tmp'");
+		final String expected = "/etc:" + System.getenv("PATH") + ":/var/tmp";
+		assertEquals(expected, result);
 	}
 
 }
