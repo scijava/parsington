@@ -49,11 +49,11 @@ import org.scijava.parsington.Operator.Associativity;
 public class TestExamples extends AbstractTest {
 
 	/**
-	 * A test of the expression parser with the standard operators. See also
+	 * An example of the expression parser with the standard operators. See also
 	 * {@link ExpressionParserTest} for many more simple examples.
 	 */
 	@Test
-	public void testStandardOperators() {
+	public void standardOperators() {
 		final ExpressionParser parser = new ExpressionParser();
 		final String expression = "(-b + sqrt(b^2 - 4*a*c)) / (2*a)";
 		final SyntaxTree quadraticFormula = parser.parseTree(expression);
@@ -130,9 +130,9 @@ public class TestExamples extends AbstractTest {
 		// Whew! That's the whole tree!
 	}
 
-	/** A test of custom operators approximating a bit of POSIX shell syntax. */
+	/** An example of custom operators approximating some POSIX shell syntax. */
 	@Test
-	public void testPosixShellSyntax() {
+	public void posixShellSyntax() {
 		final Operator substringLeft = new Operator("%", 2, Associativity.LEFT, 10);
 		final Operator substringRight = new Operator("#", 2, Associativity.LEFT, 10);
 		final Operator substringLeftGreedy = new Operator("%%", 2, Associativity.LEFT, 10);
@@ -164,9 +164,9 @@ public class TestExamples extends AbstractTest {
 		assertSame(Operators.ASSIGN, queue.pop());
 	}
 
-	/** A test of overridden parsing of literals. */
+	/** An example which parses all literals as {@link String}s. */
 	@Test
-	public void testLiteralsAreUnquotedStrings() {
+	public void parseLiteralsAsStrings() {
 		final ExpressionParser parser = new ExpressionParser( //
 			Operators.standardList(), ",", ";", //
 			(p, expression) -> new ParseOperation(p, expression)
