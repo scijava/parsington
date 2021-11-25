@@ -513,8 +513,7 @@ public final class Literals {
 
 		final Matcher m = matcher(p, s, pos);
 		if (!m.matches()) return null;
-		String sign = m.group(2);
-		if (sign == null) sign = "";
+		final String sign = m.group(2);
 		final String number = sign + m.group(3);
 		final boolean forceLong = !m.group(4).isEmpty();
 		final Number result = parseInteger(number, forceLong, base);
