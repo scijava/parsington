@@ -113,7 +113,7 @@ SyntaxTree tree = new ExpressionParser().parseTree("a+b*c^f(1,2)'");
 
 To evaluate an expression involving basic types:
 ```java
-Object result = new DefaultEvaluator().evaluate("6.5*7.8^2.3");
+Object result = new DefaultTreeEvaluator().evaluate("6.5*7.8^2.3");
 ```
 
 ### Interactive console
