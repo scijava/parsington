@@ -30,10 +30,10 @@
 
 package org.scijava.parsington;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
@@ -78,7 +78,7 @@ public class AbstractTest {
 
 	protected void assertInstance(final Object token, final Class<?> c) {
 		assertNotNull(token);
-		assertTrue(token.getClass().getName(), c.isInstance(token));
+		assertTrue(c.isInstance(token), token.getClass().getName());
 	}
 
 	protected void assertCount(final int expected, final SyntaxTree tree) {
@@ -103,7 +103,7 @@ public class AbstractTest {
 		assertNotNull(actual);
 		assertEquals(expected.size(), actual.size());
 		for (int i = 0; i < expected.size(); i++) {
-			assertSame("Non-matching index: " + i, expected.get(i), actual.get(i));
+			assertSame(expected.get(i), actual.get(i), "Non-matching index: " + i);
 		}
 	}
 

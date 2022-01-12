@@ -30,10 +30,11 @@
 
 package org.scijava.parsington.eval;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -42,8 +43,8 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.scijava.parsington.AbstractTest;
 import org.scijava.parsington.Operators;
 import org.scijava.parsington.SyntaxTree;
@@ -54,7 +55,7 @@ public abstract class AbstractStandardEvaluatorTest extends AbstractTest {
 
 	protected StandardEvaluator e;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		e = createEvaluator();
 	}
@@ -68,9 +69,9 @@ public abstract class AbstractStandardEvaluatorTest extends AbstractTest {
 	}
 
 	/** Tests strict mode; see {@link Evaluator#setStrict(boolean)}. */
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testStrict() {
-		e.evaluate("foo=bar");
+		assertThrows(IllegalArgumentException.class, () -> e.evaluate("foo=bar"));
 	}
 
 	/** Tests non-strict mode; see {@link Evaluator#setStrict(boolean)}. */
