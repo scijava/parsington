@@ -193,7 +193,60 @@ public class TestExamples extends AbstractTest {
 			Operators.LOGICAL_OR), queue);
 	}
 
+	@Test
+	public void allowDotsInVariableNames() {
+		// Create a parser that allows dot characters as part of identifiers.
+		//
+		// NB: In this example:
+		// - The dot character is allowed WITHIN an identifier, but not STARTING it.
+		// - Multiple dot characters in a row are allowed. To allow only single dot
+		//   characters in a row, you would need to override the parseIdentifier
+		//   method instead to be more intelligent. A regex might come in handy.
+		final ExpressionParser parser = new ExpressionParser( //
+			(p, expression) -> new ParseOperation(p, expression)
+			{
+				@Override
+				protected boolean isIdentifierPart(char c) {
+					return c == '.' || super.isIdentifierPart(c);
+				}
+			});
+
+		final LinkedList<Object> queue = parser.parsePostfix(
+			"shape.length * shape.width");
+
+		// shape length . shape width . *
+		assertNotNull(queue);
+		assertEquals(3, queue.size());
+		assertVariable("shape.length", queue.pop());
+		assertVariable("shape.width", queue.pop());
+		assertSame(Operators.MUL, queue.pop());
+	}
+
 	// -- Customizing the evaluator --
+
+	@Test
+	public void dotOperatorJoinsVariables() {
+		// Create an evaluator whose dot operator implementation joins variables
+		// into a longer-named variable.
+		final Evaluator e = new DefaultTreeEvaluator() {
+			@Override
+			public Object dot(Object a, Object b) {
+				if (a instanceof Variable && b instanceof Variable) {
+					Variable va = (Variable) a;
+					Variable vb = (Variable) b;
+					return new Variable(va.getToken() + "." + vb.getToken());
+				}
+				return super.dot(a, b);
+			}
+		};
+
+		// Evaluate an expression with dotted variable names.
+		e.set(new Variable("shape.length"), 13);
+		e.set(new Variable("shape.width"), 17);
+		final Object result = e.evaluate("shape.length * shape.width");
+		final int expected = 13 * 17;
+		assertEquals(expected, result);
+	}
 
 	@Test
 	public void dollarSignPrefixedVariablesAreSpecial() {
