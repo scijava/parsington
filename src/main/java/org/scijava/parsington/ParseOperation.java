@@ -192,8 +192,7 @@ public class ParseOperation {
 
 	/**
 	 * Attempts to parse an identifier, as defined by
-	 * {@link Character#isUnicodeIdentifierStart(char)} and
-	 * {@link Character#isUnicodeIdentifierPart(char)}.
+	 * {@link #isIdentifierStart(char)} and {@link #isIdentifierPart(char)}.
 	 *
 	 * @return The <em>length</em> of the parsed identifier, or 0 if the next
 	 *         token is not one.
@@ -202,15 +201,33 @@ public class ParseOperation {
 		// Only accept an identifier in the appropriate context.
 		if (infix) return 0;
 
-		if (!Character.isUnicodeIdentifierStart(currentChar())) return 0;
+		if (!isIdentifierStart(currentChar())) return 0;
 		int length = 0;
 		while (true) {
 			final char next = futureChar(length);
 			if (next == '\0') break;
-			if (!Character.isUnicodeIdentifierPart(next)) break;
+			if (!isIdentifierPart(next)) break;
 			length++;
 		}
 		return length;
+	}
+
+	/**
+	 * Determines whether the given character is allowed to start an identifier.
+	 * The default implementation uses
+	 * {@link Character#isUnicodeIdentifierStart(char)}.
+	 */
+	protected boolean isIdentifierStart(char c) {
+		return Character.isUnicodeIdentifierStart(c);
+	}
+
+	/**
+	 * Determines whether the given character is allowed to start an identifier.
+	 * The default implementation uses
+	 * {@link Character#isUnicodeIdentifierPart(char)}.
+	 */
+	protected boolean isIdentifierPart(char c) {
+		return Character.isUnicodeIdentifierPart(c);
 	}
 
 	/**
