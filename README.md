@@ -27,10 +27,10 @@ Expression parsers are as old as the hills; what makes this one different?
   postfix queue or syntax tree from your infix expression, which you can then
   process or evaluate however you see fit. Parsington also provides an [eval
   subpackage](src/main/java/org/scijava/parsington/eval) that can evaluate
-  expressions involving objects of common types ({@code java.lang.Boolean},
-  {@code java.lang.Number}, {@code java.lang.String}), and which is extensible
-  to your own needs&mdash;there is no assumption that your variables will
-  consist of any particular data type, numerical or otherwise.
+  expressions involving objects of common types (`java.lang.Boolean`,
+  `java.lang.Number`, `java.lang.String`), and which is extensible to your own
+  needs&mdash;there is no assumption that your variables will consist of any
+  particular data type, numerical or otherwise.
 * __Extensibility.__ The
   [default operators](src/main/java/org/scijava/parsington/Operators.java), a
   synthesis of Java and MATLAB syntax, work well. But if you need something
