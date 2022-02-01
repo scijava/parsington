@@ -51,6 +51,9 @@ import java.util.function.BiFunction;
  */
 public class ExpressionParser {
 
+	private static final String DEFAULT_ELEMENT_SEPARATOR = ",";
+	private static final String DEFAULT_STATEMENT_SEPARATOR = ";";
+
 	private final List<Operator> operators;
 	private final String elementSeparator;
 	private final String statementSeparator;
@@ -73,7 +76,7 @@ public class ExpressionParser {
 	 * @param operators The collection of operators available to expressions.
 	 */
 	public ExpressionParser(final Collection<? extends Operator> operators) {
-		this(operators, ",", ";");
+		this(operators, DEFAULT_ELEMENT_SEPARATOR, DEFAULT_STATEMENT_SEPARATOR);
 	}
 
 	/**
