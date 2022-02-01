@@ -23,12 +23,14 @@ Expression parsers are as old as the hills; what makes this one different?
 * __No dependencies.__
 * __[Available on Maven Central](https://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.scijava%22%20AND%20a%3A%22parsington%22).__
 * __Permissive BSD-2 license.__ See [LICENSE.txt](LICENSE.txt).
-* __Separation of concerns.__ Parsington is a _parser_, not an _evaluator_.
-  Once you have the postfix queue and/or syntax tree, what you do with it is
-  your business (though there is a [small evaluation API in the eval
-  subpackage](src/main/java/org/scijava/parsington/eval) if that appeals to you).
-  In general, there is no assumption that your variables will consist of any
-  particular data type, numerical or otherwise.
+* __Separation of concerns.__ Parsington's parser stands alone, giving you a
+  postfix queue or syntax tree from your infix expression, which you can then
+  process or evaluate however you see fit. Parsington also provides an [eval
+  subpackage](src/main/java/org/scijava/parsington/eval) that can evaluate
+  expressions involving objects of common types ({@code java.lang.Boolean},
+  {@code java.lang.Number}, {@code java.lang.String}), and which is extensible
+  to your own needs&mdash;there is no assumption that your variables will
+  consist of any particular data type, numerical or otherwise.
 * __Extensibility.__ The
   [default operators](src/main/java/org/scijava/parsington/Operators.java), a
   synthesis of Java and MATLAB syntax, work well. But if you need something
