@@ -133,6 +133,8 @@ public class TestExamples extends AbstractTest {
 		// Whew! That's the whole tree!
 	}
 
+	// -- Customizing the parser --
+
 	/** An example of custom operators approximating some POSIX shell syntax. */
 	@Test
 	public void posixShellSyntax() {
@@ -191,6 +193,8 @@ public class TestExamples extends AbstractTest {
 			Operators.LOGICAL_AND, "lazy", "dog", Operators.LOGICAL_AND,
 			Operators.LOGICAL_OR), queue);
 	}
+
+	// -- Customizing the evaluator --
 
 	@Test
 	public void dollarSignPrefixedVariablesAreSpecial() {
