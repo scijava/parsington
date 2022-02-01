@@ -80,6 +80,38 @@ public class ExpressionParser {
 	}
 
 	/**
+	 * Creates an expression parser with custom separator symbols.
+	 *
+	 * @param elementSeparator The symbol to use for separating group elements.
+	 * @param statementSeparator The symbol to use for separating statements.
+	 */
+	public ExpressionParser(final String elementSeparator,
+		final String statementSeparator)
+	{
+		this(Operators.standardList(), elementSeparator, statementSeparator);
+	}
+
+	/**
+	 * Creates an expression parser with custom {@link ParseOperation} behavior.
+	 * Customizing this behavior allows you to control lower level parsing
+	 * characteristics, including what character sequences constitute whitespace,
+	 * literals, variables, operators, group terminators, element separators, and
+	 * statement separators.
+	 *
+	 * @param parseOperationFactory A function producing {@link ParseOperation}
+	 *          objects with behavior customized to your requirements. The typical
+	 *          use case is to subclass {@link ParseOperation} to override one or
+	 *          more of its {@code parseSomething} methods, and then pass
+	 *          {@code MyCustomParseOperation::new} for this argument.
+	 */
+	public ExpressionParser(
+		final BiFunction<ExpressionParser, String, ParseOperation> parseOperationFactory)
+	{
+		this(Operators.standardList(), DEFAULT_ELEMENT_SEPARATOR,
+			DEFAULT_STATEMENT_SEPARATOR, parseOperationFactory);
+	}
+
+	/**
 	 * Creates an expression parser with custom operators and separator symbols.
 	 *
 	 * @param operators The collection of operators available to expressions.

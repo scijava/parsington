@@ -822,8 +822,7 @@ public class ExpressionParserTest extends AbstractTest {
 	@Test
 	public void testCustomParseOperation() {
 		final ExpressionParser parser = new ExpressionParser( //
-			Operators.standardList(), ",", ";", (p, expression) -> new ParseOperation(
-				p, expression)
+			(p, expression) -> new ParseOperation(p, expression)
 			{
 
 				@Override

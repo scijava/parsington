@@ -171,7 +171,6 @@ public class TestExamples extends AbstractTest {
 	@Test
 	public void parseLiteralsAsStrings() {
 		final ExpressionParser parser = new ExpressionParser( //
-			Operators.standardList(), ",", ";", //
 			(p, expression) -> new ParseOperation(p, expression)
 			{
 				@Override
