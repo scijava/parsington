@@ -3,13 +3,18 @@
 
 # Parsington
 
-Parsington is an infix-to-postfix (or infix-to-syntax-tree) expression parser
+Parsington is an infix-to-postfix and infix-to-syntax-tree expression parser
 for mathematical expressions written in Java. It is simple yet fancy, handling
 (customizable) operators, functions, variables and constants in a similar way
 to what the Java language itself supports.
 
 Parsington is part of the [SciJava](https://scijava.org/) project
 for scientific computing in Java.
+
+## Example
+
+Infix input: `(-b + sqrt(b^2 - 4*a*c)) / (2*a)`\\
+&rarr; postfix output: `b - sqrt b 2 ^ 4 a * c * - (1) <Fn> + (1) 2 a * (1) /`
 
 ## Rationale
 
