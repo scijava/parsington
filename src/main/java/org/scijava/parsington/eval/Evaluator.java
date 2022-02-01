@@ -140,19 +140,42 @@ public interface Evaluator {
 	/**
 	 * Gets the value of a variable.
 	 * 
+	 * @param name The name of the variable whose value you want.
+	 * @return The variable's value.
+	 * @throws IllegalArgumentException If the variable's value is not set, and
+	 *           the evaluator is operating in {@link #isStrict() strict mode}.
+	 */
+	Object get(String name);
+
+	/**
+	 * Sets the value of a variable.
+	 * 
+	 * @param name The name of the variable whose value you want to set.
+	 * @param value The value to assign to the variable.
+	 */
+	void set(String name, Object value);
+
+	/**
+	 * Gets the value of a variable.
+	 * 
 	 * @param v The variable whose value you want.
 	 * @return The variable's value.
 	 * @throws IllegalArgumentException If the variable's value is not set, and
 	 *           the evaluator is operating in {@link #isStrict() strict mode}.
 	 */
-	Object get(Variable v);
+	default Object get(Variable v) {
+		return get(v.getToken());
+	}
 
 	/**
 	 * Sets the value of a variable.
+	 * 
 	 * @param v The variable whose value you want to set.
 	 * @param value The value to assign to the variable.
 	 */
-	void set(Variable v, Object value);
+	default void set(Variable v, Object value) {
+		set(v.getToken(), value);
+	}
 
 	/**
 	 * Assigns variables en masse.

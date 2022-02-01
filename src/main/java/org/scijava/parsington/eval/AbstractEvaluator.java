@@ -34,7 +34,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.scijava.parsington.ExpressionParser;
-import org.scijava.parsington.Variable;
 
 /**
  * Base class for {@link Evaluator} implementations.
@@ -74,16 +73,15 @@ public abstract class AbstractEvaluator implements Evaluator {
 	}
 
 	@Override
-	public Object get(final Variable v) {
-		final String name = v.getToken();
+	public Object get(final String name) {
 		if (vars.containsKey(name)) return vars.get(name);
 		if (strict) throw new IllegalArgumentException("Unknown variable: " + name);
 		return new Unresolved(name);
 	}
 
 	@Override
-	public void set(final Variable v, final Object value) {
-		vars.put(v.getToken(), value);
+	public void set(final String name, final Object value) {
+		vars.put(name, value);
 	}
 
 	@Override
