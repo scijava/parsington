@@ -94,7 +94,7 @@ public interface Evaluator {
 	 * @param expression The infix expression to evaluate.
 	 * @return The result of the evaluation.
 	 */
-	Object evaluate(final String expression);
+	Object evaluate(String expression);
 
 	/**
 	 * Evaluates a postfix token queue.
@@ -102,7 +102,7 @@ public interface Evaluator {
 	 * @param queue The postfix token queue to evaluate.
 	 * @return The result of the evaluation.
 	 */
-	Object evaluate(final LinkedList<Object> queue);
+	Object evaluate(LinkedList<Object> queue);
 
 	/**
 	 * Evaluates a syntax tree.
@@ -110,7 +110,7 @@ public interface Evaluator {
 	 * @param syntaxTree The syntax tree to evaluate.
 	 * @return The result of the evaluation.
 	 */
-	Object evaluate(final SyntaxTree syntaxTree);
+	Object evaluate(SyntaxTree syntaxTree);
 
 	/**
 	 * Gets the value of a token. For variables, returns the value of the
@@ -120,7 +120,7 @@ public interface Evaluator {
 	 * @param token The token whose value you want.
 	 * @return The token's value.
 	 */
-	default Object value(Object token) {
+	default Object value(final Object token) {
 		return Tokens.isVariable(token) ? get((Variable) token) : token;
 	}
 
@@ -163,7 +163,7 @@ public interface Evaluator {
 	 * @throws IllegalArgumentException If the variable's value is not set, and
 	 *           the evaluator is operating in {@link #isStrict() strict mode}.
 	 */
-	default Object get(Variable v) {
+	default Object get(final Variable v) {
 		return get(v.getToken());
 	}
 
@@ -173,7 +173,7 @@ public interface Evaluator {
 	 * @param v The variable whose value you want to set.
 	 * @param value The value to assign to the variable.
 	 */
-	default void set(Variable v, Object value) {
+	default void set(final Variable v, final Object value) {
 		set(v.getToken(), value);
 	}
 
