@@ -214,7 +214,7 @@ public class TestExamples extends AbstractTest {
 		final LinkedList<Object> queue = parser.parsePostfix(
 			"shape.length * shape.width");
 
-		// shape length . shape width . *
+		// shape.length shape.width *
 		assertNotNull(queue);
 		assertEquals(3, queue.size());
 		assertVariable("shape.length", queue.pop());
