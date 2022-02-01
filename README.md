@@ -13,7 +13,7 @@ for scientific computing in Java.
 
 ## Example
 
-Infix input: `(-b + sqrt(b^2 - 4*a*c)) / (2*a)`\\
+Infix input: `(-b + sqrt(b^2 - 4*a*c)) / (2*a)`  
 &rarr; postfix output: `b - sqrt b 2 ^ 4 a * c * - (1) <Fn> + (1) 2 a * (1) /`
 
 ## Rationale
