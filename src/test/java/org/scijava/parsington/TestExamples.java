@@ -179,7 +179,6 @@ public class TestExamples extends AbstractTest {
 				protected Object parseLiteral() {
 					// No variables! Treat all identifiers as literal strings.
 					final int length = parseIdentifier();
-					if (length == 0) return null;
 					return length == 0 ? null : parseToken(length);
 				}
 			});
