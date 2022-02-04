@@ -222,6 +222,56 @@ public class TestExamples extends AbstractTest {
 		assertSame(Operators.MUL, queue.pop());
 	}
 
+	@Test
+	public void expressionsEnclosedInBracketsAreVariables() {
+		// Create a parser that treats anything in square brackets as a variable.
+
+		// Create the list of available operators... but WITHOUT square brackets.
+		// Otherwise, the square bracket operator will influence the parsing.
+		final List<Operator> operators = Operators.standardList();
+		operators.remove(Operators.BRACKETS);
+
+		// Now create the parser, with overridden identifier parsing logic.
+		final ExpressionParser parser = new ExpressionParser(operators, ",", ";", //
+			(p, expression) -> new ParseOperation(p, expression)
+			{
+				@Override
+				protected int parseIdentifier() {
+					// Only accept an identifier in the appropriate context.
+					if (infix) return 0;
+
+					// Check for special bracketed variable syntax.
+					// A variable can be *anything* enclosed in brackets!
+					if (currentChar() == '[') {
+						int length = 1;
+						while (true) {
+							final char next = futureChar(length++);
+							if (next == '\0') return 0;
+							if (next == ']') return length;
+						}
+					}
+
+					// Check for the usual identifier syntax.
+					return super.parseIdentifier();
+				}
+			});
+
+		final LinkedList<Object> queue = parser.parsePostfix(
+			"2 * [check it out: aa.bb + cc.dd] / ([z-y-x] + x)");
+
+		// shape.length shape.width *
+		assertNotNull(queue);
+		assertEquals(8, queue.size());
+		assertEquals(2, queue.pop());
+		assertVariable("[check it out: aa.bb + cc.dd]", queue.pop());
+		assertSame(Operators.MUL, queue.pop());
+		assertVariable("[z-y-x]", queue.pop());
+		assertVariable("x", queue.pop());
+		assertSame(Operators.ADD, queue.pop());
+		assertGroup(Operators.PARENS, 1, queue.pop());
+		assertSame(Operators.DIV, queue.pop());
+	}
+
 	// -- Customizing the evaluator --
 
 	@Test
