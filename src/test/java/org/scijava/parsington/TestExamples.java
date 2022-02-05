@@ -149,7 +149,7 @@ public class TestExamples extends AbstractTest {
 		final LinkedList<Object> queue = parser.parsePostfix(
 			"logpath='/var/log/syslog'; dir={logpath%'/*'}; name={logpath##'*/'}");
 
-		// logpath "/var/log/syslog" = dir logpath "/*" % {1} = name logpath "*/" {1} =
+		// logpath "/var/log/syslog" = dir logpath "/*" % {1} = name logpath "*/" ## {1} =
 		assertNotNull(queue);
 		assertEquals(15, queue.size());
 		assertVariable("logpath", queue.pop());
