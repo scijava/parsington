@@ -76,7 +76,7 @@ public interface Evaluator {
 	 * successfully in non-strict mode, with the variable {@code foo} containing
 	 * an object of type {@link Unresolved} and token value {@code "bar"}. But in
 	 * cases where the unresolved value is needed as an input for additional
-	 * operations, the evaluation may still ultimately fail of the operation in
+	 * operations, the evaluation may still ultimately fail if the operation in
 	 * question is not defined for unresolved values. For example, the
 	 * {@link DefaultStackEvaluator} will fail with an "Unsupported binary
 	 * operator" exception when given the expression {@code foo+bar}, since
