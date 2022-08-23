@@ -259,7 +259,7 @@ public class TestExamples extends AbstractTest {
 		final LinkedList<Object> queue = parser.parsePostfix(
 			"2 * [check it out: aa.bb + cc.dd] / ([z-y-x] + x)");
 
-		// shape.length shape.width *
+		// 2 "[check it out: aa.bb + cc.dd]" * "[z-y-x]" x + (1) /
 		assertNotNull(queue);
 		assertEquals(8, queue.size());
 		assertEquals(2, queue.pop());
