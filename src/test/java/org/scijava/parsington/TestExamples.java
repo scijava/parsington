@@ -223,6 +223,28 @@ public class TestExamples extends AbstractTest {
 	}
 
 	@Test
+	public void allowLeadingUnderscoreInVariableNames() {
+		// Create a parser that allows variables to start with an underscore.
+		final ExpressionParser parser = new ExpressionParser( //
+			(p, expression) -> new ParseOperation(p, expression)
+			{
+				@Override
+				protected boolean isIdentifierStart(char c) {
+					return c == '_' || super.isIdentifierStart(c);
+				}
+			});
+
+		final LinkedList<Object> queue = parser.parsePostfix("_x / _y");
+
+		// _x _y *
+		assertNotNull(queue);
+		assertEquals(3, queue.size());
+		assertVariable("_x", queue.pop());
+		assertVariable("_y", queue.pop());
+		assertSame(Operators.DIV, queue.pop());
+	}
+
+	@Test
 	public void expressionsEnclosedInBracketsAreVariables() {
 		// Create a parser that treats anything in square brackets as a variable.
 
