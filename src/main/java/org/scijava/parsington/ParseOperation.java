@@ -214,17 +214,23 @@ public class ParseOperation {
 
 	/**
 	 * Determines whether the given character is allowed to start an identifier.
+	 * <p>
 	 * The default implementation uses
-	 * {@link Character#isUnicodeIdentifierStart(char)}.
+	 * {@link Character#isUnicodeIdentifierStart(char)}, but also accepts
+	 * underscores, since many popular programming languages (e.g. Python and
+	 * Java) allow identifiers to begin with an underscore symbol.
+	 * </p>
 	 */
 	protected boolean isIdentifierStart(char c) {
-		return Character.isUnicodeIdentifierStart(c);
+		return c == '_' || Character.isUnicodeIdentifierStart(c);
 	}
 
 	/**
 	 * Determines whether the given character is allowed to start an identifier.
+	 * <p>
 	 * The default implementation uses
 	 * {@link Character#isUnicodeIdentifierPart(char)}.
+	 * </p>
 	 */
 	protected boolean isIdentifierPart(char c) {
 		return Character.isUnicodeIdentifierPart(c);

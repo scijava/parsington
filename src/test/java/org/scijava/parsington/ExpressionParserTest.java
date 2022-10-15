@@ -84,12 +84,14 @@ public class ExpressionParserTest extends AbstractTest {
 	@Test
 	public void testVariables() {
 		final ExpressionParser parser = new ExpressionParser();
-		final LinkedList<Object> queue = parser.parsePostfix("x+y");
+		final LinkedList<Object> queue = parser.parsePostfix("x+y-_z");
 		assertNotNull(queue);
-		assertEquals(3, queue.size());
+		assertEquals(5, queue.size());
 		assertVariable("x", queue.pop());
 		assertVariable("y", queue.pop());
 		assertSame(Operators.ADD, queue.pop());
+		assertVariable("_z", queue.pop());
+		assertSame(Operators.SUB, queue.pop());
 	}
 
 	/** Tests each individual standard operator. */

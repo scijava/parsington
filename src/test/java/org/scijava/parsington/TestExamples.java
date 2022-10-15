@@ -39,6 +39,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.scijava.parsington.Operator.Associativity;
 import org.scijava.parsington.eval.DefaultTreeEvaluator;
@@ -223,25 +224,19 @@ public class TestExamples extends AbstractTest {
 	}
 
 	@Test
-	public void allowLeadingUnderscoreInVariableNames() {
-		// Create a parser that allows variables to start with an underscore.
+	public void forbidLeadingUnderscoreInVariableNames() {
+		// Create a parser that forbids variables from starting with an underscore.
 		final ExpressionParser parser = new ExpressionParser( //
 			(p, expression) -> new ParseOperation(p, expression)
 			{
 				@Override
 				protected boolean isIdentifierStart(char c) {
-					return c == '_' || super.isIdentifierStart(c);
+					return c != '_' && super.isIdentifierStart(c);
 				}
 			});
 
-		final LinkedList<Object> queue = parser.parsePostfix("_x / _y");
-
-		// _x _y *
-		assertNotNull(queue);
-		assertEquals(3, queue.size());
-		assertVariable("_x", queue.pop());
-		assertVariable("_y", queue.pop());
-		assertSame(Operators.DIV, queue.pop());
+		Assertions.assertThrows(IllegalArgumentException.class, //
+			() -> parser.parsePostfix("_x / _y"));
 	}
 
 	@Test
