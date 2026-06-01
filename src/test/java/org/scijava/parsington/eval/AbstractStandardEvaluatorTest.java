@@ -45,13 +45,12 @@ import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.scijava.parsington.AbstractTest;
 import org.scijava.parsington.Operators;
 import org.scijava.parsington.SyntaxTree;
 import org.scijava.parsington.Variable;
 
 /** Abstract base class for testing {@link StandardEvaluator} implementations. */
-public abstract class AbstractStandardEvaluatorTest extends AbstractTest {
+public abstract class AbstractStandardEvaluatorTest extends AbstractEvaluatorTest {
 
 	protected StandardEvaluator e;
 
@@ -60,6 +59,7 @@ public abstract class AbstractStandardEvaluatorTest extends AbstractTest {
 		e = createEvaluator();
 	}
 
+	@Override
 	public abstract StandardEvaluator createEvaluator();
 
 	/** Tests {@link Evaluator#evaluate(String)}. */
