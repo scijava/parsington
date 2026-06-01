@@ -96,6 +96,11 @@ public abstract class AbstractEvaluator implements Evaluator {
 	}
 
 	@Override
+	public Object remove(final String name) {
+		return vars.remove(name);
+	}
+
+	@Override
 	public void clear() {
 		vars.clear();
 	}

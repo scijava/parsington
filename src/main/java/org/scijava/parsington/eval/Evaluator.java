@@ -192,6 +192,15 @@ public interface Evaluator {
 	void setAll(Map<? extends String, ? extends Object> map);
 
 	/**
+	 * Removes the named variable.
+	 *
+	 * @param name The name of the variable whose value you want to remove.
+	 * @return The previous variables value associated with name,
+	 *         or null if the name did not exist.
+	 */
+	Object remove(String name);
+
+	/**
 	 * Clears all the variables.
 	 *
 	 */
