@@ -168,6 +168,13 @@ public interface Evaluator {
 	}
 
 	/**
+	 * Gets a map of all variable names and values.
+	 *
+	 * @return A map from variable names to variable values.
+	 */
+	Map<String, Object> getAll();
+
+	/**
 	 * Sets the value of a variable.
 	 * 
 	 * @param v The variable whose value you want to set.
@@ -183,5 +190,20 @@ public interface Evaluator {
 	 * @param map A map from variable names to variable values.
 	 */
 	void setAll(Map<? extends String, ? extends Object> map);
+
+	/**
+	 * Removes the named variable.
+	 *
+	 * @param name The name of the variable whose value you want to remove.
+	 * @return The previous variables value associated with name,
+	 *         or null if the name did not exist.
+	 */
+	Object remove(String name);
+
+	/**
+	 * Clears all the variables.
+	 *
+	 */
+	void clear();
 
 }
