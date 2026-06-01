@@ -191,4 +191,10 @@ public interface Evaluator {
 	 */
 	void setAll(Map<? extends String, ? extends Object> map);
 
+	/**
+	 * Clears all the variables.
+	 *
+	 */
+	void clear();
+
 }

@@ -95,4 +95,9 @@ public abstract class AbstractEvaluator implements Evaluator {
 		vars.putAll(map);
 	}
 
+	@Override
+	public void clear() {
+		vars.clear();
+	}
+
 }
