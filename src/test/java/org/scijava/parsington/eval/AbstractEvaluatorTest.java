@@ -31,6 +31,7 @@
 package org.scijava.parsington.eval;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -62,6 +63,30 @@ public abstract class AbstractEvaluatorTest extends AbstractTest {
 		assertEquals(42, e.get("x"));
 		e.set("x", "hello");
 		assertEquals("hello", e.get("x"));
+	}
+
+	/** Tests {@link Evaluator#remove(String)}. */
+	@Test
+	public void testRemove() {
+		final Evaluator e = createEvaluator();
+		// Removing an absent variable returns null.
+		assertNull(e.remove("x"));
+		e.set("x", 99);
+		assertEquals(99, e.remove("x"));
+		// Variable is gone after removal.
+		assertThrows(IllegalArgumentException.class, () -> e.get("x"));
+	}
+
+	/** Tests {@link Evaluator#clear()}. */
+	@Test
+	public void testClear() {
+		final Evaluator e = createEvaluator();
+		e.set("a", 1);
+		e.set("b", 2);
+		e.clear();
+		assertEquals(new HashMap<>(), e.getAll());
+		assertThrows(IllegalArgumentException.class, () -> e.get("a"));
+		assertThrows(IllegalArgumentException.class, () -> e.get("b"));
 	}
 
 	/** Tests {@link Evaluator#getAll()} and {@link Evaluator#setAll(Map)}. */
