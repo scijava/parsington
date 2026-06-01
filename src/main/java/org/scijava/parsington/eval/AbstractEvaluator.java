@@ -30,6 +30,7 @@
 
 package org.scijava.parsington.eval;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -77,6 +78,11 @@ public abstract class AbstractEvaluator implements Evaluator {
 		if (vars.containsKey(name)) return vars.get(name);
 		if (strict) throw new IllegalArgumentException("Unknown variable: " + name);
 		return new Unresolved(name);
+	}
+
+	@Override
+	public Map<String, Object> getAll() {
+		return Collections.unmodifiableMap(vars);
 	}
 
 	@Override

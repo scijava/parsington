@@ -168,6 +168,13 @@ public interface Evaluator {
 	}
 
 	/**
+	 * Gets a map of all variable names and values.
+	 *
+	 * @return A map from variable names to variable values.
+	 */
+	Map<String, Object> getAll();
+
+	/**
 	 * Sets the value of a variable.
 	 * 
 	 * @param v The variable whose value you want to set.
