@@ -45,6 +45,10 @@
 	</developers>
 	<contributors>
 		<contributor>
+			<name>Jared Davis</name>
+			<properties><id>JaredDavis22</id></properties>
+		</contributor>
+		<contributor>
 			<name>Jan Eglinger</name>
 			<url>https://imagej.net/people/imagejan</url>
 			<properties><id>imagejan</id></properties>
