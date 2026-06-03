@@ -57,8 +57,9 @@ import org.scijava.parsington.Variable;
  * </p>
  * <p>
  * Or maybe you are thinking: "This can't possibly work as well as awesome
- * JVM-based scripting languages like <a href="http://jython.org/">Jython</a>
- * and <a href="http://groovy.codehaus.org/">Groovy</a>..."
+ * JVM-based scripting languages like
+ * <a href="https://www.jython.org/">Jython</a> and
+ * <a href="https://groovy.apache.org/">Groovy</a>..."
  * </p>
  * <p>
  * To which I would reply: "You are absolutely right! This class is mostly just

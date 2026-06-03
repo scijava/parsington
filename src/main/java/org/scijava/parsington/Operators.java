@@ -43,9 +43,9 @@ import org.scijava.parsington.Operator.Associativity;
 /**
  * A collection of standard {@link Operator}s. This set of operators was
  * synthesized by combining <a href=
- * "http://docs.oracle.com/javase/tutorial/java/nutsandbolts/operators.html"
+ * "https://docs.oracle.com/javase/tutorial/java/nutsandbolts/operators.html"
  * >Java standard operators</a> and <a href=
- * "http://www.mathworks.com/help/matlab/matlab_prog/operator-precedence.html"
+ * "https://www.mathworks.com/help/matlab/matlab_prog/operator-precedence.html"
  * >MATLAB standard operators</a>.
  * <p>
  * Note that the {@code ^} operator is assigned MATLAB's meaning of
