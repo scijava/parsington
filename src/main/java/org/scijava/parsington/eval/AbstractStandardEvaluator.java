@@ -86,6 +86,16 @@ public abstract class AbstractStandardEvaluator extends AbstractEvaluator
 
 	// -- StandardEvaluator methods --
 
+	// Naming convention:
+	//
+	// - A variable named a or b represents a Parsington object, which
+	//   might be a Parsington Variable, or might already be a value of
+	//   a supported type such as numeric or boolean primitive or
+	//   boxed object, or other object type such as String or List.
+	//
+	// - A variable named v or av or bv always represents a *value*,
+	//   i.e. the result of a value(Object) call on a Parsington object.
+
 	// -- function --
 
 	@Override
@@ -145,14 +155,15 @@ public abstract class AbstractStandardEvaluator extends AbstractEvaluator
 
 	@Override
 	public Object pow(final Object a, final Object b) {
-		if (isD(a) && isD(b)) return pow(d(a), d(b));
-		if (isBI(a) && isI(b)) return pow(bi(a), i(b));
-		if (isBD(a) && isI(b)) return pow(bd(a), i(b));
+		final Object av = value(a), bv = value(b);
+		if (isD(av) && isD(bv)) return pow(d(av), d(bv));
+		if (isBI(av) && isI(bv)) return pow(bi(av), i(bv));
+		if (isBD(av) && isI(bv)) return pow(bd(av), i(bv));
 		return null;
 	}
-	public double pow(final double a, final double b) { return Math.pow(a, b); }
-	public BigInteger pow(final BigInteger a, final int b) { return a.pow(b); }
-	public BigDecimal pow(final BigDecimal a, final int b) { return a.pow(b); }
+	public double pow(final double av, final double bv) { return Math.pow(av, bv); }
+	public BigInteger pow(final BigInteger av, final int bv) { return av.pow(bv); }
+	public BigDecimal pow(final BigDecimal av, final int bv) { return av.pow(bv); }
 
 	@Override
 	public Object dotPow(final Object a, final Object b) {
@@ -164,10 +175,11 @@ public abstract class AbstractStandardEvaluator extends AbstractEvaluator
 
 	@Override
 	public Object pos(final Object a) {
-		if (isI(a)) return pos(i(a));
-		if (isL(a)) return pos(l(a));
-		if (isF(a)) return pos(f(a));
-		if (isD(a)) return pos(d(a));
+		final Object av = value(a);
+		if (isI(av)) return pos(i(av));
+		if (isL(av)) return pos(l(av));
+		if (isF(av)) return pos(f(av));
+		if (isD(av)) return pos(d(av));
 		return value(a);
 	}
 	public int pos(final int num) { return +num; }
@@ -177,13 +189,14 @@ public abstract class AbstractStandardEvaluator extends AbstractEvaluator
 
 	@Override
 	public Object neg(final Object a) {
-		if (isI(a)) return neg(i(a));
-		if (isL(a)) return neg(l(a));
-		if (isF(a)) return neg(f(a));
-		if (isD(a)) return neg(d(a));
-		if (isBI(a)) return neg(bi(a));
-		if (isBD(a)) return neg(bd(a));
-		return sub(0, a);
+		final Object av = value(a);
+		if (isI(av)) return neg(i(av));
+		if (isL(av)) return neg(l(av));
+		if (isF(av)) return neg(f(av));
+		if (isD(av)) return neg(d(av));
+		if (isBI(av)) return neg(bi(av));
+		if (isBD(av)) return neg(bd(av));
+		return sub(0, a); // Non-numeric type: punt to subtraction.
 	}
 	public int neg(final int num) { return -num; }
 	public long neg(final long num) { return -num; }
@@ -194,80 +207,84 @@ public abstract class AbstractStandardEvaluator extends AbstractEvaluator
 
 	@Override
 	public Object complement(final Object a) {
-		if (isI(a)) return complement(i(a));
-		if (isL(a)) return complement(l(a));
+		final Object av = value(a);
+		if (isI(av)) return complement(i(av));
+		if (isL(av)) return complement(l(av));
 		return null;
 	}
 	public int complement(final int a) { return ~a; }
 	public long complement(final long a) { return ~a; }
 
 	@Override
-	public Object not(final Object a) { return not(bool(a)); }
+	public Object not(final Object a) { return not(bool(value(a))); }
 	public boolean not(final boolean a) { return !a; }
 
 	// -- multiplicative --
 
 	@Override
 	public Object mul(final Object a, final Object b) {
-		if (isI(a) && isI(b)) return mul(i(a), i(b));
-		if (isL(a) && isL(b)) return mul(l(a), l(b));
-		if (isF(a) && isF(b)) return mul(f(a), f(b));
-		if (isD(a) && isD(b)) return mul(d(a), d(b));
-		if (isBI(a) && isBI(b)) return mul(bi(a), bi(b));
-		if (isBD(a) && isBD(b)) return mul(bd(a), bd(b));
+		final Object av = value(a), bv = value(b);
+		if (isI(av) && isI(bv)) return mul(i(av), i(bv));
+		if (isL(av) && isL(bv)) return mul(l(av), l(bv));
+		if (isF(av) && isF(bv)) return mul(f(av), f(bv));
+		if (isD(av) && isD(bv)) return mul(d(av), d(bv));
+		if (isBI(av) && isBI(bv)) return mul(bi(av), bi(bv));
+		if (isBD(av) && isBD(bv)) return mul(bd(av), bd(bv));
 		return null;
 	}
-	public int mul(final int a, final int b) { return a * b; }
-	public long mul(final long a, final long b) { return a * b; }
-	public float mul(final float a, final float b) { return a * b; }
-	public double mul(final double a, final double b) { return a * b; }
-	public BigInteger mul(final BigInteger a, final BigInteger b) {
-		return a.multiply(b);
+	public int mul(final int av, final int bv) { return av * bv; }
+	public long mul(final long av, final long bv) { return av * bv; }
+	public float mul(final float av, final float bv) { return av * bv; }
+	public double mul(final double av, final double bv) { return av * bv; }
+	public BigInteger mul(final BigInteger av, final BigInteger bv) {
+		return av.multiply(bv);
 	}
-	public BigDecimal mul(final BigDecimal a, final BigDecimal b) {
-		return a.multiply(b);
+	public BigDecimal mul(final BigDecimal av, final BigDecimal bv) {
+		return av.multiply(bv);
 	}
 
 	@Override
 	public Object div(final Object a, final Object b) {
-		if (isI(a) && isI(b)) return div(i(a), i(b));
-		if (isL(a) && isL(b)) return div(l(a), l(b));
-		if (isF(a) && isF(b)) return div(f(a), f(b));
-		if (isD(a) && isD(b)) return div(d(a), d(b));
-		if (isBI(a) && isBI(b)) return div(bi(a), bi(b));
-		if (isBD(a) && isBD(b)) return div(bd(a), bd(b));
+		final Object av = value(a), bv = value(b);
+		if (isI(av) && isI(bv)) return div(i(av), i(bv));
+		if (isL(av) && isL(bv)) return div(l(av), l(bv));
+		if (isF(av) && isF(bv)) return div(f(av), f(bv));
+		if (isD(av) && isD(bv)) return div(d(av), d(bv));
+		if (isBI(av) && isBI(bv)) return div(bi(av), bi(bv));
+		if (isBD(av) && isBD(bv)) return div(bd(av), bd(bv));
 		return null;
 	}
-	public int div(final int a, final int b) { return a / b; }
-	public long div(final long a, final long b) { return a / b; }
-	public float div(final float a, final float b) { return a / b; }
-	public double div(final double a, final double b) { return a / b; }
-	public BigInteger div(final BigInteger a, final BigInteger b) {
-		return a.divide(b);
+	public int div(final int av, final int bv) { return av / bv; }
+	public long div(final long av, final long bv) { return av / bv; }
+	public float div(final float av, final float bv) { return av / bv; }
+	public double div(final double av, final double bv) { return av / bv; }
+	public BigInteger div(final BigInteger av, final BigInteger bv) {
+		return av.divide(bv);
 	}
-	public BigDecimal div(final BigDecimal a, final BigDecimal b) {
-		return a.divide(b);
+	public BigDecimal div(final BigDecimal av, final BigDecimal bv) {
+		return av.divide(bv);
 	}
 
 	@Override
 	public Object mod(final Object a, final Object b) {
-		if (isI(a) && isI(b)) return mod(i(a), i(b));
-		if (isL(a) && isL(b)) return mod(l(a), l(b));
-		if (isF(a) && isF(b)) return mod(f(a), f(b));
-		if (isD(a) && isD(b)) return mod(d(a), d(b));
-		if (isBI(a) && isBI(b)) return mod(bi(a), bi(b));
-		if (isBD(a) && isBD(b)) return mod(bd(a), bd(b));
+		final Object av = value(a), bv = value(b);
+		if (isI(av) && isI(bv)) return mod(i(av), i(bv));
+		if (isL(av) && isL(bv)) return mod(l(av), l(bv));
+		if (isF(av) && isF(bv)) return mod(f(av), f(bv));
+		if (isD(av) && isD(bv)) return mod(d(av), d(bv));
+		if (isBI(av) && isBI(bv)) return mod(bi(av), bi(bv));
+		if (isBD(av) && isBD(bv)) return mod(bd(av), bd(bv));
 		return null;
 	}
-	public int mod(final int a, final int b) { return a % b; }
-	public long mod(final long a, final long b) { return a % b; }
-	public float mod(final float a, final float b) { return a % b; }
-	public double mod(final double a, final double b) { return a % b; }
-	public BigInteger mod(final BigInteger a, final BigInteger b) {
-		return a.remainder(b);
+	public int mod(final int av, final int bv) { return av % bv; }
+	public long mod(final long av, final long bv) { return av % bv; }
+	public float mod(final float av, final float bv) { return av % bv; }
+	public double mod(final double av, final double bv) { return av % bv; }
+	public BigInteger mod(final BigInteger av, final BigInteger bv) {
+		return av.remainder(bv);
 	}
-	public BigDecimal mod(final BigDecimal a, final BigDecimal b) {
-		return a.remainder(b);
+	public BigDecimal mod(final BigDecimal av, final BigDecimal bv) {
+		return av.remainder(bv);
 	}
 
 	@Override
@@ -298,153 +315,162 @@ public abstract class AbstractStandardEvaluator extends AbstractEvaluator
 
 	@Override
 	public Object add(final Object a, final Object b) {
-		if (isStr(a)) return add(str(a), str(b));
-		if (isI(a) && isI(b)) return add(i(a), i(b));
-		if (isL(a) && isL(b)) return add(l(a), l(b));
-		if (isF(a) && isF(b)) return add(f(a), f(b));
-		if (isD(a) && isD(b)) return add(d(a), d(b));
-		if (isBI(a) && isBI(b)) return add(bi(a), bi(b));
-		if (isBD(a) && isBD(b)) return add(bd(a), bd(b));
+		final Object av = value(a), bv = value(b);
+		if (isStr(av)) return add(str(av), str(bv));
+		if (isI(av) && isI(bv)) return add(i(av), i(bv));
+		if (isL(av) && isL(bv)) return add(l(av), l(bv));
+		if (isF(av) && isF(bv)) return add(f(av), f(bv));
+		if (isD(av) && isD(bv)) return add(d(av), d(bv));
+		if (isBI(av) && isBI(bv)) return add(bi(av), bi(bv));
+		if (isBD(av) && isBD(bv)) return add(bd(av), bd(bv));
 		return null;
 	}
-	public String add(final String a, final String b) { return a + b; }
-	public int add(final int a, final int b) { return a + b; }
-	public long add(final long a, final long b) { return a + b; }
-	public float add(final float a, final float b) { return a + b; }
-	public double add(final double a, final double b) { return a + b; }
-	public BigInteger add(final BigInteger a, final BigInteger b) {
-		return a.add(b);
+	public String add(final String av, final String bv) { return av + bv; }
+	public int add(final int av, final int bv) { return av + bv; }
+	public long add(final long av, final long bv) { return av + bv; }
+	public float add(final float av, final float bv) { return av + bv; }
+	public double add(final double av, final double bv) { return av + bv; }
+	public BigInteger add(final BigInteger av, final BigInteger bv) {
+		return av.add(bv);
 	}
-	public BigDecimal add(final BigDecimal a, final BigDecimal b) {
-		return a.add(b);
+	public BigDecimal add(final BigDecimal av, final BigDecimal bv) {
+		return av.add(bv);
 	}
 
 	@Override
 	public Object sub(final Object a, final Object b) {
-		if (isI(a) && isI(b)) return sub(i(a), i(b));
-		if (isL(a) && isL(b)) return sub(l(a), l(b));
-		if (isF(a) && isF(b)) return sub(f(a), f(b));
-		if (isD(a) && isD(b)) return sub(d(a), d(b));
-		if (isBI(a) && isBI(b)) return sub(bi(a), bi(b));
-		if (isBD(a) && isBD(b)) return sub(bd(a), bd(b));
+		final Object av = value(a), bv = value(b);
+		if (isI(av) && isI(bv)) return sub(i(av), i(bv));
+		if (isL(av) && isL(bv)) return sub(l(av), l(bv));
+		if (isF(av) && isF(bv)) return sub(f(av), f(bv));
+		if (isD(av) && isD(bv)) return sub(d(av), d(bv));
+		if (isBI(av) && isBI(bv)) return sub(bi(av), bi(bv));
+		if (isBD(av) && isBD(bv)) return sub(bd(av), bd(bv));
 		return null;
 	}
-	public int sub(final int a, final int b) { return a - b; }
-	public long sub(final long a, final long b) { return a - b; }
-	public float sub(final float a, final float b) { return a - b; }
-	public double sub(final double a, final double b) { return a - b; }
-	public BigInteger sub(final BigInteger a, final BigInteger b) {
-		return a.subtract(b);
+	public int sub(final int av, final int bv) { return av - bv; }
+	public long sub(final long av, final long bv) { return av - bv; }
+	public float sub(final float av, final float bv) { return av - bv; }
+	public double sub(final double av, final double bv) { return av - bv; }
+	public BigInteger sub(final BigInteger av, final BigInteger bv) {
+		return av.subtract(bv);
 	}
-	public BigDecimal sub(final BigDecimal a, final BigDecimal b) {
-		return a.subtract(b);
+	public BigDecimal sub(final BigDecimal av, final BigDecimal bv) {
+		return av.subtract(bv);
 	}
 
 	// -- shift --
 
 	@Override
 	public Object leftShift(final Object a, final Object b) {
-		if (isI(a) && isI(b)) return leftShift(i(a), i(b));
-		if (isL(a) && isL(b)) return leftShift(l(a), l(b));
-		if (isBI(a) && isI(b)) return leftShift(bi(a), i(b));
+		final Object av = value(a), bv = value(b);
+		if (isI(av) && isI(bv)) return leftShift(i(av), i(bv));
+		if (isL(av) && isL(bv)) return leftShift(l(av), l(bv));
+		if (isBI(av) && isI(bv)) return leftShift(bi(av), i(bv));
 		return null;
 	}
-	public int leftShift(final int a, final int b) { return a << b; }
-	public long leftShift(final long a, final long b) { return a << b; }
-	public BigInteger leftShift(final BigInteger a, final int b) {
-		return a.shiftLeft(b);
+	public int leftShift(final int av, final int bv) { return av << bv; }
+	public long leftShift(final long av, final long bv) { return av << bv; }
+	public BigInteger leftShift(final BigInteger av, final int bv) {
+		return av.shiftLeft(bv);
 	}
 
 	@Override
 	public Object rightShift(final Object a, final Object b) {
-		if (isI(a) && isI(b)) return rightShift(i(a), i(b));
-		if (isL(a) && isL(b)) return rightShift(l(a), l(b));
-		if (isBI(a) && isI(b)) return rightShift(bi(a), i(b));
+		final Object av = value(a), bv = value(b);
+		if (isI(av) && isI(bv)) return rightShift(i(av), i(bv));
+		if (isL(av) && isL(bv)) return rightShift(l(av), l(bv));
+		if (isBI(av) && isI(bv)) return rightShift(bi(av), i(bv));
 		return null;
 	}
-	public int rightShift(final int a, final int b) { return a >> b; }
-	public long rightShift(final long a, final long b) { return a >> b; }
-	public BigInteger rightShift(final BigInteger a, final int b) {
-		return a.shiftRight(b);
+	public int rightShift(final int av, final int bv) { return av >> bv; }
+	public long rightShift(final long av, final long bv) { return av >> bv; }
+	public BigInteger rightShift(final BigInteger av, final int bv) {
+		return av.shiftRight(bv);
 	}
 
 	@Override
 	public Object unsignedRightShift(final Object a, final Object b) {
-		if (isI(a) && isI(b)) return unsignedRightShift(i(a), i(b));
-		if (isL(a) && isL(b)) return unsignedRightShift(l(a), l(b));
+		final Object av = value(a), bv = value(b);
+		if (isI(av) && isI(bv)) return unsignedRightShift(i(av), i(bv));
+		if (isL(av) && isL(bv)) return unsignedRightShift(l(av), l(bv));
 		return null;
 	}
-	public int unsignedRightShift(final int a, final int b) { return a >>> b; }
-	public long unsignedRightShift(final long a, final long b) { return a >>> b; }
+	public int unsignedRightShift(final int av, final int bv) { return av >>> bv; }
+	public long unsignedRightShift(final long av, final long bv) { return av >>> bv; }
 
 	// -- relational --
 
 	@Override
 	public Object lessThan(final Object a, final Object b) {
-		if (isBool(a) && isBool(b)) return lessThan(bool(a), bool(b));
-		if (isStr(a) && isStr(b)) return lessThan(str(a), str(b));
-		if (isI(a) && isI(b)) return lessThan(i(a), i(b));
-		if (isL(a) && isL(b)) return lessThan(l(a), l(b));
-		if (isF(a) && isF(b)) return lessThan(f(a), f(b));
-		if (isD(a) && isD(b)) return lessThan(d(a), d(b));
-		if (isBI(a) && isBI(b)) return lessThan(bi(a), bi(b));
-		if (isBD(a) && isBD(b)) return lessThan(bd(a), bd(b));
+		final Object av = value(a), bv = value(b);
+		if (isBool(av) && isBool(bv)) return lessThan(bool(av), bool(bv));
+		if (isStr(av) && isStr(bv)) return lessThan(str(av), str(bv));
+		if (isI(av) && isI(bv)) return lessThan(i(av), i(bv));
+		if (isL(av) && isL(bv)) return lessThan(l(av), l(bv));
+		if (isF(av) && isF(bv)) return lessThan(f(av), f(bv));
+		if (isD(av) && isD(bv)) return lessThan(d(av), d(bv));
+		if (isBI(av) && isBI(bv)) return lessThan(bi(av), bi(bv));
+		if (isBD(av) && isBD(bv)) return lessThan(bd(av), bd(bv));
 		return null;
 	}
-	public <T> boolean lessThan(final Comparable<T> a, final T b) {
-		return a.compareTo(b) < 0;
+	public <T> boolean lessThan(final Comparable<T> av, final T bv) {
+		return av.compareTo(bv) < 0;
 	}
 
 	@Override
 	public Object greaterThan(final Object a, final Object b) {
-		if (isBool(a) && isBool(b)) return greaterThan(bool(a), bool(b));
-		if (isStr(a) && isStr(b)) return greaterThan(str(a), str(b));
-		if (isI(a) && isI(b)) return greaterThan(i(a), i(b));
-		if (isL(a) && isL(b)) return greaterThan(l(a), l(b));
-		if (isF(a) && isF(b)) return greaterThan(f(a), f(b));
-		if (isD(a) && isD(b)) return greaterThan(d(a), d(b));
-		if (isBI(a) && isBI(b)) return greaterThan(bi(a), bi(b));
-		if (isBD(a) && isBD(b)) return greaterThan(bd(a), bd(b));
+		final Object av = value(a), bv = value(b);
+		if (isBool(av) && isBool(bv)) return greaterThan(bool(av), bool(bv));
+		if (isStr(av) && isStr(bv)) return greaterThan(str(av), str(bv));
+		if (isI(av) && isI(bv)) return greaterThan(i(av), i(bv));
+		if (isL(av) && isL(bv)) return greaterThan(l(av), l(bv));
+		if (isF(av) && isF(bv)) return greaterThan(f(av), f(bv));
+		if (isD(av) && isD(bv)) return greaterThan(d(av), d(bv));
+		if (isBI(av) && isBI(bv)) return greaterThan(bi(av), bi(bv));
+		if (isBD(av) && isBD(bv)) return greaterThan(bd(av), bd(bv));
 		return null;
 	}
-	public <T> boolean greaterThan(final Comparable<T> a, final T b) {
-		return a.compareTo(b) > 0;
+	public <T> boolean greaterThan(final Comparable<T> av, final T bv) {
+		return av.compareTo(bv) > 0;
 	}
 
 	@Override
 	public Object lessThanOrEqual(final Object a, final Object b) {
-		if (isBool(a) && isBool(b)) return lessThanOrEqual(bool(a), bool(b));
-		if (isStr(a) && isStr(b)) return lessThanOrEqual(str(a), str(b));
-		if (isI(a) && isI(b)) return lessThanOrEqual(i(a), i(b));
-		if (isL(a) && isL(b)) return lessThanOrEqual(l(a), l(b));
-		if (isF(a) && isF(b)) return lessThanOrEqual(f(a), f(b));
-		if (isD(a) && isD(b)) return lessThanOrEqual(d(a), d(b));
-		if (isBI(a) && isBI(b)) return lessThanOrEqual(bi(a), bi(b));
-		if (isBD(a) && isBD(b)) return lessThanOrEqual(bd(a), bd(b));
+		final Object av = value(a), bv = value(b);
+		if (isBool(av) && isBool(bv)) return lessThanOrEqual(bool(av), bool(bv));
+		if (isStr(av) && isStr(bv)) return lessThanOrEqual(str(av), str(bv));
+		if (isI(av) && isI(bv)) return lessThanOrEqual(i(av), i(bv));
+		if (isL(av) && isL(bv)) return lessThanOrEqual(l(av), l(bv));
+		if (isF(av) && isF(bv)) return lessThanOrEqual(f(av), f(bv));
+		if (isD(av) && isD(bv)) return lessThanOrEqual(d(av), d(bv));
+		if (isBI(av) && isBI(bv)) return lessThanOrEqual(bi(av), bi(bv));
+		if (isBD(av) && isBD(bv)) return lessThanOrEqual(bd(av), bd(bv));
 		return null;
 	}
-	public <T> boolean lessThanOrEqual(final Comparable<T> a, final T b) {
-		return a.compareTo(b) <= 0;
+	public <T> boolean lessThanOrEqual(final Comparable<T> av, final T bv) {
+		return av.compareTo(bv) <= 0;
 	}
 
 	@Override
 	public Object greaterThanOrEqual(final Object a, final Object b) {
-		if (isBool(a) && isBool(b)) return greaterThanOrEqual(bool(a), bool(b));
-		if (isStr(a) && isStr(b)) return greaterThanOrEqual(str(a), str(b));
-		if (isI(a) && isI(b)) return greaterThanOrEqual(i(a), i(b));
-		if (isL(a) && isL(b)) return greaterThanOrEqual(l(a), l(b));
-		if (isF(a) && isF(b)) return greaterThanOrEqual(f(a), f(b));
-		if (isD(a) && isD(b)) return greaterThanOrEqual(d(a), d(b));
-		if (isBI(a) && isBI(b)) return greaterThanOrEqual(bi(a), bi(b));
-		if (isBD(a) && isBD(b)) return greaterThanOrEqual(bd(a), bd(b));
+		final Object av = value(a), bv = value(b);
+		if (isBool(av) && isBool(bv)) return greaterThanOrEqual(bool(av), bool(bv));
+		if (isStr(av) && isStr(bv)) return greaterThanOrEqual(str(av), str(bv));
+		if (isI(av) && isI(bv)) return greaterThanOrEqual(i(av), i(bv));
+		if (isL(av) && isL(bv)) return greaterThanOrEqual(l(av), l(bv));
+		if (isF(av) && isF(bv)) return greaterThanOrEqual(f(av), f(bv));
+		if (isD(av) && isD(bv)) return greaterThanOrEqual(d(av), d(bv));
+		if (isBI(av) && isBI(bv)) return greaterThanOrEqual(bi(av), bi(bv));
+		if (isBD(av) && isBD(bv)) return greaterThanOrEqual(bd(av), bd(bv));
 		return null;
 	}
-	public <T> boolean greaterThanOrEqual(final Comparable<T> a, final T b) {
-		return a.compareTo(b) >= 0;
+	public <T> boolean greaterThanOrEqual(final Comparable<T> av, final T bv) {
+		return av.compareTo(bv) >= 0;
 	}
 
 	@Override
-	public Object instanceOf(final Object a, final Object b) {
+	public Object instanceOf(final Object av, final Object bv) {
 		// NB: Unimplemented.
 		return null;
 	}
@@ -465,45 +491,49 @@ public abstract class AbstractStandardEvaluator extends AbstractEvaluator
 
 	@Override
 	public Object bitwiseAnd(final Object a, final Object b) {
-		if (isI(a) && isI(b)) return bitwiseAnd(i(a), i(b));
-		if (isL(a) && isL(b)) return bitwiseAnd(l(a), l(b));
-		if (isBI(a) && isBI(b)) return bitwiseAnd(bi(a), bi(b));
+		final Object av = value(a), bv = value(b);
+		if (isI(av) && isI(bv)) return bitwiseAnd(i(av), i(bv));
+		if (isL(av) && isL(bv)) return bitwiseAnd(l(av), l(bv));
+		if (isBI(av) && isBI(bv)) return bitwiseAnd(bi(av), bi(bv));
 		return null;
 	}
-	public int bitwiseAnd(final int a, final int b) { return a & b; }
-	public long bitwiseAnd(final long a, final long b) { return a & b; }
-	public BigInteger bitwiseAnd(final BigInteger a, final BigInteger b) {
-		return a.and(b);
+	public int bitwiseAnd(final int av, final int bv) { return av & bv; }
+	public long bitwiseAnd(final long av, final long bv) { return av & bv; }
+	public BigInteger bitwiseAnd(final BigInteger av, final BigInteger bv) {
+		return av.and(bv);
 	}
 
 	@Override
 	public Object bitwiseOr(final Object a, final Object b) {
-		if (isI(a) && isI(b)) return bitwiseOr(i(a), i(b));
-		if (isL(a) && isL(b)) return bitwiseOr(l(a), l(b));
-		if (isBI(a) && isBI(b)) return bitwiseOr(bi(a), bi(b));
+		final Object av = value(a), bv = value(b);
+		if (isI(av) && isI(bv)) return bitwiseOr(i(av), i(bv));
+		if (isL(av) && isL(bv)) return bitwiseOr(l(av), l(bv));
+		if (isBI(av) && isBI(bv)) return bitwiseOr(bi(av), bi(bv));
 		return null;
 	}
-	public int bitwiseOr(final int a, final int b) { return a | b; }
-	public long bitwiseOr(final long a, final long b) { return a | b; }
-	public BigInteger bitwiseOr(final BigInteger a, final BigInteger b) {
-		return a.or(b);
+	public int bitwiseOr(final int av, final int bv) { return av | bv; }
+	public long bitwiseOr(final long av, final long bv) { return av | bv; }
+	public BigInteger bitwiseOr(final BigInteger av, final BigInteger bv) {
+		return av.or(bv);
 	}
 
 	// -- logical --
 
 	@Override
 	public Object logicalAnd(final Object a, final Object b) {
-		if (isBool(a) && isBool(b)) return logicalAnd(bool(a), bool(b));
+		final Object av = value(a), bv = value(b);
+		if (isBool(av) && isBool(bv)) return logicalAnd(bool(av), bool(bv));
 		return null;
 	}
-	public boolean logicalAnd(final boolean a, final boolean b) { return a && b; }
+	public boolean logicalAnd(final boolean av, final boolean bv) { return av && bv; }
 
 	@Override
 	public Object logicalOr(final Object a, final Object b) {
-		if (isBool(a) && isBool(b)) return logicalOr(bool(a), bool(b));
+		final Object av = value(a), bv = value(b);
+		if (isBool(av) && isBool(bv)) return logicalOr(bool(av), bool(bv));
 		return null;
 	}
-	public boolean logicalOr(final boolean a, final boolean b) { return a || b; }
+	public boolean logicalOr(final boolean av, final boolean bv) { return av || bv; }
 
 	// -- ternary --
 
@@ -521,63 +551,63 @@ public abstract class AbstractStandardEvaluator extends AbstractEvaluator
 
 	// -- Helper methods - type matching --
 
-	private boolean is(final Object o, final Class<?> c) {
-		return c.isInstance(value(o));
+	private boolean is(final Object v, final Class<?> c) {
+		return c.isInstance(v);
 	}
 
-	private boolean isBool(final Object o) { return is(o, Boolean.class); }
-	private boolean isStr(final Object o) { return is(o, String.class); }
-	private boolean isB(final Object o) { return is(o, Byte.class); }
-	private boolean isS(final Object o) { return is(o, Short.class) || isB(o); }
-	private boolean isI(final Object o) { return is(o, Integer.class) || isS(o); }
-	private boolean isL(final Object o) { return is(o, Long.class) || isI(o); }
+	private boolean isBool(final Object v) { return is(v, Boolean.class); }
+	private boolean isStr(final Object v) { return is(v, String.class); }
+	private boolean isB(final Object v) { return is(v, Byte.class); }
+	private boolean isS(final Object v) { return is(v, Short.class) || isB(v); }
+	private boolean isI(final Object v) { return is(v, Integer.class) || isS(v); }
+	private boolean isL(final Object v) { return is(v, Long.class) || isI(v); }
 	// NB: Java allows assignment of all integer primitive types to float!
-	private boolean isF(final Object o) { return is(o, Float.class) || isL(o); }
-	private boolean isD(final Object o) { return is(o, Double.class) || isF(o); }
-	private boolean isBI(final Object o) { return is(o, BigInteger.class) || isL(o); }
-	private boolean isBD(final Object o) { return is(o, BigDecimal.class) || isBI(o) || isD(o); }
+	private boolean isF(final Object v) { return is(v, Float.class) || isL(v); }
+	private boolean isD(final Object v) { return is(v, Double.class) || isF(v); }
+	private boolean isBI(final Object v) { return is(v, BigInteger.class) || isL(v); }
+	private boolean isBD(final Object v) { return is(v, BigDecimal.class) || isBI(v) || isD(v); }
 
 	// -- Helper methods - type coercion --
 
-	/** Casts the given token to the specified class, or null if incompatible. */
-	private <T> T cast(final Object token, final Class<T> type) {
-		if (type.isInstance(token)) {
+	/** Casts the given value to the specified class, or null if incompatible. */
+	private <T> T cast(final Object v, final Class<T> type) {
+		if (type.isInstance(v)) {
 			@SuppressWarnings("unchecked")
-			final T result = (T) token;
+			final T result = (T) v;
 			return result;
 		}
 		return null;
 	}
 
-	/** Coerces the given token to a boolean. */
-	private boolean bool(final Object token) {
-		final Boolean b = cast(value(token), Boolean.class);
-		return b != null ? b : Boolean.valueOf(token.toString());
+	/** Coerces the given value to a boolean. */
+	private boolean bool(final Object v) {
+		final Boolean b = cast(v, Boolean.class);
+		return b != null ? b : Boolean.valueOf(v.toString());
 	}
 
-	/** Coerces the given token to a string. */
-	private String str(final Object token) {
-		final String s = cast(value(token), String.class);
-		return s != null ? s : token.toString();
+	/** Coerces the given value to a string. */
+	private String str(final Object v) {
+		final String s = cast(v, String.class);
+		return s != null ? s : v.toString();
 	}
 
-	/** Coerces the given token to a number. */
-	private Number num(final Object token) {
-		final Number n = cast(value(token), Number.class);
-		return n != null ? n : Literals.parseNumber(token.toString());
+	/** Coerces the given value to a number. */
+	private Number num(final Object v) {
+		final Number n = cast(v, Number.class);
+		return n != null ? n : Literals.parseNumber(v.toString());
 	}
 
-	private int i(final Object o) { return num(o).intValue(); }
-	private long l(final Object o) { return num(o).longValue(); }
-	private float f(final Object o) { return num(o).floatValue(); }
-	private double d(final Object o) { return num(o).doubleValue(); }
-	private BigInteger bi(final Object o) {
-		final BigInteger bi = cast(o, BigInteger.class);
-		return bi != null ? bi : new BigInteger("" + value(o));
+	private int i(final Object v) { return num(v).intValue(); }
+	private long l(final Object v) { return num(v).longValue(); }
+	private float f(final Object v) { return num(v).floatValue(); }
+	private double d(final Object v) { return num(v).doubleValue(); }
+	private BigInteger bi(final Object v) {
+		final BigInteger bi = cast(v, BigInteger.class);
+		return bi != null ? bi : new BigInteger("" + v);
 	}
-	private BigDecimal bd(final Object o) {
-		final BigDecimal bd = cast(o, BigDecimal.class);
-		return bd != null ? bd : new BigDecimal("" + value(o));
+	private BigDecimal bd(final Object v) {
+		final BigDecimal bd = cast(v, BigDecimal.class);
+		return bd != null ? bd : new BigDecimal("" + v);
 	}
 
 	private Object listElement(final Object a, final Object b) {
