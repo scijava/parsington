@@ -34,6 +34,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import org.scijava.parsington.ExpressionParser;
 import org.scijava.parsington.Literals;
@@ -452,12 +453,12 @@ public abstract class AbstractStandardEvaluator extends AbstractEvaluator
 
 	@Override
 	public Object equal(final Object a, final Object b) {
-		return value(a).equals(value(b));
+		return Objects.equals(value(a), value(b));
 	}
 
 	@Override
 	public Object notEqual(final Object a, final Object b) {
-		return !value(a).equals(value(b));
+		return !Objects.equals(value(a), value(b));
 	}
 
 	// -- bitwise --
