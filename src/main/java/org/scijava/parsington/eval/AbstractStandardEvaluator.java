@@ -117,8 +117,7 @@ public abstract class AbstractStandardEvaluator extends AbstractEvaluator
 
 	@Override
 	public Object dot(final Object a, final Object b) {
-		// NB: Unimplemented.
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	// -- groups --
@@ -143,14 +142,12 @@ public abstract class AbstractStandardEvaluator extends AbstractEvaluator
 
 	@Override
 	public Object transpose(final Object a) {
-		// NB: Unimplemented.
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public Object dotTranspose(final Object a) {
-		// NB: Unimplemented.
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -167,8 +164,7 @@ public abstract class AbstractStandardEvaluator extends AbstractEvaluator
 
 	@Override
 	public Object dotPow(final Object a, final Object b) {
-		// NB: Unimplemented.
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	// -- unary --
@@ -289,26 +285,22 @@ public abstract class AbstractStandardEvaluator extends AbstractEvaluator
 
 	@Override
 	public Object rightDiv(final Object a, final Object b) {
-		// NB: Unimplemented.
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public Object dotMul(Object a, Object b) {
-		// NB: Unimplemented.
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public Object dotDiv(final Object a, final Object b) {
-		// NB: Unimplemented.
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public Object dotRightDiv(final Object a, final Object b) {
-		// NB: Unimplemented.
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	// -- additive --
@@ -471,8 +463,7 @@ public abstract class AbstractStandardEvaluator extends AbstractEvaluator
 
 	@Override
 	public Object instanceOf(final Object av, final Object bv) {
-		// NB: Unimplemented.
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	// -- equality --
@@ -539,14 +530,12 @@ public abstract class AbstractStandardEvaluator extends AbstractEvaluator
 
 	@Override
 	public Object question(final Object a, final Object b) {
-		// NB: Unimplemented.
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public Object colon(Object a, Object b) {
-		// NB: Unimplemented.
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	// -- Helper methods - type matching --

@@ -31,8 +31,7 @@
 package org.scijava.parsington.eval;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
 
@@ -68,13 +67,8 @@ public class DefaultStackEvaluatorTest extends AbstractStandardEvaluatorTest {
 
 	@Test
 	public void testUnimplementedTernary() {
-		try {
-			e.evaluate("2 < 3 ? 'yes' : 'no'");
-			fail("Evaluation of ternary expression erroneously succeeded");
-		}
-		catch (final IllegalArgumentException exc) {
-			assertTrue(exc.getMessage().equals("Unsupported binary operator: :"));
-		}
+		assertThrows(UnsupportedOperationException.class,
+			() -> e.evaluate("2 < 3 ? 'yes' : 'no'"));
 	}
 
 }
