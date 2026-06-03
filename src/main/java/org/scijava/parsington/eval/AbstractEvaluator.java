@@ -75,7 +75,9 @@ public abstract class AbstractEvaluator implements Evaluator {
 
 	@Override
 	public Object get(final String name) {
-		if (vars.containsKey(name)) return vars.get(name);
+		final Object value = vars.get(name);
+		// NB: Take care to handle null-valued variables correctly.
+		if (value != null || vars.containsKey(name)) return value;
 		if (strict) throw new IllegalArgumentException("Unknown variable: " + name);
 		return new Unresolved(name);
 	}
