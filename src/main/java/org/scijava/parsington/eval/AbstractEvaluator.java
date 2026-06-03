@@ -73,11 +73,13 @@ public abstract class AbstractEvaluator implements Evaluator {
 		this.strict = strict;
 	}
 
+	/** Sentinel object to disambiguate between missing vars and null values. */
+	private static final Object MISSING = new Object();
+
 	@Override
 	public Object get(final String name) {
-		final Object value = vars.get(name);
-		// NB: Take care to handle null-valued variables correctly.
-		if (value != null || vars.containsKey(name)) return value;
+		final Object value = vars.getOrDefault(name, MISSING);
+		if (value != MISSING) return value;
 		if (strict) throw new IllegalArgumentException("Unknown variable: " + name);
 		return new Unresolved(name);
 	}
