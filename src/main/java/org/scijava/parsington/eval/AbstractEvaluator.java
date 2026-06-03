@@ -73,13 +73,18 @@ public abstract class AbstractEvaluator implements Evaluator {
 		this.strict = strict;
 	}
 
-	/** Sentinel object to disambiguate between missing vars and null values. */
-	private static final Object MISSING = new Object();
-
 	@Override
 	public Object get(final String name) {
-		final Object value = vars.getOrDefault(name, MISSING);
-		if (value != MISSING) return value;
+		// NB: Here, we look up the key twice: once with containsKey, then
+		// again with get. You might think we could do better by ensuring only
+		// one single hash map lookup. But the JIT is apparently sensitive in
+		// unintuitive ways to changes here, as illustrated by commits:
+		//
+		// - d316f03cfe4ed705d159bb0cf689c7c2a9260698
+		// - 823269a0e3140dead2819dd7ad4ba20f4439120f
+		//
+		// So we leave the logic as is, since nothing better has been found yet.
+		if (vars.containsKey(name)) return vars.get(name);
 		if (strict) throw new IllegalArgumentException("Unknown variable: " + name);
 		return new Unresolved(name);
 	}
