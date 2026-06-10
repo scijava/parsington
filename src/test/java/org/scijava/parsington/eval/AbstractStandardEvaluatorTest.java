@@ -31,7 +31,6 @@
 package org.scijava.parsington.eval;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -109,7 +108,7 @@ public abstract class AbstractStandardEvaluatorTest extends AbstractEvaluatorTes
 		assertEquals("b", e.function(v, Arrays.asList(1)));
 		assertEquals("c", e.function(v, Arrays.asList(2)));
 
-		assertNull(e.function(o(0), o(1)));
+		assertThrows(UnsupportedOperationException.class, () ->e.function(o(0), o(1)));
 	}
 
 	// -- dot --
