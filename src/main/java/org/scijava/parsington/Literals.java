@@ -407,8 +407,9 @@ public final class Literals {
 		final boolean forceLong = "l".equalsIgnoreCase(force);
 		final boolean forceFloat = "f".equalsIgnoreCase(force);
 		final boolean forceDouble = "d".equalsIgnoreCase(force);
+		final int dot = number.indexOf(".");
 		Number result = null;
-		if (!forceFloat && !forceDouble) {
+		if ((dot == -1) && !forceFloat && !forceDouble) {
 			result = parseInteger(number, forceLong, 10);
 		}
 		if (result == null && !forceLong) {
