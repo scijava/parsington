@@ -168,11 +168,12 @@ public interface Evaluator {
 	}
 
 	/**
-	 * Gets a map of all variable names and values.
+	 * Gets the Evaluator variables. Not thread-safe.
+	 * A map of all variable names and values.
 	 *
-	 * @return A map from variable names to variable values.
+	 * @return The map from variable names to variable values.
 	 */
-	Map<String, Object> getAll();
+	Map<String, Object> vars();
 
 	/**
 	 * Sets the value of a variable.
