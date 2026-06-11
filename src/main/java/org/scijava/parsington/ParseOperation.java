@@ -33,6 +33,7 @@ package org.scijava.parsington;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.LinkedList;
+import java.util.List;
 
 /** A stateful parsing operation. */
 public class ParseOperation {
@@ -43,7 +44,8 @@ public class ParseOperation {
 	protected final Position pos = new Position();
 	protected final Deque<Object> stack = new ArrayDeque<>();
 	protected final LinkedList<Object> outputQueue = new LinkedList<>();
-
+	// this is a copy of the value in ExpressionParser
+	private final ParsingNode<Operator> parsingNodeOperatorStart;
 	/**
 	 * State flag for parsing context.
 	 * <ul>
@@ -58,6 +60,7 @@ public class ParseOperation {
 	{
 		this.parser = parser;
 		this.expression = expression;
+		parsingNodeOperatorStart = parser.getParsingNodeOperatorStart();
 	}
 
 	/**
@@ -242,9 +245,18 @@ public class ParseOperation {
 	 * @return The parsed operator, or null if the next token is not one.
 	 */
 	protected Operator parseOperator() {
-		for (final Operator op : parser.operators()) {
-			final String symbol = op.getToken();
-			if (operatorMatches(op, symbol)) return op;
+		ParsingNode<Operator> node = parsingNodeOperatorStart;
+		List<Operator> lastHit = null;
+		int ndx = pos.get();
+		int last = expression.length();
+		while ((ndx < last) && (node != null)) {
+			node = node.hasValueNext(expression.charAt(ndx++));
+			if (node != null) lastHit = node.payload;
+		}
+		if (lastHit != null) {
+			for (Operator op : lastHit) {
+				if (operatorMatches(op, op.getToken())) return op;
+			}
 		}
 		return null;
 	}
