@@ -58,7 +58,7 @@ public class ExpressionParser {
 	private final String elementSeparator;
 	private final String statementSeparator;
 	private final BiFunction<ExpressionParser, String, ParseOperation> parseOperationFactory;
-
+	private final ParsingNode<Operator> parsingNodeOperatorStart;
 	/**
 	 * Creates an expression parser with the standard set of operators and default
 	 * separator symbols ({@code ,} for group elements, {@code ;} for statements).
@@ -158,6 +158,7 @@ public class ExpressionParser {
 		this.elementSeparator = elementSeparator;
 		this.statementSeparator = statementSeparator;
 		this.parseOperationFactory = parseOperationFactory;
+		this.parsingNodeOperatorStart = buildParsingNodeOperator();
 	}
 
 	// -- ExpressionParser methods --
@@ -215,6 +216,36 @@ public class ExpressionParser {
 	 */
 	public String statementSeparator() {
 		return statementSeparator;
+	}
+
+	/**
+	 * Gets the starting ParsingNode based on Operators()
+	 *
+	 * @return the starting node of the DFA
+	 */
+	public ParsingNode<Operator> getParsingNodeOperatorStart() {
+		return parsingNodeOperatorStart;
+	}
+
+
+	/**
+	 * Creates a mini deterministic finite automaton (DFA) from the list of operators.
+	 * The DFA is used to identify operators in the given expression
+	 *
+	 * @return the starting node of the DFA
+	 */
+	public ParsingNode<Operator> buildParsingNodeOperator() {
+		final ParsingNode<Operator> startingParsingNodeOperator = new ParsingNode<>();
+		for (Operator op : operators()) {
+			String textToMatch = op.getToken();
+			int lengthMinusOne = textToMatch.length()-1;
+			ParsingNode<Operator> node = startingParsingNodeOperator;
+			for (int i = 0; i <= lengthMinusOne; i++) {
+				char ch = textToMatch.charAt(i);
+				node = node.addNextValue(ch, (i == lengthMinusOne) ? op : null);
+			}
+		}
+		return startingParsingNodeOperator;
 	}
 
 }
