@@ -30,7 +30,6 @@
 
 package org.scijava.parsington.eval;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
