@@ -84,16 +84,16 @@ public abstract class AbstractEvaluatorTest extends AbstractTest {
 		e.set("a", 1);
 		e.set("b", 2);
 		e.clear();
-		assertEquals(new HashMap<>(), e.getAll());
+		assertEquals(new HashMap<>(), e.vars());
 		assertThrows(IllegalArgumentException.class, () -> e.get("a"));
 		assertThrows(IllegalArgumentException.class, () -> e.get("b"));
 	}
 
-	/** Tests {@link Evaluator#getAll()} and {@link Evaluator#setAll(Map)}. */
+	/** Tests {@link Evaluator#vars()} and {@link Evaluator#setAll(Map)}. */
 	@Test
-	public void testGetAllSetAll() {
+	public void testVarsSetAll() {
 		final Evaluator e = createEvaluator();
-		assertEquals(new HashMap<>(), e.getAll());
+		assertEquals(new HashMap<>(), e.vars());
 
 		final Map<String, Object> vars = new HashMap<>();
 		vars.put("a", 1);
@@ -101,7 +101,7 @@ public abstract class AbstractEvaluatorTest extends AbstractTest {
 		vars.put("c", 3.0);
 		e.setAll(vars);
 
-		assertEquals(vars, e.getAll());
+		assertEquals(vars, e.vars());
 
 		// Verify individual get still works after setAll.
 		assertEquals(1, e.get("a"));
@@ -110,9 +110,9 @@ public abstract class AbstractEvaluatorTest extends AbstractTest {
 
 		// Verify variables created at evaluation are accessible and correct.
 		e.evaluate("d=a+c");
-		assertTrue(e.getAll().containsKey("d"));
+		assertTrue(e.vars().containsKey("d"));
 		final Object dVal = e.get("d");
 		assertEquals(4.0, dVal);
-		assertEquals(dVal, e.getAll().get("d"));
+		assertEquals(dVal, e.vars().get("d"));
 	}
 }

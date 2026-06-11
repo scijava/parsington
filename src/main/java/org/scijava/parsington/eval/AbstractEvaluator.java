@@ -89,9 +89,10 @@ public abstract class AbstractEvaluator implements Evaluator {
 		return new Unresolved(name);
 	}
 
+
 	@Override
-	public Map<String, Object> getAll() {
-		return Collections.unmodifiableMap(vars);
+	public Map<String, Object> vars() {
+		return vars;
 	}
 
 	@Override
