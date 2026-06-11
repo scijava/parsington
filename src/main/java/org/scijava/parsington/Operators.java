@@ -32,9 +32,8 @@ package org.scijava.parsington;
 import static org.scijava.parsington.Operator.Associativity.LEFT;
 import static org.scijava.parsington.Operator.Associativity.RIGHT;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.scijava.parsington.Operator.Associativity;
@@ -171,6 +170,67 @@ public final class Operators {
 	public static final Operator UNSIGNED_RIGHT_SHIFT_ASSIGN = op(">>>=", 2,
 		RIGHT, 0);
 
+	private static final List<Operator> operatorList = new ArrayList<>(
+			Arrays.asList(
+					DOT,
+					PARENS,
+					BRACKETS,
+					BRACES,
+					TRANSPOSE,
+					DOT_TRANSPOSE,
+					POW,
+					DOT_POW,
+					POST_INC,
+					POST_DEC,
+					PRE_INC,
+					PRE_DEC,
+					POS,
+					NEG,
+					COMPLEMENT,
+					NOT,
+					MUL,
+					DIV,
+					MOD,
+					RIGHT_DIV,
+					DOT_MUL,
+					DOT_DIV,
+					DOT_RIGHT_DIV,
+					ADD,
+					SUB,
+					LEFT_SHIFT,
+					RIGHT_SHIFT,
+					UNSIGNED_RIGHT_SHIFT,
+					LESS_THAN,
+					GREATER_THAN,
+					LESS_THAN_OR_EQUAL,
+					GREATER_THAN_OR_EQUAL,
+					INSTANCEOF,
+					EQUAL,
+					NOT_EQUAL,
+					BITWISE_AND,
+					BITWISE_OR,
+					LOGICAL_AND,
+					LOGICAL_OR,
+					QUESTION,
+					COLON,
+					ASSIGN,
+					POW_ASSIGN,
+					DOT_POW_ASSIGN,
+					MUL_ASSIGN,
+					DIV_ASSIGN,
+					MOD_ASSIGN,
+					RIGHT_DIV_ASSIGN,
+					DOT_DIV_ASSIGN,
+					DOT_RIGHT_DIV_ASSIGN,
+					ADD_ASSIGN,
+					SUB_ASSIGN,
+					AND_ASSIGN,
+					OR_ASSIGN,
+					LEFT_SHIFT_ASSIGN,
+					RIGHT_SHIFT_ASSIGN,
+					UNSIGNED_RIGHT_SHIFT_ASSIGN));
+
+
 	private Operators() {
 		// NB: Prevent instantiation of utility class.
 	}
@@ -182,19 +242,7 @@ public final class Operators {
 	 *         {@link Operators} class, in declaration order.
 	 */
 	public static List<Operator> standardList() {
-		// Build the standard list from all available Operator constants.
-		final ArrayList<Operator> ops = new ArrayList<>();
-		for (final Field f : Operators.class.getFields()) {
-			if (!isOperator(f)) continue;
-			try {
-				ops.add((Operator) f.get(null));
-			}
-			catch (final IllegalAccessException exc) {
-				// This should never happen.
-				throw new IllegalStateException(exc);
-			}
-		}
-		return ops;
+		return new ArrayList<>(operatorList);
 	}
 
 	// -- Helper methods --
@@ -209,12 +257,6 @@ public final class Operators {
 		final String rightSymbol, final double precedence)
 	{
 		return new Group(leftSymbol, rightSymbol, precedence);
-	}
-
-	private static boolean isOperator(final Field f) {
-		final int mods = f.getModifiers();
-		return Modifier.isStatic(mods) && Modifier.isFinal(mods) &&
-			Operator.class.isAssignableFrom(f.getType());
 	}
 
 }
