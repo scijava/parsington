@@ -251,7 +251,7 @@ public class ParseOperation {
 		int last = expression.length();
 		while ((ndx < last) && (node != null)) {
 			node = node.hasValueNext(expression.charAt(ndx++));
-			if (node != null) lastHit = node.payload;
+			if ((node != null) && (node.payload != null)) lastHit = node.payload;
 		}
 		if (lastHit != null) {
 			for (Operator op : lastHit) {
