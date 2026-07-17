@@ -408,7 +408,8 @@ public final class Literals {
 		final boolean forceFloat = "f".equalsIgnoreCase(force);
 		final boolean forceDouble = "d".equalsIgnoreCase(force);
 		Number result = null;
-		if ((m.start(3) == -1) && !forceFloat && !forceDouble) {
+		if (m.group(3) == null && m.group(4) == null && !forceFloat && !forceDouble) {
+			// No decimal point and no exponent part. So this *might* be an integer!
 			result = parseInteger(number, forceLong, 10);
 		}
 		if (result == null && !forceLong) {
