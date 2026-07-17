@@ -93,25 +93,4 @@ public abstract class AbstractEvaluator implements Evaluator {
 		return new Unresolved(name);
 	}
 
-
-	@Override
-	public void set(final String name, final Object value) {
-		vars.put(name, value);
-	}
-
-	@Override
-	public void setAll(final Map<? extends String, ? extends Object> map) {
-		vars.putAll(map);
-	}
-
-	@Override
-	public Object remove(final String name) {
-		return vars.remove(name);
-	}
-
-	@Override
-	public void clear() {
-		vars.clear();
-	}
-
 }

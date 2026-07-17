@@ -164,7 +164,9 @@ public interface Evaluator {
 	 * @param name The name of the variable whose value you want to set.
 	 * @param value The value to assign to the variable.
 	 */
-	void set(String name, Object value);
+	default void set(String name, Object value) {
+		vars().put(name, value);
+	}
 
 	/**
 	 * Gets the value of a variable.
@@ -193,7 +195,9 @@ public interface Evaluator {
 	 * 
 	 * @param map A map from variable names to variable values.
 	 */
-	void setAll(Map<? extends String, ? extends Object> map);
+	default void setAll(Map<? extends String, ? extends Object> map) {
+		vars().putAll(map);
+	}
 
 	/**
 	 * Removes the named variable.
@@ -202,12 +206,15 @@ public interface Evaluator {
 	 * @return The previous variables value associated with name,
 	 *         or null if the name did not exist.
 	 */
-	Object remove(String name);
+	default Object remove(String name) {
+		return vars().remove(name);
+	}
 
 	/**
 	 * Clears all the variables.
-	 *
 	 */
-	void clear();
+	default void clear() {
+		vars().clear();
+	}
 
 }
