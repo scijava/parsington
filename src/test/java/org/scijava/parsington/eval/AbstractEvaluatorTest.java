@@ -83,8 +83,9 @@ public abstract class AbstractEvaluatorTest extends AbstractTest {
 		final Evaluator e = createEvaluator();
 		e.set("a", 1);
 		e.set("b", 2);
+		assertEquals(2, e.vars().size());
 		e.clear();
-		assertEquals(new HashMap<>(), e.vars());
+		assertEquals(0, e.vars().size());
 		assertThrows(IllegalArgumentException.class, () -> e.get("a"));
 		assertThrows(IllegalArgumentException.class, () -> e.get("b"));
 	}
