@@ -73,6 +73,11 @@ public abstract class AbstractEvaluator implements Evaluator {
 	}
 
 	@Override
+	public Map<String, Object> vars() {
+		return vars;
+	}
+
+	@Override
 	public Object get(final String name) {
 		// NB: Here, we look up the key twice: once with containsKey, then
 		// again with get. You might think we could do better by ensuring only
@@ -88,11 +93,6 @@ public abstract class AbstractEvaluator implements Evaluator {
 		return new Unresolved(name);
 	}
 
-
-	@Override
-	public Map<String, Object> vars() {
-		return vars;
-	}
 
 	@Override
 	public void set(final String name, final Object value) {

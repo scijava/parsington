@@ -113,6 +113,17 @@ public interface Evaluator {
 	Object evaluate(SyntaxTree syntaxTree);
 
 	/**
+	 * Gets all variables as a mutable {@link Map}. Not thread-safe.
+	 * <p>
+	 * This map is a view, not a copy&mdash;i.e., changes to this map alter the
+	 * evaluator's actual variable values.
+	 * </p>
+	 *
+	 * @return The map from variable names to variable values.
+	 */
+	Map<String, Object> vars();
+
+	/**
 	 * Gets the value of a token. For variables, returns the value of the
 	 * variable, throwing an exception if the variable is not set. For literals,
 	 * returns the token itself.
@@ -166,14 +177,6 @@ public interface Evaluator {
 	default Object get(final Variable v) {
 		return get(v.getToken());
 	}
-
-	/**
-	 * Gets the Evaluator variables. Not thread-safe.
-	 * A map of all variable names and values.
-	 *
-	 * @return The map from variable names to variable values.
-	 */
-	Map<String, Object> vars();
 
 	/**
 	 * Sets the value of a variable.
