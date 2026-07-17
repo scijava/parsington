@@ -31,7 +31,6 @@
 package org.scijava.parsington.eval;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -42,6 +41,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -109,7 +110,9 @@ public abstract class AbstractStandardEvaluatorTest extends AbstractEvaluatorTes
 		assertEquals("b", e.function(v, Arrays.asList(1)));
 		assertEquals("c", e.function(v, Arrays.asList(2)));
 
-		assertNull(e.function(o(0), o(1)));
+		// test invalid function
+		String m = assertThrows(UnsupportedOperationException.class, () -> e.function("foo", "bar")).getMessage();
+		assertEquals("function foo was not found", m);
 	}
 
 	// -- dot --
@@ -117,7 +120,7 @@ public abstract class AbstractStandardEvaluatorTest extends AbstractEvaluatorTes
 	/** Tests {@link StandardEvaluator#dot(Object, Object)}. */
 	@Test
 	public void testDot() {
-		assertThrows(UnsupportedOperationException.class, () -> e.dot(o(0), o(1)));
+		assertUnimplemented(e::dot);
 	}
 
 	// -- groups --
@@ -160,13 +163,13 @@ public abstract class AbstractStandardEvaluatorTest extends AbstractEvaluatorTes
 	/** Tests {@link StandardEvaluator#transpose(Object)}. */
 	@Test
 	public void testTranspose() {
-		assertThrows(UnsupportedOperationException.class, () -> e.transpose(o(0)));
+		assertUnimplemented(e::transpose);
 	}
 
 	/** Tests {@link StandardEvaluator#dotTranspose(Object)}. */
 	@Test
 	public void testDotTranspose() {
-		assertThrows(UnsupportedOperationException.class, () -> e.dotTranspose(o(0)));
+		assertUnimplemented(e::dotTranspose);
 	}
 
 	/** Tests {@link StandardEvaluator#pow(Object, Object)}. */
@@ -180,7 +183,7 @@ public abstract class AbstractStandardEvaluatorTest extends AbstractEvaluatorTes
 	/** Tests {@link StandardEvaluator#dotPow(Object, Object)}. */
 	@Test
 	public void testDotPow() {
-		assertThrows(UnsupportedOperationException.class, () -> e.dotPow(o(0), o(0)));
+		assertUnimplemented(e::dotPow);
 	}
 
 	// -- postfix --
@@ -319,19 +322,19 @@ public abstract class AbstractStandardEvaluatorTest extends AbstractEvaluatorTes
 	/** Tests {@link StandardEvaluator#rightDiv(Object, Object)}. */
 	@Test
 	public void testRightDiv() {
-		assertThrows(UnsupportedOperationException.class, () -> e.rightDiv(o(0), o(0)));
+		assertUnimplemented(e::rightDiv);
 	}
 
 	/** Tests {@link StandardEvaluator#dotDiv(Object, Object)}. */
 	@Test
 	public void testDotDiv() {
-		assertThrows(UnsupportedOperationException.class, () -> e.dotDiv(o(0), o(0)));
+		assertUnimplemented(e::dotDiv);
 	}
 
 	/** Tests {@link StandardEvaluator#dotRightDiv(Object, Object)}. */
 	@Test
 	public void testDotRightDiv() {
-		assertThrows(UnsupportedOperationException.class, () -> e.dotRightDiv(o(0), o(0)));
+		assertUnimplemented(e::dotRightDiv);
 	}
 
 	// -- additive --
@@ -346,6 +349,7 @@ public abstract class AbstractStandardEvaluatorTest extends AbstractEvaluatorTes
 		assertNumber(3.6d, e.add(o(1.5d), o(2.1d)));
 		assertNumber(bi(10), e.add(o(bi(4)), o(bi(6))));
 		assertNumber(bd(3.6), e.add(o(bd(1.5)), o(bd(2.1))));
+		assertBadTypes(e::add, 123, "456");
 	}
 
 	/** Tests {@link StandardEvaluator#sub(Object, Object)}. */
@@ -357,6 +361,7 @@ public abstract class AbstractStandardEvaluatorTest extends AbstractEvaluatorTes
 		assertNumber(1.5d, e.sub(o(3.6d), o(2.1d)));
 		assertNumber(bi(4), e.sub(o(bi(10)), o(bi(6))));
 		assertNumber(bd(1.5), e.sub(o(bd(3.6)), o(bd(2.1))));
+		assertBadTypes(e::sub, 456, "123");
 	}
 
 	// -- shift --
@@ -367,6 +372,7 @@ public abstract class AbstractStandardEvaluatorTest extends AbstractEvaluatorTes
 		assertNumber(0xafebabe0, e.leftShift(o(0xcafebabe), o(4)));
 		assertNumber(0xdcafebeefbabe000L, e.leftShift(o(0xdeadcafebeefbabeL), o(12)));
 		assertNumber(bi(7296), e.leftShift(o(bi(57)), o(7)));
+		assertBadTypes(e::leftShift, "1", "2");
 	}
 
 	/** Tests {@link StandardEvaluator#rightShift(Object, Object)}. */
@@ -375,6 +381,7 @@ public abstract class AbstractStandardEvaluatorTest extends AbstractEvaluatorTes
 		assertNumber(0xfcafebab, e.rightShift(o(0xcafebabe), o(4)));
 		assertNumber(0xfffdeadcafebeefbL, e.rightShift(o(0xdeadcafebeefbabeL), o(12)));
 		assertNumber(bi(278), e.rightShift(o(bi(8920)), o(5)));
+		assertBadTypes(e::rightShift, "3", "4");
 	}
 
 	/** Tests {@link StandardEvaluator#unsignedRightShift(Object, Object)}. */
@@ -382,6 +389,7 @@ public abstract class AbstractStandardEvaluatorTest extends AbstractEvaluatorTes
 	public void testUnsignedRightShift() {
 		assertNumber(0x0cafebab, e.unsignedRightShift(o(0xcafebabe), o(4)));
 		assertNumber(0x000deadcafebeefbL, e.unsignedRightShift(o(0xdeadcafebeefbabeL), o(12)));
+		assertBadTypes(e::unsignedRightShift, "5", "6");
 	}
 
 	// -- relational --
@@ -420,6 +428,8 @@ public abstract class AbstractStandardEvaluatorTest extends AbstractEvaluatorTes
 		assertSame(true, e.lessThan(o(bd(17)), o(bd(18))));
 		assertSame(false, e.lessThan(o(bd(17)), o(bd(17))));
 		assertSame(false, e.lessThan(o(bd(17)), o(bd(16))));
+
+		assertBadTypes(e::lessThan, "7", 8);
 	}
 
 	/** Tests {@link StandardEvaluator#greaterThan(Object, Object)}. */
@@ -456,6 +466,8 @@ public abstract class AbstractStandardEvaluatorTest extends AbstractEvaluatorTes
 		assertSame(false, e.greaterThan(o(bd(17)), o(bd(18))));
 		assertSame(false, e.greaterThan(o(bd(17)), o(bd(17))));
 		assertSame(true, e.greaterThan(o(bd(17)), o(bd(16))));
+
+		assertBadTypes(e::greaterThan, "9", 10);
 	}
 
 	/** Tests {@link StandardEvaluator#lessThanOrEqual(Object, Object)}. */
@@ -492,6 +504,8 @@ public abstract class AbstractStandardEvaluatorTest extends AbstractEvaluatorTes
 		assertSame(true, e.lessThanOrEqual(o(bd(17)), o(bd(18))));
 		assertSame(true, e.lessThanOrEqual(o(bd(17)), o(bd(17))));
 		assertSame(false, e.lessThanOrEqual(o(bd(17)), o(bd(16))));
+
+		assertBadTypes(e::lessThanOrEqual, "11", 12);
 	}
 
 	/** Tests {@link StandardEvaluator#greaterThanOrEqual(Object, Object)}. */
@@ -528,12 +542,14 @@ public abstract class AbstractStandardEvaluatorTest extends AbstractEvaluatorTes
 		assertSame(false, e.greaterThanOrEqual(o(bd(17)), o(bd(18))));
 		assertSame(true, e.greaterThanOrEqual(o(bd(17)), o(bd(17))));
 		assertSame(true, e.greaterThanOrEqual(o(bd(17)), o(bd(16))));
+
+		assertBadTypes(e::greaterThanOrEqual, "13", 14);
 	}
 
 	/** Tests {@link StandardEvaluator#instanceOf(Object, Object)}. */
 	@Test
 	public void testInstanceOf() {
-		assertThrows(UnsupportedOperationException.class, () -> e.instanceOf(o(0), o(0)));
+		assertUnimplemented(e::instanceOf);
 	}
 
 	// -- equality --
@@ -572,6 +588,9 @@ public abstract class AbstractStandardEvaluatorTest extends AbstractEvaluatorTes
 		assertSame(false, e.equal(o(bd(17)), o(bd(18))));
 		assertSame(true, e.equal(o(bd(17)), o(bd(17))));
 		assertSame(false, e.equal(o(bd(17)), o(bd(16))));
+
+		// NB: Objects#equals supports objects of any type,
+		// so there is no assertBadTypes check here.
 	}
 
 	/** Tests {@link StandardEvaluator#notEqual(Object, Object)}. */
@@ -608,6 +627,9 @@ public abstract class AbstractStandardEvaluatorTest extends AbstractEvaluatorTes
 		assertSame(true, e.notEqual(o(bd(17)), o(bd(18))));
 		assertSame(false, e.notEqual(o(bd(17)), o(bd(17))));
 		assertSame(true, e.notEqual(o(bd(17)), o(bd(16))));
+
+		// NB: Objects#equals supports objects of any type,
+		// so there is no assertBadTypes check here.
 	}
 
 	// -- bitwise --
@@ -618,6 +640,7 @@ public abstract class AbstractStandardEvaluatorTest extends AbstractEvaluatorTes
 		assertNumber(0xcaacbaae, e.bitwiseAnd(o(0xcafebabe), o(0xdeadbeef)));
 		assertNumber(0L, e.bitwiseAnd(o(0x0d0e0a0d0c0a0f0eL), o(0xb0e0e0f0b0a0b0e0L)));
 		assertNumber(bi(0xcaacbaae), e.bitwiseAnd(o(bi(0xcafebabe)), o(bi(0xdeadbeef))));
+		assertBadTypes(e::bitwiseAnd, "19", 20);
 	}
 
 	/** Tests {@link StandardEvaluator#bitwiseOr(Object, Object)}. */
@@ -626,6 +649,7 @@ public abstract class AbstractStandardEvaluatorTest extends AbstractEvaluatorTes
 		assertNumber(0xdeffbeff, e.bitwiseOr(o(0xcafebabe), o(0xdeadbeef)));
 		assertNumber(0xbdeeeafdbcaabfeeL, e.bitwiseOr(o(0x0d0e0a0d0c0a0f0eL), o(0xb0e0e0f0b0a0b0e0L)));
 		assertNumber(bi(0xdeffbeff), e.bitwiseOr(o(bi(0xcafebabe)), o(bi(0xdeadbeef))));
+		assertBadTypes(e::bitwiseOr, "21", 22);
 	}
 
 	// -- logical --
@@ -637,6 +661,7 @@ public abstract class AbstractStandardEvaluatorTest extends AbstractEvaluatorTes
 		assertSame(false, e.logicalAnd(o(false), o(true)));
 		assertSame(false, e.logicalAnd(o(true), o(false)));
 		assertSame(true, e.logicalAnd(o(true), o(true)));
+		assertBadTypes(e::logicalAnd, 23, 24);
 	}
 
 	/** Tests {@link StandardEvaluator#logicalOr(Object, Object)}. */
@@ -646,6 +671,7 @@ public abstract class AbstractStandardEvaluatorTest extends AbstractEvaluatorTes
 		assertSame(true, e.logicalOr(o(false), o(true)));
 		assertSame(true, e.logicalOr(o(true), o(false)));
 		assertSame(true, e.logicalOr(o(true), o(true)));
+		assertBadTypes(e::logicalOr, 25, 26);
 	}
 
 	// -- ternary --
@@ -653,13 +679,13 @@ public abstract class AbstractStandardEvaluatorTest extends AbstractEvaluatorTes
 	/** Tests {@link StandardEvaluator#question(Object, Object)}. */
 	@Test
 	public void testQuestion() {
-		assertThrows(UnsupportedOperationException.class, () -> e.question(o(0), o(0)));
+		assertUnimplemented(e::question);
 	}
 
 	/** Tests {@link StandardEvaluator#colon(Object, Object)}. */
 	@Test
 	public void testColon() {
-		assertThrows(UnsupportedOperationException.class, () -> e.colon(o(0), o(0)));
+		assertUnimplemented(e::colon);
 	}
 
 	// -- assignment --
@@ -676,6 +702,8 @@ public abstract class AbstractStandardEvaluatorTest extends AbstractEvaluatorTes
 		assertAssigned(4d, v, e.assign(v, 4d));
 		assertAssigned(bi(5), v, e.assign(v, bi(5)));
 		assertAssigned(bd(6), v, e.assign(v, bd(6)));
+		String m = assertThrows(IllegalArgumentException.class, () -> e.assign(27, "28")).getMessage();
+		assertTrue(m.startsWith("Not a variable: "), "Unexpected exception message: " + m);
 	}
 
 	/** Tests {@link StandardEvaluator#powAssign(Object, Object)}. */
@@ -685,12 +713,13 @@ public abstract class AbstractStandardEvaluatorTest extends AbstractEvaluatorTes
 		e.set(v, 2.5d); assertAssigned(15.625d, v, e.powAssign(v, 3));
 		e.set(v, bi(5)); assertAssigned(bi(15625), v, e.powAssign(v, 6));
 		e.set(v, bd(2.5)); assertAssigned(bd(15.625), v, e.powAssign(v, 3));
+		assertBadTypes(e::powAssign, 29, "30");
 	}
 
 	/** Tests {@link StandardEvaluator#dotPowAssign(Object, Object)}. */
 	@Test
 	public void testDotPowAssign() {
-		// NB: Nothing to test; dotPow is unimplemented.
+		assertUnimplemented(e::dotPowAssign);
 	}
 
 	/** Tests {@link StandardEvaluator#mulAssign(Object, Object)}. */
@@ -703,6 +732,7 @@ public abstract class AbstractStandardEvaluatorTest extends AbstractEvaluatorTes
 		e.set(v, 2.5d); assertAssigned(8.75d, v, e.mulAssign(v, 3.5d));
 		e.set(v, bi(4)); assertAssigned(bi(24), v, e.mulAssign(v, bi(6)));
 		e.set(v, bd(2.5)); assertAssigned(bd(8.75), v, e.mulAssign(v, bd(3.5)));
+		assertBadTypes(e::mulAssign, 31, "32");
 	}
 
 	/** Tests {@link StandardEvaluator#divAssign(Object, Object)}. */
@@ -715,6 +745,7 @@ public abstract class AbstractStandardEvaluatorTest extends AbstractEvaluatorTes
 		e.set(v, 8.75d); assertAssigned(2.5d, v, e.divAssign(v, 3.5d));
 		e.set(v, bi(27)); assertAssigned(bi(4), v, e.divAssign(v, bi(6)));
 		e.set(v, bd(8.75)); assertAssigned(bd(2.5), v, e.divAssign(v, bd(3.5)));
+		assertBadTypes(e::divAssign, 33, "34");
 	}
 
 	/** Tests {@link StandardEvaluator#modAssign(Object, Object)}. */
@@ -727,24 +758,25 @@ public abstract class AbstractStandardEvaluatorTest extends AbstractEvaluatorTes
 		e.set(v, 8.75d); assertAssigned(1.75d, v, e.modAssign(v, 3.5d));
 		e.set(v, bi(27)); assertAssigned(bi(3), v, e.modAssign(v, bi(6)));
 		e.set(v, bd(8.75)); assertAssigned(bd(1.75), v, e.modAssign(v, bd(3.5)));
+		assertBadTypes(e::modAssign, 35, "36");
 	}
 
 	/** Tests {@link StandardEvaluator#rightDivAssign(Object, Object)}. */
 	@Test
 	public void testRightDivAssign() {
-		// NB: Nothing to test; rightDiv is unimplemented.
+		assertUnimplemented(e::rightDiv);
 	}
 
 	/** Tests {@link StandardEvaluator#dotDivAssign(Object, Object)}. */
 	@Test
 	public void testDotDivAssign() {
-		// NB: Nothing to test; dotDiv is unimplemented.
+		assertUnimplemented(e::dotDivAssign);
 	}
 
 	/** Tests {@link StandardEvaluator#dotRightDivAssign(Object, Object)}. */
 	@Test
 	public void testDotRightDivAssign() {
-		// NB: Nothing to test; dotRightDiv is unimplemented.
+		assertUnimplemented(e::dotRightDiv);
 	}
 
 	/** Tests {@link StandardEvaluator#addAssign(Object, Object)}. */
@@ -759,6 +791,7 @@ public abstract class AbstractStandardEvaluatorTest extends AbstractEvaluatorTes
 		e.set(v, 1.5d); assertAssigned(3.6d, v, e.addAssign(v, 2.1d));
 		e.set(v, bi(4)); assertAssigned(bi(10), v, e.addAssign(v, bi(6)));
 		e.set(v, bd(1.5)); assertAssigned(bd(3.6), v, e.addAssign(v, bd(2.1)));
+		assertBadTypes(e::addAssign, 37, "38");
 	}
 
 	/** Tests {@link StandardEvaluator#subAssign(Object, Object)}. */
@@ -771,6 +804,7 @@ public abstract class AbstractStandardEvaluatorTest extends AbstractEvaluatorTes
 		e.set(v, 3.6d); assertAssigned(1.5d, v, e.subAssign(v, 2.1d));
 		e.set(v, bi(10)); assertAssigned(bi(4), v, e.subAssign(v, bi(6)));
 		e.set(v, bd(3.6)); assertAssigned(bd(1.5), v, e.subAssign(v, bd(2.1)));
+		assertBadTypes(e::subAssign, 39, "40");
 	}
 
 	/** Tests {@link StandardEvaluator#andAssign(Object, Object)}. */
@@ -780,6 +814,7 @@ public abstract class AbstractStandardEvaluatorTest extends AbstractEvaluatorTes
 		e.set(v, 0xcafebabe); assertAssigned(0xcaacbaae, v, e.andAssign(v, 0xdeadbeef));
 		e.set(v, 0x0d0e0a0d0c0a0f0eL); assertAssigned(0L, v, e.andAssign(v, 0xb0e0e0f0b0a0b0e0L));
 		e.set(v, bi(0xcafebabeL)); assertAssigned(bi(0xcaacbaaeL), v, e.andAssign(v, bi(0xdeadbeefL)));
+		assertBadTypes(e::andAssign, 41, "42");
 	}
 
 	/** Tests {@link StandardEvaluator#orAssign(Object, Object)}. */
@@ -789,6 +824,7 @@ public abstract class AbstractStandardEvaluatorTest extends AbstractEvaluatorTes
 		e.set(v, 0xcafebabe); assertAssigned(0xdeffbeff, v, e.orAssign(v, 0xdeadbeef));
 		e.set(v, 0x0d0e0a0d0c0a0f0eL); assertAssigned(0xbdeeeafdbcaabfeeL, v, e.orAssign(v, 0xb0e0e0f0b0a0b0e0L));
 		e.set(v, bi(0xcafebabeL)); assertAssigned(bi(0xdeffbeffL), v, e.orAssign(v, bi(0xdeadbeefL)));
+		assertBadTypes(e::orAssign, 43, "44");
 	}
 
 	/** Tests {@link StandardEvaluator#leftShiftAssign(Object, Object)}. */
@@ -798,6 +834,7 @@ public abstract class AbstractStandardEvaluatorTest extends AbstractEvaluatorTes
 		e.set(v, 0xcafebabe); assertAssigned(0xafebabe0, v, e.leftShiftAssign(v, 4));
 		e.set(v, 0xdeadcafebeefbabeL); assertAssigned(0xdcafebeefbabe000L, v, e.leftShiftAssign(v, 12));
 		e.set(v, bi(57)); assertAssigned(bi(7296), v, e.leftShiftAssign(v, 7));
+		assertBadTypes(e::leftShiftAssign, 45, "46");
 	}
 
 	/** Tests {@link StandardEvaluator#rightShiftAssign(Object, Object)}. */
@@ -807,6 +844,7 @@ public abstract class AbstractStandardEvaluatorTest extends AbstractEvaluatorTes
 		e.set(v, 0xcafebabe); assertAssigned(0xfcafebab, v, e.rightShiftAssign(v, 4));
 		e.set(v, 0xdeadcafebeefbabeL); assertAssigned(0xfffdeadcafebeefbL, v, e.rightShiftAssign(v, 12));
 		e.set(v, bi(8920)); assertAssigned(bi(278), v, e.rightShiftAssign(v, 5));
+		assertBadTypes(e::rightShiftAssign, 47, "48");
 	}
 
 	/** Tests {@link StandardEvaluator#unsignedRightShiftAssign(Object, Object)}. */
@@ -815,6 +853,7 @@ public abstract class AbstractStandardEvaluatorTest extends AbstractEvaluatorTes
 		final Variable v = new Variable("v");
 		e.set(v, 0xcafebabe); assertAssigned(0x0cafebab, v, e.unsignedRightShiftAssign(v, 4));
 		e.set(v, 0xdeadcafebeefbabeL); assertAssigned(0x000deadcafebeefbL, v, e.unsignedRightShiftAssign(v, 12));
+		assertBadTypes(e::unsignedRightShiftAssign, 49, "50");
 	}
 
 	// -- Helper methods --
@@ -830,6 +869,20 @@ public abstract class AbstractStandardEvaluatorTest extends AbstractEvaluatorTes
 	{
 		assertSame(v, result);
 		assertEquals(expected, e.get(v));
+	}
+
+	private void assertUnimplemented(Consumer<Object> op) {
+		assertUnimplemented((a, b) -> op.accept(a));
+	}
+
+	private void assertUnimplemented(BiConsumer<Object, Object> op) {
+		String m = assertThrows(UnsupportedOperationException.class, () -> op.accept(0, 1)).getMessage();
+		assertTrue(m.endsWith(" is not implemented"), "Unexpected exception message: " + m);
+	}
+
+	private <A, B> void assertBadTypes(BiConsumer<A, B> op, A a, B b) {
+		String m = assertThrows(UnsupportedOperationException.class, () -> op.accept(a, b)).getMessage();
+		assertTrue(m.startsWith("Invalid parameter type"), "Unexpected exception message: " + m);
 	}
 
 }
