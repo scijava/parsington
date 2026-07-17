@@ -30,7 +30,6 @@
 
 package org.scijava.parsington.eval;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -74,6 +73,11 @@ public abstract class AbstractEvaluator implements Evaluator {
 	}
 
 	@Override
+	public Map<String, Object> vars() {
+		return vars;
+	}
+
+	@Override
 	public Object get(final String name) {
 		// NB: Here, we look up the key twice: once with containsKey, then
 		// again with get. You might think we could do better by ensuring only
@@ -87,31 +91,6 @@ public abstract class AbstractEvaluator implements Evaluator {
 		if (vars.containsKey(name)) return vars.get(name);
 		if (strict) throw new IllegalArgumentException("Unknown variable: " + name);
 		return new Unresolved(name);
-	}
-
-	@Override
-	public Map<String, Object> getAll() {
-		return Collections.unmodifiableMap(vars);
-	}
-
-	@Override
-	public void set(final String name, final Object value) {
-		vars.put(name, value);
-	}
-
-	@Override
-	public void setAll(final Map<? extends String, ? extends Object> map) {
-		vars.putAll(map);
-	}
-
-	@Override
-	public Object remove(final String name) {
-		return vars.remove(name);
-	}
-
-	@Override
-	public void clear() {
-		vars.clear();
 	}
 
 }

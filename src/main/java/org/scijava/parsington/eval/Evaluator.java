@@ -113,6 +113,17 @@ public interface Evaluator {
 	Object evaluate(SyntaxTree syntaxTree);
 
 	/**
+	 * Gets all variables as a mutable {@link Map}. Not thread-safe.
+	 * <p>
+	 * This map is a view, not a copy&mdash;i.e., changes to this map alter the
+	 * evaluator's actual variable values.
+	 * </p>
+	 *
+	 * @return The map from variable names to variable values.
+	 */
+	Map<String, Object> vars();
+
+	/**
 	 * Gets the value of a token. For variables, returns the value of the
 	 * variable, throwing an exception if the variable is not set. For literals,
 	 * returns the token itself.
@@ -153,7 +164,9 @@ public interface Evaluator {
 	 * @param name The name of the variable whose value you want to set.
 	 * @param value The value to assign to the variable.
 	 */
-	void set(String name, Object value);
+	default void set(String name, Object value) {
+		vars().put(name, value);
+	}
 
 	/**
 	 * Gets the value of a variable.
@@ -166,13 +179,6 @@ public interface Evaluator {
 	default Object get(final Variable v) {
 		return get(v.getToken());
 	}
-
-	/**
-	 * Gets a map of all variable names and values.
-	 *
-	 * @return A map from variable names to variable values.
-	 */
-	Map<String, Object> getAll();
 
 	/**
 	 * Sets the value of a variable.
@@ -189,7 +195,9 @@ public interface Evaluator {
 	 * 
 	 * @param map A map from variable names to variable values.
 	 */
-	void setAll(Map<? extends String, ? extends Object> map);
+	default void setAll(Map<? extends String, ? extends Object> map) {
+		vars().putAll(map);
+	}
 
 	/**
 	 * Removes the named variable.
@@ -198,12 +206,15 @@ public interface Evaluator {
 	 * @return The previous variables value associated with name,
 	 *         or null if the name did not exist.
 	 */
-	Object remove(String name);
+	default Object remove(String name) {
+		return vars().remove(name);
+	}
 
 	/**
 	 * Clears all the variables.
-	 *
 	 */
-	void clear();
+	default void clear() {
+		vars().clear();
+	}
 
 }
