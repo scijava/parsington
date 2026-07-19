@@ -93,6 +93,13 @@
 		<license.projectName>Parsington: the SciJava mathematical expression parser.</license.projectName>
 		<license.copyrightOwners>Board of Regents of the University of
 Wisconsin-Madison.</license.copyrightOwners>
+
+		<!--
+		HACK: Fork the compiler into a separate javac process to avoid
+		a javac bug ("endPosTable already set") that otherwise triggers
+		when the JMH annotation processor generates sources in-process.
+		-->
+		<maven.compiler.fork>true</maven.compiler.fork>
 	</properties>
 
 	<dependencies>
@@ -107,5 +114,69 @@ Wisconsin-Madison.</license.copyrightOwners>
 			<artifactId>junit-jupiter-engine</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.openjdk.jmh</groupId>
+			<artifactId>jmh-core</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.openjdk.jmh</groupId>
+			<artifactId>jmh-generator-annprocess</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
+
+	<profiles>
+		<!--
+		The benchmark profile runs the JMH benchmarks.
+		They are not part of the normal build.
+
+		Usage:
+
+		  mvn -Pbenchmark
+
+		With no arguments, a curated default suite (all *Benchmark classes,
+		GC profiler enabled) is run.
+
+		Pass JMH command-line arguments (include regexes, profilers, etc.)
+		via the benchmark.args property, e.g. to run only the
+		Literals benchmarks with the GC profiler:
+
+		  mvn -Pbenchmark -Dbenchmark.args="-prof gc LiteralsBenchmark"
+		-->
+		<profile>
+			<id>benchmark</id>
+			<properties>
+				<skipTests>true</skipTests>
+				<!-- Extra JMH CLI arguments; empty by default. -->
+				<benchmark.args />
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>exec-maven-plugin</artifactId>
+						<configuration>
+							<!--
+							Launch a fresh JVM so JMH's own forked measurement JVMs
+							inherit the correct classpath via java.class.path.
+							-->
+							<executable>java</executable>
+							<classpathScope>test</classpathScope>
+							<commandlineArgs>-classpath %classpath org.scijava.parsington.bench.Benchmarks ${benchmark.args}</commandlineArgs>
+						</configuration>
+						<executions>
+							<execution>
+								<id>run-benchmarks</id>
+								<phase>test</phase>
+								<goals>
+									<goal>exec</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>

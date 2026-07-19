@@ -213,3 +213,30 @@ custom separator symbols, and even custom parsing of literals and/or other
 expression elements. See the
 [TestExamples](src/test/java/org/scijava/parsington/TestExamples.java) for
 illustrations of these sorts of customizations in practice.
+
+## Benchmarks
+
+Parsington ships a
+[benchmark suite](src/test/java/org/scijava/parsington/bench) to measure
+parsing and evaluation speed, to help quantify performance-related changes.
+
+By default it reports average time per operation and allocation per operation
+(bytes/op, via the GC profiler); the latter is often a dominant cost in Java
+program execution.
+
+You can run the full suite via the `benchmark` profile:
+
+```shell
+mvn -Pbenchmark
+```
+
+The default suite is tuned to finish in roughly 10&ndash;15 minutes, trading
+some statistical rigor for a short runtime. For more careful measurements&mdash;
+more forks, longer iterations, or other [JMH command-line
+options](https://github.com/openjdk/jmh)&mdash;use the `benchmark.args` property,
+which bypasses the curated defaults. For example, to run only the `Literals`
+benchmark with three forks and longer warmup/measurement:
+
+```shell
+mvn -Pbenchmark -Dbenchmark.args="-f 3 -wi 5 -i 10 LiteralsBenchmark"
+```
