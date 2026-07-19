@@ -32,8 +32,6 @@ package org.scijava.parsington;
 import static org.scijava.parsington.Operator.Associativity.LEFT;
 import static org.scijava.parsington.Operator.Associativity.RIGHT;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,6 +55,8 @@ import org.scijava.parsington.Operator.Associativity;
  * @author Curtis Rueden
  */
 public final class Operators {
+
+	private static final List<Operator> operatorList = new ArrayList<>();
 
 	// -- dot --
 
@@ -168,8 +168,7 @@ public final class Operators {
 	public static final Operator OR_ASSIGN = op("|=", 2, RIGHT, 0);
 	public static final Operator LEFT_SHIFT_ASSIGN = op("<<=", 2, RIGHT, 0);
 	public static final Operator RIGHT_SHIFT_ASSIGN = op(">>=", 2, RIGHT, 0);
-	public static final Operator UNSIGNED_RIGHT_SHIFT_ASSIGN = op(">>>=", 2,
-		RIGHT, 0);
+	public static final Operator UNSIGNED_RIGHT_SHIFT_ASSIGN = op(">>>=", 2, RIGHT, 0);
 
 	private Operators() {
 		// NB: Prevent instantiation of utility class.
@@ -182,19 +181,7 @@ public final class Operators {
 	 *         {@link Operators} class, in declaration order.
 	 */
 	public static List<Operator> standardList() {
-		// Build the standard list from all available Operator constants.
-		final ArrayList<Operator> ops = new ArrayList<>();
-		for (final Field f : Operators.class.getFields()) {
-			if (!isOperator(f)) continue;
-			try {
-				ops.add((Operator) f.get(null));
-			}
-			catch (final IllegalAccessException exc) {
-				// This should never happen.
-				throw new IllegalStateException(exc);
-			}
-		}
-		return ops;
+		return new ArrayList<>(operatorList);
 	}
 
 	// -- Helper methods --
@@ -202,19 +189,17 @@ public final class Operators {
 	private static Operator op(final String symbol, final int arity,
 		final Associativity associativity, final double precedence)
 	{
-		return new Operator(symbol, arity, associativity, precedence);
+		Operator op = new Operator(symbol, arity, associativity, precedence);
+		operatorList.add(op);
+		return op;
 	}
 
 	private static Group group(final String leftSymbol,
 		final String rightSymbol, final double precedence)
 	{
-		return new Group(leftSymbol, rightSymbol, precedence);
-	}
-
-	private static boolean isOperator(final Field f) {
-		final int mods = f.getModifiers();
-		return Modifier.isStatic(mods) && Modifier.isFinal(mods) &&
-			Operator.class.isAssignableFrom(f.getType());
+		Group group = new Group(leftSymbol, rightSymbol, precedence);
+		operatorList.add(group);
+		return group;
 	}
 
 }
