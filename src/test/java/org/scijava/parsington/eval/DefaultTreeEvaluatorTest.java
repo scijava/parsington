@@ -2,8 +2,7 @@
  * #%L
  * Parsington: the SciJava mathematical expression parser.
  * %%
- * Copyright (C) 2015 - 2026 Board of Regents of the University of
- * Wisconsin-Madison.
+ * Copyright (C) 2015 - 2026 Parsington developers.
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
