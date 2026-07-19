@@ -12,7 +12,7 @@
 	<artifactId>parsington</artifactId>
 	<version>3.3.1-SNAPSHOT</version>
 
-	<name>Parsington: The SciJava Expression Parser</name>
+	<name>Parsington</name>
 	<description>A general-purpose mathematical expression parser, which converts infix expression strings into postfix queues and/or syntax trees.</description>
 	<url>https://github.com/scijava/parsington</url>
 	<inceptionYear>2015</inceptionYear>
@@ -91,8 +91,7 @@
 
 		<license.licenseName>bsd_2</license.licenseName>
 		<license.projectName>Parsington: the SciJava mathematical expression parser.</license.projectName>
-		<license.copyrightOwners>Board of Regents of the University of
-Wisconsin-Madison.</license.copyrightOwners>
+		<license.copyrightOwners>Parsington developers.</license.copyrightOwners>
 
 		<!--
 		HACK: Fork the compiler into a separate javac process to avoid
