@@ -167,8 +167,7 @@ public final class Operators {
 	public static final Operator OR_ASSIGN = op("|=", 2, RIGHT, 0);
 	public static final Operator LEFT_SHIFT_ASSIGN = op("<<=", 2, RIGHT, 0);
 	public static final Operator RIGHT_SHIFT_ASSIGN = op(">>=", 2, RIGHT, 0);
-	public static final Operator UNSIGNED_RIGHT_SHIFT_ASSIGN = op(">>>=", 2,
-		RIGHT, 0);
+	public static final Operator UNSIGNED_RIGHT_SHIFT_ASSIGN = op(">>>=", 2, RIGHT, 0);
 
 	private static final List<Operator> operatorList = new ArrayList<>(
 			Arrays.asList(
