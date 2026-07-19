@@ -123,6 +123,8 @@ To evaluate an expression involving basic types:
 Object result = new DefaultTreeEvaluator().evaluate("6.5*7.8^2.3");
 ```
 
+Alternately, you can pass an already-parsed queue or tree to `evaluate`.
+
 ### Interactive console
 
 There is also an [interactive console
