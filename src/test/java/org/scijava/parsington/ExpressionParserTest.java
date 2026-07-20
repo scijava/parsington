@@ -942,6 +942,64 @@ public class ExpressionParserTest extends AbstractTest {
 		assertInvalid(parser, "(()", "Mismatched groups at index 3");
 	}
 
+	/**
+	 * Tests that when the longest operator symbol matching at the current
+	 * position is not valid in the current context, parsing falls back to a
+	 * shorter operator symbol that is.
+	 * <p>
+	 * Operator symbols are matched longest-first, but symbol length is only
+	 * half the story: a candidate must also suit the surrounding context, since
+	 * the same symbol may be prefix, infix and/or postfix. An implementation
+	 * that commits to the longest matching symbol and gives up when that symbol
+	 * does not fit the context will fail to parse expressions like the one
+	 * below, where the longest match ({@code @@}, infix only) appears in prefix
+	 * position and the parser must back off to {@code @}.
+	 * </p>
+	 */
+	@Test
+	public void testShorterOperatorFallback() {
+		final Operator at = new Operator("@", 1, Associativity.RIGHT, 100);
+		final Operator atAt = new Operator("@@", 2, Associativity.LEFT, 100);
+		final List<Operator> operators = Operators.standardList();
+		operators.add(at);
+		operators.add(atAt);
+		final ExpressionParser parser = new ExpressionParser(operators);
+
+		// '@@' is infix only, so in prefix position this is '@' applied twice.
+		final LinkedList<Object> queue = parser.parsePostfix("@@a");
+		// a @ @
+		assertNotNull(queue);
+		assertEquals(3, queue.size());
+		assertVariable("a", queue.pop());
+		assertSame(at, queue.pop());
+		assertSame(at, queue.pop());
+
+		// In infix position the longest match applies, and '@@' wins outright.
+		final LinkedList<Object> infixQueue = parser.parsePostfix("a@@b");
+		// a b @@
+		assertNotNull(infixQueue);
+		assertEquals(3, infixQueue.size());
+		assertVariable("a", infixQueue.pop());
+		assertVariable("b", infixQueue.pop());
+		assertSame(atAt, infixQueue.pop());
+	}
+
+	/**
+	 * Tests that the same fallback happens with the standard operators, where
+	 * backing off to a shorter symbol changes only how far the parser gets
+	 * before failing. Without the fallback, {@code -=} in prefix position is
+	 * rejected outright at index 0, rather than being read as a negation of an
+	 * expression that then turns out to be malformed.
+	 *
+	 * @see #testShorterOperatorFallback()
+	 */
+	@Test
+	public void testShorterOperatorFallbackStandardOperators() {
+		final ExpressionParser parser = new ExpressionParser();
+		assertInvalid(parser, "-=x", "Invalid character at index 1");
+		assertInvalid(parser, "!=x", "Invalid character at index 1");
+	}
+
 	// -- Helper methods --
 
 	private void assertUnary(final ExpressionParser parser, final String var,
