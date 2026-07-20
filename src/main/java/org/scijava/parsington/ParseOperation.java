@@ -32,6 +32,7 @@ package org.scijava.parsington;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.LinkedList;
+import java.util.List;
 
 /** A stateful parsing operation. */
 public class ParseOperation {
@@ -241,7 +242,10 @@ public class ParseOperation {
 	 * @return The parsed operator, or null if the next token is not one.
 	 */
 	protected Operator parseOperator() {
-		for (final Operator op : parser.operators()) {
+		final List<Operator> candidates = //
+			parser.operatorsStartingWith(currentChar());
+		if (candidates == null) return null;
+		for (final Operator op : candidates) {
 			final String symbol = op.getToken();
 			if (operatorMatches(op, symbol)) return op;
 		}
@@ -254,11 +258,12 @@ public class ParseOperation {
 	 * @return The group, or null if the next token is not a group terminator.
 	 */
 	protected Group parseGroupTerminator() {
-		for (final Operator op : parser.operators()) {
-			if (!(op instanceof Group)) continue;
-			final Group group = (Group) op;
+		final List<Group> candidates = //
+			parser.groupsWithTerminatorStartingWith(currentChar());
+		if (candidates == null) return null;
+		for (final Group group : candidates) {
 			final String symbol = group.getTerminator();
-			if (operatorMatches(op, symbol)) return group;
+			if (operatorMatches(group, symbol)) return group;
 		}
 		return null;
 	}

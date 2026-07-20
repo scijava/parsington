@@ -32,8 +32,10 @@ package org.scijava.parsington;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.function.BiFunction;
 
 /**
@@ -57,6 +59,12 @@ public class ExpressionParser {
 	private final String elementSeparator;
 	private final String statementSeparator;
 	private final BiFunction<ExpressionParser, String, ParseOperation> parseOperationFactory;
+
+	/** Operators indexed by the first character of their symbol. */
+	private final Map<Character, List<Operator>> operatorsByFirstChar;
+
+	/** Groups indexed by the first character of their terminator symbol. */
+	private final Map<Character, List<Group>> groupsByTerminatorFirstChar;
 
 	/**
 	 * Creates an expression parser with the standard set of operators and default
@@ -157,6 +165,21 @@ public class ExpressionParser {
 		this.elementSeparator = elementSeparator;
 		this.statementSeparator = statementSeparator;
 		this.parseOperationFactory = parseOperationFactory;
+
+		// NB: Index the operators by leading character, so that parsing can
+		// consider only the handful of operators that could possibly match,
+		// rather than rescanning the entire operator list at every token.
+		// Each bucket preserves the sorted order above, so the operator chosen
+		// is the same one a linear scan of the full list would have found.
+		operatorsByFirstChar = new HashMap<>();
+		groupsByTerminatorFirstChar = new HashMap<>();
+		for (final Operator op : this.operators) {
+			bucket(operatorsByFirstChar, op.getToken()).add(op);
+			if (op instanceof Group) {
+				final Group group = (Group) op;
+				bucket(groupsByTerminatorFirstChar, group.getTerminator()).add(group);
+			}
+		}
 	}
 
 	// -- ExpressionParser methods --
@@ -197,6 +220,26 @@ public class ExpressionParser {
 	}
 
 	/**
+	 * Gets the operators whose symbol begins with the given character, in the
+	 * same relative order as {@link #operators()}.
+	 *
+	 * @return The matching operators, or null if there are none.
+	 */
+	List<Operator> operatorsStartingWith(final char c) {
+		return operatorsByFirstChar.get(c);
+	}
+
+	/**
+	 * Gets the groups whose terminator symbol begins with the given character,
+	 * in the same relative order as {@link #operators()}.
+	 *
+	 * @return The matching groups, or null if there are none.
+	 */
+	List<Group> groupsWithTerminatorStartingWith(final char c) {
+		return groupsByTerminatorFirstChar.get(c);
+	}
+
+	/**
 	 * Separator symbol between group elements. The default symbol is comma
 	 * ({@code ,}). Example: {@code f(1, 2)}
 	 * 
@@ -214,6 +257,15 @@ public class ExpressionParser {
 	 */
 	public String statementSeparator() {
 		return statementSeparator;
+	}
+
+	// -- Helper methods --
+
+	/** Gets the bucket for the given symbol's first character, creating it if needed. */
+	private static <T> List<T> bucket(final Map<Character, List<T>> index,
+		final String symbol)
+	{
+		return index.computeIfAbsent(symbol.charAt(0), c -> new ArrayList<>());
 	}
 
 }
