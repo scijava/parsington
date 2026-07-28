@@ -444,11 +444,8 @@ public final class Literals {
 		final Number octal = parseOctal(s, pos);
 		if (octal != null) return octal;
 
-		final Number decimal = parseDecimal(s, pos);
-		if (decimal != null) return decimal;
-
-		return null;
-	}
+        return parseDecimal(s, pos);
+    }
 
 	/**
 	 * Parses a literal of any known type (booleans, strings and numbers).
@@ -472,11 +469,8 @@ public final class Literals {
 		final String str = parseString(s, pos);
 		if (str != null) return str;
 
-		final Number num = parseNumber(s, pos);
-		if (num != null) return num;
-
-		return null;
-	}
+        return parseNumber(s, pos);
+    }
 
 	// -- Helper methods --
 
@@ -618,8 +612,7 @@ public final class Literals {
 		if (next >= 'a' && next <= 'z') return false;
 		if (next >= 'A' && next <= 'Z') return false;
 		if (next >= '0' && next <= '9') return false;
-		if (next == '_') return false;
-		return true;
-	}
+        return next != '_';
+    }
 
 }

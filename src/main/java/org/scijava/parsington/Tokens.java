@@ -61,7 +61,7 @@ public final class Tokens {
 	}
 
 	public static boolean isCharacter(final Object o, final Character c) {
-		return o instanceof Character && ((Character) o).equals(c);
+		return o instanceof Character && o.equals(c);
 	}
 
 	public static boolean isMatchingGroup(final Object o, final Group g) {

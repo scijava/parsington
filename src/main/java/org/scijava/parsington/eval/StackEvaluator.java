@@ -93,14 +93,14 @@ public interface StackEvaluator extends Evaluator {
 						"nonary" };
 					final String aryName = arity < aryNames.length ? aryNames[arity]
 						: arity + "-ary";
-					message.append(" " + aryName);
+					message.append(" ").append(aryName);
 				}
 				final String type;
 				if (token instanceof Function) type = "function";
 				else if (token instanceof Group) type = "group";
 				else if (token instanceof Operator) type = "operator";
 				else type = "token";
-				message.append(" " + type + ": " + token);
+				message.append(" ").append(type).append(": ").append(token);
 				throw new IllegalArgumentException(message.toString());
 			}
 			stack.push(result);

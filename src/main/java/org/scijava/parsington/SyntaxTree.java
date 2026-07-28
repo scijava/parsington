@@ -143,7 +143,7 @@ public class SyntaxTree implements Iterable<SyntaxTree> {
 
 	private String toString(final String prefix) {
 		final StringBuilder sb = new StringBuilder();
-		sb.append(prefix + " '" + token + "'\n");
+		sb.append(prefix).append(" '").append(token).append("'\n");
 		final String deeperPrefix = " " + prefix + "-";
 		for (int i = 0; i < count(); i++) {
 			sb.append(child(i).toString(deeperPrefix));
