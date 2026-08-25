@@ -301,6 +301,29 @@ public class ExpressionParserTest extends AbstractTest {
 	}
 
 	@Test
+	public void testFlatSum() {
+		final ExpressionParser parser = new ExpressionParser();
+		final LinkedList<Object> queue = parser.parsePostfix("a0+a1+a2+a3+a4+a5+a6+a7");
+		assertNotNull(queue);
+		assertEquals(15, queue.size());
+		assertVariable("a0", queue.pop());
+		assertVariable("a1", queue.pop());
+		assertSame(Operators.ADD, queue.pop());
+		assertVariable("a2", queue.pop());
+		assertSame(Operators.ADD, queue.pop());
+		assertVariable("a3", queue.pop());
+		assertSame(Operators.ADD, queue.pop());
+		assertVariable("a4", queue.pop());
+		assertSame(Operators.ADD, queue.pop());
+		assertVariable("a5", queue.pop());
+		assertSame(Operators.ADD, queue.pop());
+		assertVariable("a6", queue.pop());
+		assertSame(Operators.ADD, queue.pop());
+		assertVariable("a7", queue.pop());
+		assertSame(Operators.ADD, queue.pop());
+	}
+
+	@Test
 	public void testUnaryOperators1() {
 		final ExpressionParser parser = new ExpressionParser();
 		final LinkedList<Object> queue = parser.parsePostfix("-+a");

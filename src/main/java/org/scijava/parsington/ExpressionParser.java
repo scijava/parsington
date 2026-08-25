@@ -151,7 +151,7 @@ public class ExpressionParser {
 
 		// NB: Ensure operators with longer symbols come first.
 		// This prevents e.g. '-' from being matched before '-=' and '--'.
-		Collections.sort(operatorsList, (o1, o2) -> {
+		operatorsList.sort((o1, o2) -> {
 			final String t1 = o1.getToken();
 			final String t2 = o2.getToken();
 			final int len1 = t1.length();

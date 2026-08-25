@@ -29,11 +29,6 @@
 
 package org.scijava.parsington;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 /**
  * Utility methods for parsing literals from strings. These methods largely
  * conform to the Java specification's ideas of what constitutes a numeric or
@@ -42,19 +37,6 @@ import java.util.regex.Pattern;
  * @author Curtis Rueden
  */
 public final class Literals {
-
-	private static final Pattern HEX = Pattern.compile(
-		"(([-+]?)0[Xx]([0-9a-fA-F]+)" +
-			"([Ll]|(\\.[0-9a-fA-F]*)?[Pp]([-+]?)([0-9]+)([DdFf]|)|)).*");
-
-	private static final Pattern BINARY = Pattern.compile(
-		"(([-+]?)0[Bb]([01]+)([Ll]?)).*");
-
-	private static final Pattern OCTAL = Pattern.compile(
-		"(([-+]?)0([0-7]+)([Ll]?)).*");
-
-	private static final Pattern DECIMAL = Pattern.compile(
-		"(([-+]?[0-9]+(\\.[0-9]*)?([Ee][-+]?[0-9]+)?)([DdFfLl])?).*");
 
 	private Literals() {
 		// NB: Prevent instantiation of utility class.
@@ -91,83 +73,6 @@ public final class Literals {
 	}
 
 	/**
-	 * Parses a hexidecimal literal. Both hexadecimal integer (e.g.,
-	 * {@code 0xfedcba9876543210}) and hexidecimal floating point (e.g.,
-	 * {@code 0xfedcba.98765432p10f}) are supported.
-	 *
-	 * @param s The string from which the numeric literal should be parsed.
-	 * @return The parsed numeric value. For hexidecimal integers, returns an
-	 *         {@link Integer} if sufficiently small; or a {@link Long} if needed
-	 *         or if the {@code L} suffix is given; or a {@link BigInteger} if the
-	 *         value is too large even for {@code long}. For hexidecimal floating
-	 *         point, returns a {@link Float} if sufficiently small and the
-	 *         {@code F} suffix is given; or a {@link Double} otherwise (the
-	 *         {@code D} suffix is optional).
-	 */
-	public static Number parseHex(final CharSequence s) {
-		return parseHex(s, new Position());
-	}
-
-	/**
-	 * Parses a binary literal (e.g., {@code 0b010101000011}).
-	 *
-	 * @param s The string from which the numeric literal should be parsed.
-	 * @return The parsed numeric value&mdash;an {@link Integer} if sufficiently
-	 *         small, or a {@link Long} if needed or if the {@code L} suffix is
-	 *         given; or a {@link BigInteger} if the value is too large even for
-	 *         {@code long}.
-	 */
-	public static Number parseBinary(final CharSequence s) {
-		return parseBinary(s, new Position());
-	}
-
-	/**
-	 * Parses an octal literal (e.g., {@code 01234567}).
-	 *
-	 * @param s The string from which the numeric literal should be parsed.
-	 * @return The parsed numeric value&mdash;an {@link Integer} if sufficiently
-	 *         small, or a {@link Long} if needed or if the {@code L} suffix is
-	 *         given; or a {@link BigInteger} if the value is too large even for
-	 *         {@code long}.
-	 */
-	public static Number parseOctal(final CharSequence s) {
-		return parseOctal(s, new Position());
-	}
-
-	/**
-	 * Parses a decimal literal (integer or otherwise; e.g., {@code 1234567890},
-	 * {@code 1234.0987} or {@code 1.2e34}).
-	 *
-	 * @param s The string from which the numeric literal should be parsed.
-	 * @return The parsed numeric value, of a type consistent with Java's support
-	 *         for numeric primitives&mdash;or for values outside the normal range
-	 *         of Java primitives, {@link BigInteger} or {@link BigDecimal} as
-	 *         appropriate. Returns null if the string does not begin with the
-	 *         numeric literal telltale of a 0-9 digit with optional leading sign.
-	 */
-	public static Number parseDecimal(final CharSequence s) {
-		return parseDecimal(s, new Position());
-	}
-
-	/**
-	 * Parses a numeric literal of any known type.
-	 * <p>
-	 * This parsing mechanism is intended to be as close as possible to the
-	 * numeric literals supported by the Java programming language itself.
-	 * </p>
-	 *
-	 * @param s The string from which the numeric literal should be parsed.
-	 * @return The parsed numeric value, of a type consistent with Java's support
-	 *         for numeric primitives&mdash;or for values outside the normal range
-	 *         of Java primitives, {@link BigInteger} or {@link BigDecimal} as
-	 *         appropriate. Returns null if the string does not begin with the
-	 *         numeric literal telltale of a 0-9 digit with optional leading sign.
-	 */
-	public static Number parseNumber(final CharSequence s) {
-		return parseNumber(s, new Position());
-	}
-
-	/**
 	 * Parses a literal of any known type (booleans, strings and numbers).
 	 *
 	 * @param s The string from which the literal should be parsed.
@@ -177,9 +82,9 @@ public final class Literals {
 	 *         not match the syntax of a known literal.
 	 * @see #parseBoolean(CharSequence)
 	 * @see #parseString(CharSequence)
-	 * @see #parseNumber(CharSequence)
+	 * @see ParseNumber#parseAllNumbers(String)
 	 */
-	public static Object parseLiteral(final CharSequence s) {
+	public static Object parseLiteral(final String s) {
 		return parseLiteral(s, new Position());
 	}
 
@@ -195,7 +100,6 @@ public final class Literals {
 	 *         with a boolean literal.
 	 */
 	public static Boolean parseBoolean(final CharSequence s, final Position pos) {
-
 		if (isWord(s, pos, "true")) {
 			pos.inc(4);
 			return Boolean.TRUE;
@@ -295,162 +199,6 @@ public final class Literals {
 	}
 
 	/**
-	 * Parses a hexidecimal literal. Both hexadecimal integer (e.g.,
-	 * {@code 0xfedcba9876543210}) and hexidecimal floating point (e.g.,
-	 * {@code 0xfedcba.98765432p10f}) are supported.
-	 *
-	 * @param s The string from which the numeric literal should be parsed.
-	 * @param pos The offset from which the literal should be parsed. If parsing
-	 *          is successful, the position will be advanced to the next index
-	 *          after the parsed literal.
-	 * @return The parsed numeric value. For hexidecimal integers, returns an
-	 *         {@link Integer} if sufficiently small; or a {@link Long} if needed
-	 *         or if the {@code L} suffix is given; or a {@link BigInteger} if the
-	 *         value is too large even for {@code long}. For hexidecimal floating
-	 *         point, returns a {@link Float} if sufficiently small and the
-	 *         {@code F} suffix is given; or a {@link Double} otherwise (the
-	 *         {@code D} suffix is optional). In either case, returns {@code null}
-	 *         if the string does not begin with the numeric literal telltale of a
-	 *         0-9 digit with optional leading sign.
-	 */
-	public static Number parseHex(final CharSequence s, final Position pos) {
-		if (!isNumberSyntax(s, pos)) return null;
-
-		final Matcher m = matcher(HEX, s, pos);
-		if (!m.matches()) return null;
-		final String sign = m.group(2);    // + or - or nothing
-		final String integer = m.group(3); // hex digits before decimal point
-		final String suffix = m.group(4);  // L or floating point expression
-		final boolean forceLong = "L".equalsIgnoreCase(suffix);
-
-		final Number result;
-		if (forceLong || suffix.isEmpty()) {
-			// Integer notation.
-			final String number = sign + integer;
-			result = parseInteger(number, forceLong, 16);
-		}
-		else {
-			// Floating point notation.
-			final String token = m.group(1);       // entire matched literal
-			//final String mantissa = m.group(5);  // dot & hex digits after decimal point
-			//final String expSign = m.group(6);   // + or - or nothing
-			//final String exp = m.group(7);       // decimal exponent
-			final String expSuffix = m.group(8);   // f or d or nothing
-			final boolean forceFloat = "F".equalsIgnoreCase(expSuffix);
-			final boolean forceDouble = "D".equalsIgnoreCase(expSuffix);
-			// NB: The BigDecimal code does not understand floating point
-			// hex strings, so the following invocation will never produce
-			// a larger-than-double-precision floating point BigDecimal.
-			// It's a convenient way to support float and double precision,
-			// but for BigDecimal support, we would need to process the
-			// matched groups above, converting hex to base 10 first.
-			result = parseDecimal(token, forceFloat, forceDouble);
-		}
-		return verifyResult(result, m, pos);
-	}
-
-	/**
-	 * Parses a binary literal (e.g., {@code 0b010101000011}).
-	 *
-	 * @param s The string from which the numeric literal should be parsed.
-	 * @param pos The offset from which the literal should be parsed. If parsing
-	 *          is successful, the position will be advanced to the next index
-	 *          after the parsed literal.
-	 * @return The parsed numeric value&mdash;an {@link Integer} if sufficiently
-	 *         small, or a {@link Long} if needed or if the {@code L} suffix is
-	 *         given; or a {@link BigInteger} if the value is too large even for
-	 *         {@code long}; or {@code null} if the string does not begin with the
-	 *         numeric literal telltale of a 0-9 digit with optional leading sign.
-	 */
-	public static Number parseBinary(final CharSequence s, final Position pos) {
-		return parseInteger(BINARY, s, pos, 2);
-	}
-
-	/**
-	 * Parses an octal literal (e.g., {@code 01234567}).
-	 *
-	 * @param s The string from which the numeric literal should be parsed.
-	 * @param pos The offset from which the literal should be parsed. If parsing
-	 *          is successful, the position will be advanced to the next index
-	 *          after the parsed literal.
-	 * @return The parsed numeric value&mdash;an {@link Integer} if sufficiently
-	 *         small, or a {@link Long} if needed or if the {@code L} suffix is
-	 *         given; or a {@link BigInteger} if the value is too large even for
-	 *         {@code long}; or {@code null} if the string does not begin with the
-	 *         numeric literal telltale of a 0-9 digit with optional leading sign.
-	 */
-	public static Number parseOctal(final CharSequence s, final Position pos) {
-		return parseInteger(OCTAL, s, pos, 8);
-	}
-
-	/**
-	 * Parses a decimal literal (e.g., {@code 1234.0987} or {@code 1.2e34}).
-	 *
-	 * @param s The string from which the numeric literal should be parsed.
-	 * @param pos The offset from which the literal should be parsed. If parsing
-	 *          is successful, the position will be advanced to the next index
-	 *          after the parsed literal.
-	 * @return The parsed numeric value, of a type consistent with Java's support
-	 *         for numeric primitives&mdash;or for values outside the normal range
-	 *         of Java primitives, {@link BigInteger} or {@link BigDecimal} as
-	 *         appropriate. Returns null if the string does not begin with the
-	 *         numeric literal telltale of a 0-9 digit with optional leading sign.
-	 */
-	public static Number parseDecimal(final CharSequence s, final Position pos) {
-		if (!isNumberSyntax(s, pos)) return null;
-
-		final Matcher m = matcher(DECIMAL, s, pos);
-		if (!m.matches()) return null;
-		final String number = m.group(2);
-		final String force = m.group(5);
-		final boolean forceLong = "l".equalsIgnoreCase(force);
-		final boolean forceFloat = "f".equalsIgnoreCase(force);
-		final boolean forceDouble = "d".equalsIgnoreCase(force);
-		Number result = null;
-		if (m.start(3) < 0 && m.start(4) < 0 && !forceFloat && !forceDouble) {
-			// No decimal point and no exponent part. So this *might* be an integer!
-			result = parseInteger(number, forceLong, 10);
-		}
-		if (result == null && !forceLong) {
-			result = parseDecimal(number, forceFloat, forceDouble);
-		}
-		return verifyResult(result, m, pos);
-	}
-
-	/**
-	 * Parses a numeric literal of any known type.
-	 * <p>
-	 * This parsing mechanism is intended to be as close as possible to the
-	 * numeric literals supported by the Java programming language itself.
-	 * </p>
-	 *
-	 * @param s The string from which the numeric literal should be parsed.
-	 * @param pos The offset from which the literal should be parsed. If parsing
-	 *          is successful, the position will be advanced to the next index
-	 *          after the parsed literal.
-	 * @return The parsed numeric value, of a type consistent with Java's support
-	 *         for numeric primitives&mdash;or for values outside the normal range
-	 *         of Java primitives, {@link BigInteger} or {@link BigDecimal} as
-	 *         appropriate. Returns null if the string does not begin with the
-	 *         numeric literal telltale of a 0-9 digit with optional leading sign.
-	 */
-	public static Number parseNumber(final CharSequence s, final Position pos) {
-		final Number hex = parseHex(s, pos);
-		if (hex != null) return hex;
-
-		final Number binary = parseBinary(s, pos);
-		if (binary != null) return binary;
-
-		final Number octal = parseOctal(s, pos);
-		if (octal != null) return octal;
-
-		final Number decimal = parseDecimal(s, pos);
-		if (decimal != null) return decimal;
-
-		return null;
-	}
-
-	/**
 	 * Parses a literal of any known type (booleans, strings and numbers).
 	 *
 	 * @param s The string from which the literal should be parsed.
@@ -463,19 +211,16 @@ public final class Literals {
 	 *         not match the syntax of a known literal.
 	 * @see #parseBoolean(CharSequence, Position)
 	 * @see #parseString(CharSequence, Position)
-	 * @see #parseNumber(CharSequence, Position)
+	 * @see ParseNumber#parseAllNumbers(String, Position)
 	 */
-	public static Object parseLiteral(final CharSequence s, final Position pos) {
+	public static Object parseLiteral(final String s, final Position pos) {
 		final Boolean bool = parseBoolean(s, pos);
 		if (bool != null) return bool;
 
 		final String str = parseString(s, pos);
 		if (str != null) return str;
 
-		final Number num = parseNumber(s, pos);
-		if (num != null) return num;
-
-		return null;
+		return ParseNumber.parseAllNumbers(s,pos);
 	}
 
 	// -- Helper methods --
@@ -495,122 +240,10 @@ public final class Literals {
 		return '\0'; // NB: Unreachable.
 	}
 
-	private static boolean
-		isNumberSyntax(final CharSequence s, final Position pos)
-	{
-		final int i = pos.get();
-		final boolean sign = s.charAt(i) == '-' || s.charAt(i) == '+';
-		final int digitIndex = sign ? i + 1 : i;
-		if (digitIndex >= s.length()) return false; // at end of string
-		final char digit = s.charAt(digitIndex);
-		return digit >= '0' && digit <= '9';
-	}
-
-	private static Number parseInteger(final Pattern p, final CharSequence s,
-		final Position pos, final int base)
-	{
-		if (!isNumberSyntax(s, pos)) return null;
-
-		final Matcher m = matcher(p, s, pos);
-		if (!m.matches()) return null;
-		final String sign = m.group(2);
-		final String number = sign + m.group(3);
-		final boolean forceLong = !m.group(4).isEmpty();
-		final Number result = parseInteger(number, forceLong, base);
-		return verifyResult(result, m, pos);
-	}
-
-	private static Number parseInteger(final String number,
-		final boolean forceLong, final int base)
-	{
-		if (!forceLong) {
-			// Try to fit it into an int.
-			try {
-				return Integer.parseInt(number, base);
-			}
-			catch (final NumberFormatException exc) {
-				// NB: No action needed.
-			}
-		}
-
-		// Try to fit it into a long.
-		try {
-			return Long.parseLong(number, base);
-		}
-		catch (final NumberFormatException exc) {
-			// NB: No action needed.
-		}
-
-		if (!forceLong) {
-			// Try to treat it as a BigInteger.
-			try {
-				return new BigInteger(number, base);
-			}
-			catch (final NumberFormatException exc) {
-				// NB: No action needed.
-			}
-		}
-
-		return null;
-	}
-
-	private static Number parseDecimal(final String number,
-		final boolean forceFloat, final boolean forceDouble)
-	{
-		if (forceFloat) {
-			// Try to fit it into a flaot.
-			try {
-				return Float.parseFloat(number);
-			}
-			catch (final NumberFormatException exc) {
-				// NB: No action needed.
-			}
-		}
-		else {
-			// Try to fit it into a double.
-			try {
-				return Double.parseDouble(number);
-			}
-			catch (final NumberFormatException exc) {
-				// NB: No action needed.
-			}
-		}
-
-		if (!forceDouble && !forceFloat) {
-			// Try to treat it as a BigDecimal.
-			try {
-				return new BigDecimal(number);
-			}
-			catch (final NumberFormatException exc) {
-				// NB: No action needed.
-			}
-		}
-
-		return null;
-	}
-
-	private static Matcher matcher(final Pattern p, final CharSequence s,
-		final Position pos)
-	{
-		return p.matcher(sub(s, pos));
-	}
-
-	private static CharSequence sub(final CharSequence s, final Position pos) {
-		return pos.get() == 0 ? s : new SubSequence(s, pos.get());
-	}
-
-	private static Number verifyResult(final Number result, final Matcher m,
-		final Position pos)
-	{
-		if (result == null) pos.die("Illegal numeric literal");
-		pos.inc(m.group(1).length());
-		return result;
-	}
-
 	private static boolean isWord(final CharSequence s, final Position pos,
 		final String word)
 	{
-		if (s.length() - pos.get() < word.length()) return false;
+		// not needed since pos.ch will return 0 for out of bounds requests. if (s.length() - pos.get() < word.length()) return false;
 		for (int i=0; i<word.length(); i++) {
 			if (pos.ch(s, i) != word.charAt(i)) return false;
 		}
@@ -618,8 +251,7 @@ public final class Literals {
 		if (next >= 'a' && next <= 'z') return false;
 		if (next >= 'A' && next <= 'Z') return false;
 		if (next >= '0' && next <= '9') return false;
-		if (next == '_') return false;
-		return true;
-	}
+        return next != '_';
+    }
 
 }

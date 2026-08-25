@@ -35,10 +35,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-import org.scijava.parsington.ExpressionParser;
-import org.scijava.parsington.Literals;
-import org.scijava.parsington.Tokens;
-import org.scijava.parsington.Variable;
+import org.scijava.parsington.*;
 
 /**
  * Base class for {@link StandardEvaluator} implementations on <em>common
@@ -582,7 +579,7 @@ public abstract class AbstractStandardEvaluator extends AbstractEvaluator
 	/** Coerces the given value to a number. */
 	private Number num(final Object v) {
 		final Number n = cast(v, Number.class);
-		return n != null ? n : Literals.parseNumber(v.toString());
+		return n != null ? n : ParseNumber.parseAllNumbers(v.toString());
 	}
 
 	private int i(final Object v) { return num(v).intValue(); }
