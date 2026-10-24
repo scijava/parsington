@@ -5,6 +5,7 @@
 /.project
 /.classpath
 /.settings/
+/.factorypath
 
 # IntelliJ #
 /.idea/
