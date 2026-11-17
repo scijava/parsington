@@ -127,7 +127,9 @@ public final class Expressions {
 			/** Boolean comparison and logic. */
 			BOOLEAN("3<5 && 2>=2 || 1==0"),
 			/** Mix of variables, decimals, groups and division. */
-			MIXED("(a + 2.5) * (b - 1.5) / 2");
+			MIXED("(a + 2.5) * (b - 1.5) / 2"),
+			/** Assignment, shift and bitwise operators, which are rarer in practice. */
+			LATE_OPERATORS("(x = 7) + (x += 3) + (x -= 2) + (x <<= 1) + (x >>= 2) + (x | 3) + (x & 5)");
 
 		private final String expression;
 
