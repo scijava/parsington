@@ -37,7 +37,6 @@ import static org.scijava.parsington.compiler.Opcodes.RETURN;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -59,7 +58,6 @@ final class Compilation {
 
 	private final Map<Operator, Rule> rules;
 
-	private final Map<SyntaxTree, Type> types = new IdentityHashMap<>();
 	private final Map<String, Integer> slots = new HashMap<>();
 	private final List<String> varNames = new ArrayList<>();
 	private final List<Type> varTypes = new ArrayList<>();
@@ -79,8 +77,9 @@ final class Compilation {
 
 	/** Compiles the given tree into a finished program. */
 	CompiledExpression compile(final SyntaxTree tree) {
-		final Type type = type(tree);
-		emit(tree, type);
+		final Node root = new Node(tree);
+		final Type type = type(root);
+		emit(root, type);
 		op(RETURN);
 		return new CompiledExpression(Arrays.copyOf(code, pc), //
 			Arrays.copyOf(constants, constantCount), maxDepth, //
@@ -90,17 +89,13 @@ final class Compilation {
 	// -- Typing --
 
 	/** Gets the result type of the given tree, inferring it if needed. */
-	Type type(final SyntaxTree tree) {
-		Type type = types.get(tree);
-		if (type == null) {
-			type = inferType(tree);
-			types.put(tree, type);
-		}
-		return type;
+	Type type(final Node tree) {
+		if (tree.type == null) tree.type = inferType(tree);
+		return tree.type;
 	}
 
 	/** Gets the result type of the given tree, which must be numeric. */
-	Type numericType(final SyntaxTree tree) {
+	Type numericType(final Node tree) {
 		final Type type = type(tree);
 		if (!type.isNumeric()) throw unsupported(tree, type);
 		return type;
@@ -110,7 +105,7 @@ final class Compilation {
 	 * Gets the common numeric type of the given trees: {@link Type#DOUBLE} if
 	 * either is a double, or {@link Type#LONG} otherwise.
 	 */
-	Type numericType(final SyntaxTree a, final SyntaxTree b) {
+	Type numericType(final Node a, final Node b) {
 		final Type ta = numericType(a), tb = numericType(b);
 		return ta == Type.DOUBLE || tb == Type.DOUBLE ? Type.DOUBLE : Type.LONG;
 	}
@@ -121,7 +116,7 @@ final class Compilation {
 	}
 
 	/** Creates an exception describing an operand of an unsupported type. */
-	static IllegalArgumentException unsupported(final SyntaxTree tree,
+	static IllegalArgumentException unsupported(final Node tree,
 		final Type type)
 	{
 		return new IllegalArgumentException("Unsupported " + type + " operand: " +
@@ -131,7 +126,7 @@ final class Compilation {
 	// -- Variables --
 
 	/** Gets the name of the variable at the root of the given tree. */
-	static String variableName(final SyntaxTree tree) {
+	static String variableName(final Node tree) {
 		if (!Tokens.isVariable(tree.token())) {
 			throw new IllegalArgumentException("Not a variable: " + tree.token());
 		}
@@ -166,7 +161,7 @@ final class Compilation {
 	// -- Code generation --
 
 	/** Emits instructions which leave the tree's result on the stack as the given type. */
-	void emit(final SyntaxTree tree, final Type as) {
+	void emit(final Node tree, final Type as) {
 		final Type type = type(tree);
 		final Object token = tree.token();
 		if (isParens(tree)) {
@@ -265,7 +260,7 @@ final class Compilation {
 
 	// -- Helper methods --
 
-	private Type inferType(final SyntaxTree tree) {
+	private Type inferType(final Node tree) {
 		final Object token = tree.token();
 		if (isParens(tree)) return type(tree.child(0));
 		if (Tokens.isVariable(token)) {
@@ -291,9 +286,9 @@ final class Compilation {
 		return type;
 	}
 
-	private static boolean isParens(final SyntaxTree tree) {
+	private static boolean isParens(final Node tree) {
 		return Tokens.isMatchingGroup(tree.token(), Operators.PARENS) &&
-			tree.count() == 1;
+			tree.tree.count() == 1;
 	}
 
 	private void ensureCapacity(final int count) {
@@ -303,5 +298,42 @@ final class Compilation {
 	private void adjustDepth(final int delta) {
 		depth += delta;
 		if (depth > maxDepth) maxDepth = depth;
+	}
+
+	// -- Helper classes --
+
+	/**
+	 * A node of the {@link SyntaxTree} being compiled, annotated with its
+	 * inferred type.
+	 * <p>
+	 * NB: Storing the type here, rather than in a map keyed on the original
+	 * {@link SyntaxTree} nodes, avoids computing an identity hash code for
+	 * every freshly parsed node, which proved to be a large share of the cost
+	 * of compilation.
+	 * </p>
+	 */
+	static final class Node {
+
+		private final SyntaxTree tree;
+		private final Node[] children;
+		private Type type;
+
+		private Node(final SyntaxTree tree) {
+			this.tree = tree;
+			children = new Node[tree.count()];
+		}
+
+		/** Gets the token at the root of this node. */
+		Object token() {
+			return tree.token();
+		}
+
+		/** Gets the child node at the given index. */
+		Node child(final int index) {
+			if (children[index] == null) {
+				children[index] = new Node(tree.child(index));
+			}
+			return children[index];
+		}
 	}
 }

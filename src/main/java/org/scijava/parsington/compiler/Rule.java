@@ -29,7 +29,7 @@
 
 package org.scijava.parsington.compiler;
 
-import org.scijava.parsington.SyntaxTree;
+import org.scijava.parsington.compiler.Compilation.Node;
 
 /**
  * Compiles syntax trees rooted at a particular operator.
@@ -50,7 +50,7 @@ interface Rule {
 	 * @return The result type.
 	 * @throws IllegalArgumentException If the operand types are not supported.
 	 */
-	Type type(Compilation c, SyntaxTree tree);
+	Type type(Compilation c, Node tree);
 
 	/**
 	 * Emits instructions which leave the tree's result on the stack.
@@ -59,5 +59,5 @@ interface Rule {
 	 * @param tree The tree whose root token is this rule's operator.
 	 * @param type The result type, as previously computed by {@link #type}.
 	 */
-	void emit(Compilation c, SyntaxTree tree, Type type);
+	void emit(Compilation c, Node tree, Type type);
 }

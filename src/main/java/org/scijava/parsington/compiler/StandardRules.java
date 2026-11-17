@@ -36,7 +36,7 @@ import java.util.Map;
 
 import org.scijava.parsington.Operator;
 import org.scijava.parsington.Operators;
-import org.scijava.parsington.SyntaxTree;
+import org.scijava.parsington.compiler.Compilation.Node;
 
 /**
  * {@link Rule}s for the {@link Operators standard operators}.
@@ -185,7 +185,7 @@ final class StandardRules {
 		}
 
 		@Override
-		public Type type(final Compilation c, final SyntaxTree tree) {
+		public Type type(final Compilation c, final Node tree) {
 			final Type a = c.type(tree.child(0)), b = c.type(tree.child(1));
 			final Type type = arith.type(a, b);
 			if (type == null) throw unsupported(tree, a, b);
@@ -193,7 +193,7 @@ final class StandardRules {
 		}
 
 		@Override
-		public void emit(final Compilation c, final SyntaxTree tree,
+		public void emit(final Compilation c, final Node tree,
 			final Type type)
 		{
 			c.emit(tree.child(0), type);
@@ -212,7 +212,7 @@ final class StandardRules {
 		}
 
 		@Override
-		public Type type(final Compilation c, final SyntaxTree tree) {
+		public Type type(final Compilation c, final Node tree) {
 			final Type var = c.variableType(Compilation.variableName(tree.child(0)));
 			final Type b = c.type(tree.child(1));
 			final Type type = arith.type(var, b);
@@ -222,7 +222,7 @@ final class StandardRules {
 		}
 
 		@Override
-		public void emit(final Compilation c, final SyntaxTree tree,
+		public void emit(final Compilation c, final Node tree,
 			final Type var)
 		{
 			final int slot = c.slot(Compilation.variableName(tree.child(0)));
@@ -247,7 +247,7 @@ final class StandardRules {
 		}
 
 		@Override
-		public Type type(final Compilation c, final SyntaxTree tree) {
+		public Type type(final Compilation c, final Node tree) {
 			final Type a = c.type(tree.child(0)), b = c.type(tree.child(1));
 			// NB: Booleans compare as 0 and 1, consistent with Boolean#compareTo.
 			if (a != b && !isNumeric(a, b)) throw unsupported(tree, a, b);
@@ -255,7 +255,7 @@ final class StandardRules {
 		}
 
 		@Override
-		public void emit(final Compilation c, final SyntaxTree tree,
+		public void emit(final Compilation c, final Node tree,
 			final Type type)
 		{
 			final Type a = c.type(tree.child(0)), b = c.type(tree.child(1));
@@ -280,7 +280,7 @@ final class StandardRules {
 		}
 
 		@Override
-		public Type type(final Compilation c, final SyntaxTree tree) {
+		public Type type(final Compilation c, final Node tree) {
 			final Type type = c.type(tree.child(0));
 			if (type != type1 && type != type2) {
 				throw Compilation.unsupported(tree, type);
@@ -289,7 +289,7 @@ final class StandardRules {
 		}
 
 		@Override
-		public void emit(final Compilation c, final SyntaxTree tree,
+		public void emit(final Compilation c, final Node tree,
 			final Type type)
 		{
 			c.emit(tree.child(0), type);
@@ -310,14 +310,14 @@ final class StandardRules {
 		}
 
 		@Override
-		public Type type(final Compilation c, final SyntaxTree tree) {
+		public Type type(final Compilation c, final Node tree) {
 			final Type type = c.variableType(Compilation.variableName(tree.child(0)));
 			if (!type.isNumeric()) throw Compilation.unsupported(tree, type);
 			return type;
 		}
 
 		@Override
-		public void emit(final Compilation c, final SyntaxTree tree,
+		public void emit(final Compilation c, final Node tree,
 			final Type type)
 		{
 			final int slot = c.slot(Compilation.variableName(tree.child(0)));
@@ -340,14 +340,14 @@ final class StandardRules {
 		}
 
 		@Override
-		public Type type(final Compilation c, final SyntaxTree tree) {
+		public Type type(final Compilation c, final Node tree) {
 			final Type a = c.type(tree.child(0)), b = c.type(tree.child(1));
 			if (a != Type.BOOLEAN || b != Type.BOOLEAN) throw unsupported(tree, a, b);
 			return Type.BOOLEAN;
 		}
 
 		@Override
-		public void emit(final Compilation c, final SyntaxTree tree,
+		public void emit(final Compilation c, final Node tree,
 			final Type type)
 		{
 			// a && b: if (!a) false else b
@@ -368,8 +368,8 @@ final class StandardRules {
 	private static final class Ternary implements Rule {
 
 		@Override
-		public Type type(final Compilation c, final SyntaxTree tree) {
-			final SyntaxTree branches = tree.child(1);
+		public Type type(final Compilation c, final Node tree) {
+			final Node branches = tree.child(1);
 			if (branches.token() != Operators.COLON) {
 				throw new IllegalArgumentException("Invalid ternary operator syntax");
 			}
@@ -384,10 +384,10 @@ final class StandardRules {
 		}
 
 		@Override
-		public void emit(final Compilation c, final SyntaxTree tree,
+		public void emit(final Compilation c, final Node tree,
 			final Type type)
 		{
-			final SyntaxTree branches = tree.child(1);
+			final Node branches = tree.child(1);
 			c.emit(tree.child(0), Type.BOOLEAN);
 			final int otherwise = c.jump(JZ);
 			final int depth = c.depth();
@@ -407,7 +407,7 @@ final class StandardRules {
 	private static final class Assign implements Rule {
 
 		@Override
-		public Type type(final Compilation c, final SyntaxTree tree) {
+		public Type type(final Compilation c, final Node tree) {
 			final String name = Compilation.variableName(tree.child(0));
 			final Type value = c.type(tree.child(1));
 			if (c.slot(name) < 0) c.declare(name, value);
@@ -417,7 +417,7 @@ final class StandardRules {
 		}
 
 		@Override
-		public void emit(final Compilation c, final SyntaxTree tree,
+		public void emit(final Compilation c, final Node tree,
 			final Type var)
 		{
 			c.emit(tree.child(1), var);
@@ -425,7 +425,7 @@ final class StandardRules {
 		}
 	}
 
-	private static void checkAssignable(final SyntaxTree tree, final Type from,
+	private static void checkAssignable(final Node tree, final Type from,
 		final Type to)
 	{
 		if (Compilation.isAssignable(from, to)) return;
@@ -433,7 +433,7 @@ final class StandardRules {
 			" variable via " + tree.token());
 	}
 
-	private static IllegalArgumentException unsupported(final SyntaxTree tree,
+	private static IllegalArgumentException unsupported(final Node tree,
 		final Type a, final Type b)
 	{
 		return new IllegalArgumentException("Unsupported operand types for " +
