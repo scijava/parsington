@@ -83,11 +83,29 @@ public class LiteralsTest extends AbstractTest {
 		assertEquals("\123", Literals.parseString("\"\\123\""));
 		assertEquals("\377", Literals.parseString("\"\\377\""));
 		assertEquals("\1234", Literals.parseString("\"\\1234\""));
+		// Test escape sequences adjacent to the closing quote.
+		assertEquals("ab\"", Literals.parseString("\"ab\\\"\""));
+		assertEquals("ab\\", Literals.parseString("\"ab\\\\\""));
+		assertEquals("ab\u9654", Literals.parseString("\"ab\\u9654\""));
+		assertEquals("ab\12", Literals.parseString("\"ab\\12\""));
+		// Test consecutive escape sequences with surrounding text.
+		assertEquals("\"\n\u9654\0x", Literals.parseString("\"\\\"\\n\\u9654\\0x\""));
+		assertEquals("a\12b\1c", Literals.parseString("\"a\\12b\\1c\""));
+		// Test empty strings.
+		assertEquals("", Literals.parseString("''"));
+		assertEquals("", Literals.parseString("\"\""));
+		// Test that single-quoted strings are verbatim.
+		assertEquals("a\\nb\\", Literals.parseString("'a\\nb\\'"));
+		assertEquals("a\"b", Literals.parseString("'a\"b'"));
+		assertEquals("a'b", Literals.parseString("\"a'b\""));
 		// Test position
 		final Position pos = new Position();
 		pos.set(2);
 		assertEquals("cde", Literals.parseString("ab'cde'fg", pos));
 		assertEquals(7, pos.get());
+		pos.set(2);
+		assertEquals("c\"d\te", Literals.parseString("ab\"c\\\"d\\te\"fg", pos));
+		assertEquals(11, pos.get());
 	}
 
 	@Test
