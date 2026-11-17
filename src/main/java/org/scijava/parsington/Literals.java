@@ -231,7 +231,8 @@ public final class Literals {
 
 		boolean escaped = false;
 		final StringBuilder sb = new StringBuilder();
-		int startIndex = index;
+		// NB: Unescaped characters are appended in bulk, one segment at a time.
+		int start = index;
 		while (true) {
 			if (index >= s.length()) pos.die("Unclosed string literal");
 			final char c = s.charAt(index);
@@ -250,7 +251,7 @@ public final class Literals {
 					}
 					sb.append((char) Integer.parseInt(octal, 8));
 					index += octal.length();
-					startIndex = index;
+					start = index;
 					continue;
 				}
 				switch (c) {
@@ -286,18 +287,14 @@ public final class Literals {
 					default: // invalid escape
 						pos.die("Invalid escape sequence");
 				}
-				startIndex = index+1;
+				start = index + 1;
 			}
 			else if (c == '\\' && quote == '"') {
+				sb.append(s, start, index); // verbatim chars before the escape
 				escaped = true;
-				if (index - startIndex > 0) {
-					sb.append(s, startIndex, index); // before the escape
-				}
-				startIndex = -1;
-			} else if (c == quote) {
-				if (startIndex != -1 && index - startIndex > 0) {
-					sb.append(s, startIndex, index); // last segment
-				}
+			}
+			else if (c == quote) {
+				sb.append(s, start, index); // verbatim chars before the quote
 				break;
 			}
 			index++;
