@@ -226,7 +226,7 @@ public class ParseOperation {
 	}
 
 	/**
-	 * Determines whether the given character is allowed to start an identifier.
+	 * Determines whether the given character is allowed within an identifier.
 	 * <p>
 	 * The default implementation uses
 	 * {@link Character#isUnicodeIdentifierPart(char)}.
