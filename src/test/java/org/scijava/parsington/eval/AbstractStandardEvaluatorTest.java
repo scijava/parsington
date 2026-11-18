@@ -45,7 +45,7 @@ import java.util.function.Consumer;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.scijava.parsington.Operators;
+import org.scijava.parsington.StandardOperator;
 import org.scijava.parsington.SyntaxTree;
 import org.scijava.parsington.Variable;
 
@@ -90,7 +90,7 @@ public abstract class AbstractStandardEvaluatorTest extends AbstractEvaluatorTes
 	 */
 	@Test
 	public void testBuiltIns() {
-		final Object[] o = {1, 2, 3, Operators.MUL, Operators.ADD};
+		final Object[] o = {1, 2, 3, StandardOperator.MUL, StandardOperator.ADD};
 		final List<Object> postfix = Arrays.asList(o);
 		assertEquals(postfix, e.evaluate("postfix('1+2*3')"));
 		final SyntaxTree tree = new SyntaxTree(new LinkedList<>(postfix));

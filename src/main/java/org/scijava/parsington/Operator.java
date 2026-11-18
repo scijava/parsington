@@ -36,24 +36,24 @@ package org.scijava.parsington;
  * prefix (preceding the noun) or postfix (following the noun).
  *
  * @author Curtis Rueden
+ * @see StandardOperator
  */
-public class Operator extends Token implements Comparable<Operator> {
+public interface Operator extends Token {
+
+	static Operator create(final String symbol, final int arity,
+		final Associativity associativity, final double precedence)
+	{
+		return new Operator() {
+			@Override public String getToken() { return symbol; }
+			@Override public int getArity() { return arity; }
+			@Override public Associativity getAssociativity() { return associativity; }
+			@Override public double getPrecedence() { return precedence; }
+			@Override public String toString() { return getToken(); }
+		};
+	}
 
 	public enum Associativity {
 		EITHER, LEFT, RIGHT, NONE
-	}
-
-	private final int arity;
-	private final Associativity associativity;
-	private final double precedence;
-
-	public Operator(final String symbol, final int arity,
-		final Associativity associativity, final double precedence)
-	{
-		super(symbol);
-		this.arity = arity;
-		this.associativity = associativity;
-		this.precedence = precedence;
 	}
 
 	// -- Operator methods --
@@ -63,9 +63,7 @@ public class Operator extends Token implements Comparable<Operator> {
 	 * 
 	 * @return The arity of the operator: 1 for unary, 2 for binary, etc.
 	 */
-	public int getArity() {
-		return arity;
-	}
+	int getArity();
 
 	/**
 	 * Gets the operator's associativity.
@@ -73,9 +71,7 @@ public class Operator extends Token implements Comparable<Operator> {
 	 * @return One of {@link Associativity#EITHER}, {@link Associativity#LEFT},
 	 *         {@link Associativity#RIGHT}, or {@link Associativity#NONE}.
 	 */
-	public Associativity getAssociativity() {
-		return associativity;
-	}
+	Associativity getAssociativity();
 
 	/**
 	 * Gets whether the operator is left associative.
@@ -83,7 +79,7 @@ public class Operator extends Token implements Comparable<Operator> {
 	 * @return True iff the operator's associativity is {@link Associativity#LEFT}
 	 *         or {@link Associativity#EITHER}.
 	 */
-	public boolean isLeftAssociative() {
+	default boolean isLeftAssociative() {
 		final Associativity a = getAssociativity();
 		return a == Associativity.LEFT || a == Associativity.EITHER;
 	}
@@ -94,7 +90,7 @@ public class Operator extends Token implements Comparable<Operator> {
 	 * @return True iff the operator's associativity is
 	 *         {@link Associativity#RIGHT} or {@link Associativity#EITHER}.
 	 */
-	public boolean isRightAssociative() {
+	default boolean isRightAssociative() {
 		final Associativity a = getAssociativity();
 		return a == Associativity.RIGHT || a == Associativity.EITHER;
 	}
@@ -104,7 +100,7 @@ public class Operator extends Token implements Comparable<Operator> {
 	 * 
 	 * @return True iff the operator is an infix operator.
 	 */
-	public boolean isInfix() {
+	default boolean isInfix() {
 		return getArity() > 1;
 	}
 
@@ -113,7 +109,7 @@ public class Operator extends Token implements Comparable<Operator> {
 	 * 
 	 * @return True iff the operator is a prefix operator.
 	 */
-	public boolean isPrefix() {
+	default boolean isPrefix() {
 		return getArity() == 1 && isRightAssociative();
 	}
 
@@ -122,7 +118,7 @@ public class Operator extends Token implements Comparable<Operator> {
 	 * 
 	 * @return True iff the operator is a postfix operator.
 	 */
-	public boolean isPostfix() {
+	default boolean isPostfix() {
 		return getArity() == 1 && isLeftAssociative();
 	}
 
@@ -131,9 +127,7 @@ public class Operator extends Token implements Comparable<Operator> {
 	 * 
 	 * @return The operator precedence.
 	 */
-	public double getPrecedence() {
-		return precedence;
-	}
+	double getPrecedence();
 
 	/**
 	 * Gets an instance of the operator, using this one as a template.
@@ -144,19 +138,9 @@ public class Operator extends Token implements Comparable<Operator> {
 	 * 
 	 * @return {@code this} or a new instance, depending on the type of operator.
 	 */
-	public Operator instance() {
+	default Operator instance() {
 		// NB: Properties are immutable, so instance can be reused.
 		return this;
-	}
-
-	// -- Comparable methods --
-
-	@Override
-	public int compareTo(final Operator that) {
-		final double thisP = getPrecedence();
-		final double thatP = that.getPrecedence();
-		if (thisP == thatP) return 0;
-		return thisP < thatP ? -1 : 1;
 	}
 
 }

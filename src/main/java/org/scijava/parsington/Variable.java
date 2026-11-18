@@ -34,10 +34,24 @@ package org.scijava.parsington;
  *
  * @author Curtis Rueden
  */
-public class Variable extends Token {
+public class Variable implements Token {
+
+	private final String token;
 
 	public Variable(final String token) {
-		super(token);
+		this.token = token;
+	}
+
+	@Override
+	public String getToken() {
+		return token;
+	}
+
+	// -- Object methods --
+
+	@Override
+	public String toString() {
+		return getToken();
 	}
 
 }

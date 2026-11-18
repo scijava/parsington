@@ -30,40 +30,24 @@
 package org.scijava.parsington;
 
 /**
- * Base class for various types of tokens: operators, groups, functions and
+ * Interface for various types of tokens: operators, groups, functions and
  * variables.
  * <p>
  * The only exception are literals, which use the standard Java types of
- * {@link String}, {@link Boolean} and {@link Number} rather than extending this
- * class.
+ * {@link String}, {@link Boolean} and {@link Number} rather than implementing
+ * this interface.
  * </p>
  *
  * @author Curtis Rueden
+ * @see AbstractToken
  */
-public abstract class Token {
-
-	private final String token;
-
-	public Token(final String token) {
-		this.token = token;
-	}
-
-	// -- Token methods --
+public interface Token {
 
 	/**
 	 * Gets the token's sequence of characters.
 	 * 
 	 * @return The token's character sequence.
 	 */
-	public String getToken() {
-		return token;
-	}
-
-	// -- Object methods --
-
-	@Override
-	public String toString() {
-		return getToken();
-	}
+	String getToken();
 
 }

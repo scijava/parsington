@@ -37,9 +37,24 @@ import org.scijava.parsington.Token;
  * @author Curtis Rueden
  * @see Evaluator#setStrict(boolean)
  */
-public class Unresolved extends Token {
+public class Unresolved implements Token {
+
+	private final String token;
 
 	public Unresolved(final String token) {
-		super(token);
+		this.token = token;
 	}
+
+	@Override
+	public String getToken() {
+		return token;
+	}
+
+	// -- Object methods --
+
+	@Override
+	public String toString() {
+		return getToken();
+	}
+
 }

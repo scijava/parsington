@@ -31,12 +31,12 @@ package org.scijava.parsington.eval;
 
 import org.scijava.parsington.Function;
 import org.scijava.parsington.Operator;
-import org.scijava.parsington.Operators;
+import org.scijava.parsington.StandardOperator;
 import org.scijava.parsington.Tokens;
 import org.scijava.parsington.Variable;
 
 /**
- * Interface for expression evaluators which support the {@link Operators
+ * Interface for expression evaluators which support the {@link StandardOperator
  * standard operators}.
  *
  * @author Curtis Rueden
@@ -57,7 +57,7 @@ public interface StandardEvaluator extends Evaluator {
 	// -- dot --
 
 	/**
-	 * Applies the {@link Operators#DOT} operator.
+	 * Applies the {@link StandardOperator#DOT} operator.
 	 * 
 	 * @param a The first argument.
 	 * @param b The second argument.
@@ -68,7 +68,7 @@ public interface StandardEvaluator extends Evaluator {
 	// -- groups --
 
 	/**
-	 * Applies the {@link Operators#PARENS} operator.
+	 * Applies the {@link StandardOperator#PARENS} operator.
 	 * 
 	 * @param args The arguments.
 	 * @return The result of the operation.
@@ -76,7 +76,7 @@ public interface StandardEvaluator extends Evaluator {
 	Object parens(Object... args);
 
 	/**
-	 * Applies the {@link Operators#BRACKETS} operator.
+	 * Applies the {@link StandardOperator#BRACKETS} operator.
 	 * 
 	 * @param args The arguments.
 	 * @return The result of the operation.
@@ -84,7 +84,7 @@ public interface StandardEvaluator extends Evaluator {
 	Object brackets(Object... args);
 
 	/**
-	 * Applies the {@link Operators#BRACES} operator.
+	 * Applies the {@link StandardOperator#BRACES} operator.
 	 * 
 	 * @param args The arguments.
 	 * @return The result of the operation.
@@ -94,7 +94,7 @@ public interface StandardEvaluator extends Evaluator {
 	// -- transpose, power --
 
 	/**
-	 * Applies the {@link Operators#TRANSPOSE} operator.
+	 * Applies the {@link StandardOperator#TRANSPOSE} operator.
 	 * 
 	 * @param a The argument.
 	 * @return The result of the operation.
@@ -102,7 +102,7 @@ public interface StandardEvaluator extends Evaluator {
 	Object transpose(Object a);
 
 	/**
-	 * Applies the {@link Operators#DOT_TRANSPOSE} operator.
+	 * Applies the {@link StandardOperator#DOT_TRANSPOSE} operator.
 	 * 
 	 * @param a The argument.
 	 * @return The result of the operation.
@@ -110,7 +110,7 @@ public interface StandardEvaluator extends Evaluator {
 	Object dotTranspose(Object a);
 
 	/**
-	 * Applies the {@link Operators#POW} operator.
+	 * Applies the {@link StandardOperator#POW} operator.
 	 * 
 	 * @param a The first argument.
 	 * @param b The second argument.
@@ -119,7 +119,7 @@ public interface StandardEvaluator extends Evaluator {
 	Object pow(Object a, Object b);
 
 	/**
-	 * Applies the {@link Operators#DOT_POW} operator.
+	 * Applies the {@link StandardOperator#DOT_POW} operator.
 	 * 
 	 * @param a The first argument.
 	 * @param b The second argument.
@@ -130,7 +130,7 @@ public interface StandardEvaluator extends Evaluator {
 	// -- postfix --
 
 	/**
-	 * Applies the {@link Operators#POST_INC} operator.
+	 * Applies the {@link StandardOperator#POST_INC} operator.
 	 * 
 	 * @param a The argument.
 	 * @return The result of the operation.
@@ -144,7 +144,7 @@ public interface StandardEvaluator extends Evaluator {
 	}
 
 	/**
-	 * Applies the {@link Operators#POST_DEC} operator.
+	 * Applies the {@link StandardOperator#POST_DEC} operator.
 	 * 
 	 * @param a The argument.
 	 * @return The result of the operation.
@@ -160,7 +160,7 @@ public interface StandardEvaluator extends Evaluator {
 	// -- unary --
 
 	/**
-	 * Applies the {@link Operators#PRE_INC} operator.
+	 * Applies the {@link StandardOperator#PRE_INC} operator.
 	 * 
 	 * @param a The argument.
 	 * @return The result of the operation.
@@ -173,7 +173,7 @@ public interface StandardEvaluator extends Evaluator {
 	}
 
 	/**
-	 * Applies the {@link Operators#PRE_DEC} operator.
+	 * Applies the {@link StandardOperator#PRE_DEC} operator.
 	 * 
 	 * @param a The argument.
 	 * @return The result of the operation.
@@ -186,7 +186,7 @@ public interface StandardEvaluator extends Evaluator {
 	}
 
 	/**
-	 * Applies the {@link Operators#POS} operator.
+	 * Applies the {@link StandardOperator#POS} operator.
 	 * 
 	 * @param a The argument.
 	 * @return The result of the operation.
@@ -194,7 +194,7 @@ public interface StandardEvaluator extends Evaluator {
 	Object pos(Object a);
 
 	/**
-	 * Applies the {@link Operators#NEG} operator.
+	 * Applies the {@link StandardOperator#NEG} operator.
 	 * 
 	 * @param a The argument.
 	 * @return The result of the operation.
@@ -202,7 +202,7 @@ public interface StandardEvaluator extends Evaluator {
 	Object neg(Object a);
 
 	/**
-	 * Applies the {@link Operators#COMPLEMENT} operator.
+	 * Applies the {@link StandardOperator#COMPLEMENT} operator.
 	 * 
 	 * @param a The argument.
 	 * @return The result of the operation.
@@ -210,7 +210,7 @@ public interface StandardEvaluator extends Evaluator {
 	Object complement(Object a);
 
 	/**
-	 * Applies the {@link Operators#NOT} operator.
+	 * Applies the {@link StandardOperator#NOT} operator.
 	 * 
 	 * @param a The argument.
 	 * @return The result of the operation.
@@ -220,7 +220,7 @@ public interface StandardEvaluator extends Evaluator {
 	// -- multiplicative --
 
 	/**
-	 * Applies the {@link Operators#MUL} operator.
+	 * Applies the {@link StandardOperator#MUL} operator.
 	 *
 	 * @param a The first argument.
 	 * @param b The second argument.
@@ -229,7 +229,7 @@ public interface StandardEvaluator extends Evaluator {
 	Object mul(Object a, Object b);
 
 	/**
-	 * Applies the {@link Operators#DIV} operator.
+	 * Applies the {@link StandardOperator#DIV} operator.
 	 *
 	 * @param a The first argument.
 	 * @param b The second argument.
@@ -238,7 +238,7 @@ public interface StandardEvaluator extends Evaluator {
 	Object div(Object a, Object b);
 
 	/**
-	 * Applies the {@link Operators#MOD} operator.
+	 * Applies the {@link StandardOperator#MOD} operator.
 	 *
 	 * @param a The first argument.
 	 * @param b The second argument.
@@ -247,7 +247,7 @@ public interface StandardEvaluator extends Evaluator {
 	Object mod(Object a, Object b);
 
 	/**
-	 * Applies the {@link Operators#RIGHT_DIV} operator.
+	 * Applies the {@link StandardOperator#RIGHT_DIV} operator.
 	 *
 	 * @param a The first argument.
 	 * @param b The second argument.
@@ -256,7 +256,7 @@ public interface StandardEvaluator extends Evaluator {
 	Object rightDiv(Object a, Object b);
 
 	/**
-	 * Applies the {@link Operators#DOT_MUL} operator.
+	 * Applies the {@link StandardOperator#DOT_MUL} operator.
 	 *
 	 * @param a The first argument.
 	 * @param b The second argument.
@@ -265,7 +265,7 @@ public interface StandardEvaluator extends Evaluator {
 	Object dotMul(Object a, Object b);
 
 	/**
-	 * Applies the {@link Operators#DOT_DIV} operator.
+	 * Applies the {@link StandardOperator#DOT_DIV} operator.
 	 *
 	 * @param a The first argument.
 	 * @param b The second argument.
@@ -274,7 +274,7 @@ public interface StandardEvaluator extends Evaluator {
 	Object dotDiv(Object a, Object b);
 
 	/**
-	 * Applies the {@link Operators#DOT_RIGHT_DIV} operator.
+	 * Applies the {@link StandardOperator#DOT_RIGHT_DIV} operator.
 	 *
 	 * @param a The first argument.
 	 * @param b The second argument.
@@ -285,7 +285,7 @@ public interface StandardEvaluator extends Evaluator {
 	// -- additive --
 
 	/**
-	 * Applies the {@link Operators#ADD} operator.
+	 * Applies the {@link StandardOperator#ADD} operator.
 	 *
 	 * @param a The first argument.
 	 * @param b The second argument.
@@ -294,7 +294,7 @@ public interface StandardEvaluator extends Evaluator {
 	Object add(Object a, Object b);
 
 	/**
-	 * Applies the {@link Operators#SUB} operator.
+	 * Applies the {@link StandardOperator#SUB} operator.
 	 *
 	 * @param a The first argument.
 	 * @param b The second argument.
@@ -305,7 +305,7 @@ public interface StandardEvaluator extends Evaluator {
 	// -- shift --
 
 	/**
-	 * Applies the {@link Operators#LEFT_SHIFT} operator.
+	 * Applies the {@link StandardOperator#LEFT_SHIFT} operator.
 	 *
 	 * @param a The first argument.
 	 * @param b The second argument.
@@ -314,7 +314,7 @@ public interface StandardEvaluator extends Evaluator {
 	Object leftShift(Object a, Object b);
 
 	/**
-	 * Applies the {@link Operators#RIGHT_SHIFT} operator.
+	 * Applies the {@link StandardOperator#RIGHT_SHIFT} operator.
 	 *
 	 * @param a The first argument.
 	 * @param b The second argument.
@@ -323,7 +323,7 @@ public interface StandardEvaluator extends Evaluator {
 	Object rightShift(Object a, Object b);
 
 	/**
-	 * Applies the {@link Operators#UNSIGNED_RIGHT_SHIFT} operator.
+	 * Applies the {@link StandardOperator#UNSIGNED_RIGHT_SHIFT} operator.
 	 *
 	 * @param a The first argument.
 	 * @param b The second argument.
@@ -334,7 +334,7 @@ public interface StandardEvaluator extends Evaluator {
 	// -- relational --
 
 	/**
-	 * Applies the {@link Operators#LESS_THAN} operator.
+	 * Applies the {@link StandardOperator#LESS_THAN} operator.
 	 *
 	 * @param a The first argument.
 	 * @param b The second argument.
@@ -343,7 +343,7 @@ public interface StandardEvaluator extends Evaluator {
 	Object lessThan(Object a, Object b);
 
 	/**
-	 * Applies the {@link Operators#GREATER_THAN} operator.
+	 * Applies the {@link StandardOperator#GREATER_THAN} operator.
 	 *
 	 * @param a The first argument.
 	 * @param b The second argument.
@@ -352,7 +352,7 @@ public interface StandardEvaluator extends Evaluator {
 	Object greaterThan(Object a, Object b);
 
 	/**
-	 * Applies the {@link Operators#LESS_THAN_OR_EQUAL} operator.
+	 * Applies the {@link StandardOperator#LESS_THAN_OR_EQUAL} operator.
 	 *
 	 * @param a The first argument.
 	 * @param b The second argument.
@@ -361,7 +361,7 @@ public interface StandardEvaluator extends Evaluator {
 	Object lessThanOrEqual(Object a, Object b);
 
 	/**
-	 * Applies the {@link Operators#GREATER_THAN_OR_EQUAL} operator.
+	 * Applies the {@link StandardOperator#GREATER_THAN_OR_EQUAL} operator.
 	 *
 	 * @param a The first argument.
 	 * @param b The second argument.
@@ -370,7 +370,7 @@ public interface StandardEvaluator extends Evaluator {
 	Object greaterThanOrEqual(Object a, Object b);
 
 	/**
-	 * Applies the {@link Operators#INSTANCEOF} operator.
+	 * Applies the {@link StandardOperator#INSTANCEOF} operator.
 	 *
 	 * @param a The first argument.
 	 * @param b The second argument.
@@ -381,7 +381,7 @@ public interface StandardEvaluator extends Evaluator {
 	// -- equality --
 
 	/**
-	 * Applies the {@link Operators#EQUAL} operator.
+	 * Applies the {@link StandardOperator#EQUAL} operator.
 	 *
 	 * @param a The first argument.
 	 * @param b The second argument.
@@ -390,7 +390,7 @@ public interface StandardEvaluator extends Evaluator {
 	Object equal(Object a, Object b);
 
 	/**
-	 * Applies the {@link Operators#NOT_EQUAL} operator.
+	 * Applies the {@link StandardOperator#NOT_EQUAL} operator.
 	 *
 	 * @param a The first argument.
 	 * @param b The second argument.
@@ -401,7 +401,7 @@ public interface StandardEvaluator extends Evaluator {
 	// -- bitwise --
 
 	/**
-	 * Applies the {@link Operators#BITWISE_AND} operator.
+	 * Applies the {@link StandardOperator#BITWISE_AND} operator.
 	 *
 	 * @param a The first argument.
 	 * @param b The second argument.
@@ -410,7 +410,7 @@ public interface StandardEvaluator extends Evaluator {
 	Object bitwiseAnd(Object a, Object b);
 
 	/**
-	 * Applies the {@link Operators#BITWISE_OR} operator.
+	 * Applies the {@link StandardOperator#BITWISE_OR} operator.
 	 *
 	 * @param a The first argument.
 	 * @param b The second argument.
@@ -421,7 +421,7 @@ public interface StandardEvaluator extends Evaluator {
 	// -- logical --
 
 	/**
-	 * Applies the {@link Operators#LOGICAL_AND} operator.
+	 * Applies the {@link StandardOperator#LOGICAL_AND} operator.
 	 *
 	 * @param a The first argument.
 	 * @param b The second argument.
@@ -430,7 +430,7 @@ public interface StandardEvaluator extends Evaluator {
 	Object logicalAnd(Object a, Object b);
 
 	/**
-	 * Applies the {@link Operators#LOGICAL_OR} operator.
+	 * Applies the {@link StandardOperator#LOGICAL_OR} operator.
 	 *
 	 * @param a The first argument.
 	 * @param b The second argument.
@@ -441,7 +441,7 @@ public interface StandardEvaluator extends Evaluator {
 	// -- ternary --
 
 	/**
-	 * Applies the {@link Operators#QUESTION} operator.
+	 * Applies the {@link StandardOperator#QUESTION} operator.
 	 *
 	 * @param a The first argument.
 	 * @param b The second argument.
@@ -450,7 +450,7 @@ public interface StandardEvaluator extends Evaluator {
 	Object question(Object a, Object b);
 
 	/**
-	 * Applies the {@link Operators#COLON} operator.
+	 * Applies the {@link StandardOperator#COLON} operator.
 	 *
 	 * @param a The first argument.
 	 * @param b The second argument.
@@ -461,7 +461,7 @@ public interface StandardEvaluator extends Evaluator {
 	// -- assignment --
 
 	/**
-	 * Applies the {@link Operators#ASSIGN} operator.
+	 * Applies the {@link StandardOperator#ASSIGN} operator.
 	 *
 	 * @param a The first argument.
 	 * @param b The second argument.
@@ -474,7 +474,7 @@ public interface StandardEvaluator extends Evaluator {
 	}
 
 	/**
-	 * Applies the {@link Operators#POW_ASSIGN} operator.
+	 * Applies the {@link StandardOperator#POW_ASSIGN} operator.
 	 *
 	 * @param a The first argument.
 	 * @param b The second argument.
@@ -485,7 +485,7 @@ public interface StandardEvaluator extends Evaluator {
 	}
 
 	/**
-	 * Applies the {@link Operators#DOT_POW_ASSIGN} operator.
+	 * Applies the {@link StandardOperator#DOT_POW_ASSIGN} operator.
 	 *
 	 * @param a The first argument.
 	 * @param b The second argument.
@@ -496,7 +496,7 @@ public interface StandardEvaluator extends Evaluator {
 	}
 
 	/**
-	 * Applies the {@link Operators#MUL_ASSIGN} operator.
+	 * Applies the {@link StandardOperator#MUL_ASSIGN} operator.
 	 *
 	 * @param a The first argument.
 	 * @param b The second argument.
@@ -507,7 +507,7 @@ public interface StandardEvaluator extends Evaluator {
 	}
 
 	/**
-	 * Applies the {@link Operators#DIV_ASSIGN} operator.
+	 * Applies the {@link StandardOperator#DIV_ASSIGN} operator.
 	 *
 	 * @param a The first argument.
 	 * @param b The second argument.
@@ -518,7 +518,7 @@ public interface StandardEvaluator extends Evaluator {
 	}
 
 	/**
-	 * Applies the {@link Operators#MOD_ASSIGN} operator.
+	 * Applies the {@link StandardOperator#MOD_ASSIGN} operator.
 	 *
 	 * @param a The first argument.
 	 * @param b The second argument.
@@ -529,7 +529,7 @@ public interface StandardEvaluator extends Evaluator {
 	}
 
 	/**
-	 * Applies the {@link Operators#RIGHT_DIV_ASSIGN} operator.
+	 * Applies the {@link StandardOperator#RIGHT_DIV_ASSIGN} operator.
 	 *
 	 * @param a The first argument.
 	 * @param b The second argument.
@@ -540,7 +540,7 @@ public interface StandardEvaluator extends Evaluator {
 	}
 
 	/**
-	 * Applies the {@link Operators#DOT_DIV_ASSIGN} operator.
+	 * Applies the {@link StandardOperator#DOT_DIV_ASSIGN} operator.
 	 *
 	 * @param a The first argument.
 	 * @param b The second argument.
@@ -551,7 +551,7 @@ public interface StandardEvaluator extends Evaluator {
 	}
 
 	/**
-	 * Applies the {@link Operators#DOT_RIGHT_DIV_ASSIGN} operator.
+	 * Applies the {@link StandardOperator#DOT_RIGHT_DIV_ASSIGN} operator.
 	 *
 	 * @param a The first argument.
 	 * @param b The second argument.
@@ -562,7 +562,7 @@ public interface StandardEvaluator extends Evaluator {
 	}
 
 	/**
-	 * Applies the {@link Operators#ADD_ASSIGN} operator.
+	 * Applies the {@link StandardOperator#ADD_ASSIGN} operator.
 	 *
 	 * @param a The first argument.
 	 * @param b The second argument.
@@ -573,7 +573,7 @@ public interface StandardEvaluator extends Evaluator {
 	}
 
 	/**
-	 * Applies the {@link Operators#SUB_ASSIGN} operator.
+	 * Applies the {@link StandardOperator#SUB_ASSIGN} operator.
 	 *
 	 * @param a The first argument.
 	 * @param b The second argument.
@@ -584,7 +584,7 @@ public interface StandardEvaluator extends Evaluator {
 	}
 
 	/**
-	 * Applies the {@link Operators#AND_ASSIGN} operator.
+	 * Applies the {@link StandardOperator#AND_ASSIGN} operator.
 	 *
 	 * @param a The first argument.
 	 * @param b The second argument.
@@ -595,7 +595,7 @@ public interface StandardEvaluator extends Evaluator {
 	}
 
 	/**
-	 * Applies the {@link Operators#OR_ASSIGN} operator.
+	 * Applies the {@link StandardOperator#OR_ASSIGN} operator.
 	 *
 	 * @param a The first argument.
 	 * @param b The second argument.
@@ -606,7 +606,7 @@ public interface StandardEvaluator extends Evaluator {
 	}
 
 	/**
-	 * Applies the {@link Operators#LEFT_SHIFT_ASSIGN} operator.
+	 * Applies the {@link StandardOperator#LEFT_SHIFT_ASSIGN} operator.
 	 *
 	 * @param a The first argument.
 	 * @param b The second argument.
@@ -617,7 +617,7 @@ public interface StandardEvaluator extends Evaluator {
 	}
 
 	/**
-	 * Applies the {@link Operators#RIGHT_SHIFT_ASSIGN} operator.
+	 * Applies the {@link StandardOperator#RIGHT_SHIFT_ASSIGN} operator.
 	 *
 	 * @param a The first argument.
 	 * @param b The second argument.
@@ -628,7 +628,7 @@ public interface StandardEvaluator extends Evaluator {
 	}
 
 	/**
-	 * Applies the {@link Operators#UNSIGNED_RIGHT_SHIFT_ASSIGN} operator.
+	 * Applies the {@link StandardOperator#UNSIGNED_RIGHT_SHIFT_ASSIGN} operator.
 	 *
 	 * @param a The first argument.
 	 * @param b The second argument.
@@ -646,71 +646,78 @@ public interface StandardEvaluator extends Evaluator {
 	 * @return The result of the operation.
 	 */
 	default Object execute(final Operator op, final Object... args) {
-		final Object a = args.length > 0 ? args[0] : null;
-		final Object b = args.length > 1 ? args[1] : null;
+		if (op instanceof StandardOperator) {
+			final Object a = args.length > 0 ? args[0] : null;
+			final Object b = args.length > 1 ? args[1] : null;
+			switch ((StandardOperator) op) {
+				case DOT: return dot(a, b);
+				case TRANSPOSE: return transpose(a);
+				case DOT_TRANSPOSE: return dotTranspose(a);
+				case POW: return pow(a, b);
+				case DOT_POW: return dotPow(a, b);
+				case POST_INC: return postInc(a);
+				case POST_DEC: return postDec(a);
+				case PRE_INC: return preInc(a);
+				case PRE_DEC: return preDec(a);
+				case POS: return pos(a);
+				case NEG: return neg(a);
+				case COMPLEMENT: return complement(a);
+				case NOT: return not(a);
+				case MUL: return mul(a, b);
+				case DIV: return div(a, b);
+				case MOD: return mod(a, b);
+				case RIGHT_DIV: return rightDiv(a, b);
+				case DOT_MUL: return dotMul(a, b);
+				case DOT_DIV: return dotDiv(a, b);
+				case DOT_RIGHT_DIV: return dotRightDiv(a, b);
+				case ADD: return add(a, b);
+				case SUB: return sub(a, b);
+				case LEFT_SHIFT: return leftShift(a, b);
+				case RIGHT_SHIFT: return rightShift(a, b);
+				case UNSIGNED_RIGHT_SHIFT: return unsignedRightShift(a, b);
+				case LESS_THAN: return lessThan(a, b);
+				case GREATER_THAN: return greaterThan(a, b);
+				case LESS_THAN_OR_EQUAL: return lessThanOrEqual(a, b);
+				case GREATER_THAN_OR_EQUAL: return greaterThanOrEqual(a, b);
+				case INSTANCEOF: return instanceOf(a, b);
+				case EQUAL: return equal(a, b);
+				case NOT_EQUAL: return notEqual(a, b);
+				case BITWISE_AND: return bitwiseAnd(a, b);
+				case BITWISE_OR: return bitwiseOr(a, b);
+				case LOGICAL_AND: return logicalAnd(a, b);
+				case LOGICAL_OR: return logicalOr(a, b);
+				case QUESTION: return question(a, b);
+				case COLON: return colon(a, b);
+				case ASSIGN: return assign(a, b);
+				case POW_ASSIGN: return powAssign(a, b);
+				case DOT_POW_ASSIGN: return dotPowAssign(a, b);
+				case MUL_ASSIGN: return mulAssign(a, b);
+				case DIV_ASSIGN: return divAssign(a, b);
+				case MOD_ASSIGN: return modAssign(a, b);
+				case RIGHT_DIV_ASSIGN: return rightDivAssign(a, b);
+				case DOT_DIV_ASSIGN: return dotDivAssign(a, b);
+				case DOT_RIGHT_DIV_ASSIGN: return dotRightDivAssign(a, b);
+				case ADD_ASSIGN: return addAssign(a, b);
+				case SUB_ASSIGN: return subAssign(a, b);
+				case AND_ASSIGN: return andAssign(a, b);
+				case OR_ASSIGN: return orAssign(a, b);
+				case LEFT_SHIFT_ASSIGN: return leftShiftAssign(a, b);
+				case RIGHT_SHIFT_ASSIGN: return rightShiftAssign(a, b);
+				case UNSIGNED_RIGHT_SHIFT_ASSIGN: return unsignedRightShiftAssign(a, b);
+				default: return null; // NB: Unreachable.
+			}
+		}
 
-		// Let the case logic begin!
-		if (op instanceof Function) return function(a, b);
-		if (op == Operators.DOT) return dot(a, b);
-		if (Tokens.isMatchingGroup(op, Operators.PARENS)) return parens(args);
-		if (Tokens.isMatchingGroup(op, Operators.BRACKETS)) return brackets(args);
-		if (Tokens.isMatchingGroup(op, Operators.BRACES)) return braces(args);
-		if (op == Operators.TRANSPOSE) return transpose(a);
-		if (op == Operators.DOT_TRANSPOSE) return dotTranspose(a);
-		if (op == Operators.POW) return pow(a, b);
-		if (op == Operators.DOT_POW) return dotPow(a, b);
-		if (op == Operators.POST_INC) return postInc(a);
-		if (op == Operators.POST_DEC) return postDec(a);
-		if (op == Operators.PRE_INC) return preInc(a);
-		if (op == Operators.PRE_DEC) return preDec(a);
-		if (op == Operators.POS) return pos(a);
-		if (op == Operators.NEG) return neg(a);
-		if (op == Operators.COMPLEMENT) return complement(a);
-		if (op == Operators.NOT) return not(a);
-		if (op == Operators.MUL) return mul(a, b);
-		if (op == Operators.DIV) return div(a, b);
-		if (op == Operators.MOD) return mod(a, b);
-		if (op == Operators.RIGHT_DIV) return rightDiv(a, b);
-		if (op == Operators.DOT_MUL) return dotMul(a, b);
-		if (op == Operators.DOT_DIV) return dotDiv(a, b);
-		if (op == Operators.DOT_RIGHT_DIV) return dotRightDiv(a, b);
-		if (op == Operators.ADD) return add(a, b);
-		if (op == Operators.SUB) return sub(a, b);
-		if (op == Operators.LEFT_SHIFT) return leftShift(a, b);
-		if (op == Operators.RIGHT_SHIFT) return rightShift(a, b);
-		if (op == Operators.UNSIGNED_RIGHT_SHIFT) return unsignedRightShift(a, b);
-		if (op == Operators.LESS_THAN) return lessThan(a, b);
-		if (op == Operators.GREATER_THAN) return greaterThan(a, b);
-		if (op == Operators.LESS_THAN_OR_EQUAL) return lessThanOrEqual(a, b);
-		if (op == Operators.GREATER_THAN_OR_EQUAL) return greaterThanOrEqual(a, b);
-		if (op == Operators.INSTANCEOF) return instanceOf(a, b);
-		if (op == Operators.EQUAL) return equal(a, b);
-		if (op == Operators.NOT_EQUAL) return notEqual(a, b);
-		if (op == Operators.BITWISE_AND) return bitwiseAnd(a, b);
-		if (op == Operators.BITWISE_OR) return bitwiseOr(a, b);
-		if (op == Operators.LOGICAL_AND) return logicalAnd(a, b);
-		if (op == Operators.LOGICAL_OR) return logicalOr(a, b);
-		if (op == Operators.QUESTION) return question(a, b);
-		if (op == Operators.COLON) return colon(a, b);
-		if (op == Operators.ASSIGN) return assign(a, b);
-		if (op == Operators.POW_ASSIGN) return powAssign(a, b);
-		if (op == Operators.DOT_POW_ASSIGN) return dotPowAssign(a, b);
-		if (op == Operators.MUL_ASSIGN) return mulAssign(a, b);
-		if (op == Operators.DIV_ASSIGN) return divAssign(a, b);
-		if (op == Operators.MOD_ASSIGN) return modAssign(a, b);
-		if (op == Operators.RIGHT_DIV_ASSIGN) return rightDivAssign(a, b);
-		if (op == Operators.DOT_DIV_ASSIGN) return dotDivAssign(a, b);
-		if (op == Operators.DOT_RIGHT_DIV_ASSIGN) return dotRightDivAssign(a, b);
-		if (op == Operators.ADD_ASSIGN) return addAssign(a, b);
-		if (op == Operators.SUB_ASSIGN) return subAssign(a, b);
-		if (op == Operators.AND_ASSIGN) return andAssign(a, b);
-		if (op == Operators.OR_ASSIGN) return orAssign(a, b);
-		if (op == Operators.LEFT_SHIFT_ASSIGN) return leftShiftAssign(a, b);
-		if (op == Operators.RIGHT_SHIFT_ASSIGN) return rightShiftAssign(a, b);
-		if (op == Operators.UNSIGNED_RIGHT_SHIFT_ASSIGN) return unsignedRightShiftAssign(a, b);
+		if (op instanceof Function) {
+			final Object a = args.length > 0 ? args[0] : null;
+			final Object b = args.length > 1 ? args[1] : null;
+			return function(a, b);
+		}
+		if (Tokens.isMatchingGroup(op, StandardOperator.PARENS)) return parens(args);
+		if (Tokens.isMatchingGroup(op, StandardOperator.BRACKETS)) return brackets(args);
+		if (Tokens.isMatchingGroup(op, StandardOperator.BRACES)) return braces(args);
 
-		// Unknown operator.
-		return null;
+		return null; // Unknown operator.
 	}
 
 }

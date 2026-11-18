@@ -30,12 +30,12 @@
 package org.scijava.parsington.eval;
 
 import org.scijava.parsington.ExpressionParser;
-import org.scijava.parsington.Operators;
+import org.scijava.parsington.StandardOperator;
 
 /**
- * An expression evaluator for most {@link Operators standard operators} with
- * common built-in types (i.e.: {@link Boolean}s, {@link String}s and
- * {@link Number}s). Simulates the ternary {@code ?:} operator including
+ * An expression evaluator for most {@link StandardOperator standard
+ * operators} with common built-in types (i.e.: {@link Boolean}s,
+ * {@link String}s and {@link Number}s). Simulates the ternary {@code ?:} operator including
  * short-circuiting.
  *
  * @author Curtis Rueden

@@ -49,7 +49,7 @@ public class SyntaxTreeTest extends AbstractTest {
 		// infix: a + b * c
 		// postfix: a b c * +
 		final LinkedList<Object> queue =
-			queue(var("a"), var("b"), var("c"), Operators.MUL, Operators.ADD);
+			queue(var("a"), var("b"), var("c"), StandardOperator.MUL, StandardOperator.ADD);
 
 		// NB: SyntaxTree constructor consumes the queue, so save a copy.
 		final LinkedList<Object> expected = new LinkedList<>(queue);
@@ -57,10 +57,10 @@ public class SyntaxTreeTest extends AbstractTest {
 		final SyntaxTree tree = new SyntaxTree(queue);
 
 		assertNotNull(tree);
-		assertSame(Operators.ADD, tree.token());
+		assertSame(StandardOperator.ADD, tree.token());
 		assertBinary(tree);
 		assertVariable("a", tree.child(0).token());
-		assertSame(Operators.MUL, tree.child(1).token());
+		assertSame(StandardOperator.MUL, tree.child(1).token());
 		assertBinary(tree.child(1));
 		assertVariable("b", tree.child(1).child(0).token());
 		assertVariable("c", tree.child(1).child(1).token());
@@ -73,10 +73,10 @@ public class SyntaxTreeTest extends AbstractTest {
 		// infix: a / b * c + a ^ b ^ c - f(d, c, b, a)
 		// postfix: a b / c * a b c ^ ^ + f d c b a (4) <Fn> -
 		final LinkedList<Object> queue =
-			queue(var("a"), var("b"), Operators.DIV, var("c"), Operators.MUL,
-				var("a"), var("b"), var("c"), Operators.POW, Operators.POW,
-				Operators.ADD, var("f"), var("d"), var("c"), var("b"), var("a"),
-				group(Operators.PARENS, 4), func(), Operators.SUB);
+			queue(var("a"), var("b"), StandardOperator.DIV, var("c"), StandardOperator.MUL,
+				var("a"), var("b"), var("c"), StandardOperator.POW, StandardOperator.POW,
+				StandardOperator.ADD, var("f"), var("d"), var("c"), var("b"), var("a"),
+				group(StandardOperator.PARENS, 4), func(), StandardOperator.SUB);
 
 		// NB: SyntaxTree constructor consumes the queue, so save a copy.
 		final LinkedList<Object> expected = new LinkedList<>(queue);
@@ -84,21 +84,21 @@ public class SyntaxTreeTest extends AbstractTest {
 		final SyntaxTree tree = new SyntaxTree(queue);
 
 		assertNotNull(tree);
-		assertSame(Operators.SUB, token(tree));
-		assertSame(Operators.ADD, token(tree, 0));
-		assertSame(Operators.MUL, token(tree, 0, 0));
-		assertSame(Operators.DIV, token(tree, 0, 0, 0));
+		assertSame(StandardOperator.SUB, token(tree));
+		assertSame(StandardOperator.ADD, token(tree, 0));
+		assertSame(StandardOperator.MUL, token(tree, 0, 0));
+		assertSame(StandardOperator.DIV, token(tree, 0, 0, 0));
 		assertVariable("a", token(tree, 0, 0, 0, 0));
 		assertVariable("b", token(tree, 0, 0, 0, 1));
 		assertVariable("c", token(tree, 0, 0, 1));
-		assertSame(Operators.POW, token(tree, 0, 1));
+		assertSame(StandardOperator.POW, token(tree, 0, 1));
 		assertVariable("a", token(tree, 0, 1, 0));
-		assertSame(Operators.POW, token(tree, 0, 1, 1));
+		assertSame(StandardOperator.POW, token(tree, 0, 1, 1));
 		assertVariable("b", token(tree, 0, 1, 1, 0));
 		assertVariable("c", token(tree, 0, 1, 1, 1));
 		assertFunction(token(tree, 1));
 		assertVariable("f", token(tree, 1, 0));
-		assertGroup(Operators.PARENS, 4, token(tree, 1, 1));
+		assertGroup(StandardOperator.PARENS, 4, token(tree, 1, 1));
 		assertVariable("d", token(tree, 1, 1, 0));
 		assertVariable("c", token(tree, 1, 1, 1));
 		assertVariable("b", token(tree, 1, 1, 2));
@@ -111,7 +111,7 @@ public class SyntaxTreeTest extends AbstractTest {
 	public void testNullaryFunction() {
 		// infix: f()
 		// postfix: f (0) <Fn>
-		final LinkedList<Object> queue = queue(var("f"), group(Operators.PARENS, 0), func());
+		final LinkedList<Object> queue = queue(var("f"), group(StandardOperator.PARENS, 0), func());
 
 		// NB: SyntaxTree constructor consumes the queue, so save a copy.
 		final LinkedList<Object> expected = new LinkedList<>(queue);
@@ -121,7 +121,7 @@ public class SyntaxTreeTest extends AbstractTest {
 		assertNotNull(tree);
 		assertFunction(token(tree));
 		assertVariable("f", token(tree, 0));
-		assertGroup(Operators.PARENS, 0, token(tree, 1));
+		assertGroup(StandardOperator.PARENS, 0, token(tree, 1));
 
 		assertSameLists(expected, tree.postfix());
 	}

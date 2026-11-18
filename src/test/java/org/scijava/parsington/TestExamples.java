@@ -64,23 +64,23 @@ public class TestExamples extends AbstractTest {
 		// Traverse the syntax tree to see if the nodes match what we expect.
 
 		// The top level of the tree is a fraction.
-		assertSame(Operators.DIV, quadraticFormula.token());
+		assertSame(StandardOperator.DIV, quadraticFormula.token());
 		assertBinary(quadraticFormula);
 		final SyntaxTree numer = quadraticFormula.child(0);
 		final SyntaxTree denom = quadraticFormula.child(1);
 
 		// Because the numerator is in parentheses, it is parsed as a unary group.
 		assertUnary(numer);
-		assertGroup(Operators.PARENS, 1, numer.token());
+		assertGroup(StandardOperator.PARENS, 1, numer.token());
 
 		// The numerator (inside the parentheses) is the sum of two expressions.
 		final SyntaxTree innerNumer = numer.child(0);
-		assertSame(Operators.ADD, innerNumer.token());
+		assertSame(StandardOperator.ADD, innerNumer.token());
 		assertBinary(innerNumer);
 
 		// The numerator's first expression, -b, is a unary negation.
 		final SyntaxTree minusB = innerNumer.child(0);
-		assertSame(Operators.NEG, minusB.token());
+		assertSame(StandardOperator.NEG, minusB.token());
 		assertUnary(minusB);
 		assertVariable("b", minusB.child(0).token());
 
@@ -94,26 +94,26 @@ public class TestExamples extends AbstractTest {
 		// The sqrt function is applied to a unary group.
 		final SyntaxTree sqrtTarget = sqrtFn.child(1);
 		assertUnary(sqrtTarget);
-		assertGroup(Operators.PARENS, 1, sqrtTarget.token());
+		assertGroup(StandardOperator.PARENS, 1, sqrtTarget.token());
 
 		// The expression inside the sqrt function has two terms, subtracted.
 		final SyntaxTree sqrtExpr = sqrtTarget.child(0);
-		assertSame(Operators.SUB, sqrtExpr.token());
+		assertSame(StandardOperator.SUB, sqrtExpr.token());
 		assertBinary(sqrtExpr);
 
 		// The first term, b^2, is exponentiation.
 		final SyntaxTree bSquared = sqrtExpr.child(0);
-		assertSame(Operators.POW, bSquared.token());
+		assertSame(StandardOperator.POW, bSquared.token());
 		assertBinary(bSquared);
 		assertVariable("b", bSquared.child(0).token());
 		assertEquals(2, bSquared.child(1).token());
 
 		// The second term, 4*a*c, goes one level deeper.
 		final SyntaxTree fourAC = sqrtExpr.child(1);
-		assertSame(Operators.MUL, fourAC.token());
+		assertSame(StandardOperator.MUL, fourAC.token());
 		assertBinary(fourAC);
 		final SyntaxTree fourA = fourAC.child(0);
-		assertSame(Operators.MUL, fourA.token());
+		assertSame(StandardOperator.MUL, fourA.token());
 		assertBinary(fourA);
 		assertEquals(4, fourA.child(0).token());
 		assertVariable("a", fourA.child(1).token());
@@ -121,12 +121,12 @@ public class TestExamples extends AbstractTest {
 
 		// Because the denominator is in parentheses, it is parsed as a unary group.
 		assertUnary(denom);
-		assertGroup(Operators.PARENS, 1, denom.token());
+		assertGroup(StandardOperator.PARENS, 1, denom.token());
 
 		// The denominator (inside the parentheses) is a product of two terms.
 		final SyntaxTree innerDenom = denom.child(0);
 		assertBinary(innerDenom);
-		assertSame(Operators.MUL, innerDenom.token());
+		assertSame(StandardOperator.MUL, innerDenom.token());
 		assertEquals(2, innerDenom.child(0).token());
 		assertVariable("a", innerDenom.child(1).token());
 
@@ -138,11 +138,11 @@ public class TestExamples extends AbstractTest {
 	/** An example of custom operators approximating some POSIX shell syntax. */
 	@Test
 	public void posixShellSyntax() {
-		final Operator substringLeft = new Operator("%", 2, Associativity.LEFT, 10);
-		final Operator substringRight = new Operator("#", 2, Associativity.LEFT, 10);
-		final Operator substringLeftGreedy = new Operator("%%", 2, Associativity.LEFT, 10);
-		final Operator substringRightGreedy = new Operator("##", 2, Associativity.LEFT, 10);
-		final List<Operator> operators = Arrays.asList(Operators.ASSIGN, Operators.BRACES,
+		final Operator substringLeft = Operator.create("%", 2, Associativity.LEFT, 10);
+		final Operator substringRight = Operator.create("#", 2, Associativity.LEFT, 10);
+		final Operator substringLeftGreedy = Operator.create("%%", 2, Associativity.LEFT, 10);
+		final Operator substringRightGreedy = Operator.create("##", 2, Associativity.LEFT, 10);
+		final List<Operator> operators = Arrays.asList(StandardOperator.ASSIGN, StandardOperator.BRACES,
 			substringLeft, substringRight, substringLeftGreedy, substringRightGreedy);
 
 		final ExpressionParser parser = new ExpressionParser(operators);
@@ -154,19 +154,19 @@ public class TestExamples extends AbstractTest {
 		assertEquals(15, queue.size());
 		assertVariable("logpath", queue.pop());
 		assertString("/var/log/syslog", queue.pop());
-		assertSame(Operators.ASSIGN, queue.pop());
+		assertSame(StandardOperator.ASSIGN, queue.pop());
 		assertVariable("dir", queue.pop());
 		assertVariable("logpath", queue.pop());
 		assertString("/*", queue.pop());
 		assertSame(substringLeft, queue.pop());
-		assertGroup(Operators.BRACES, 1, queue.pop());
-		assertSame(Operators.ASSIGN, queue.pop());
+		assertGroup(StandardOperator.BRACES, 1, queue.pop());
+		assertSame(StandardOperator.ASSIGN, queue.pop());
 		assertVariable("name", queue.pop());
 		assertVariable("logpath", queue.pop());
 		assertString("*/", queue.pop());
 		assertSame(substringRightGreedy, queue.pop());
-		assertGroup(Operators.BRACES, 1, queue.pop());
-		assertSame(Operators.ASSIGN, queue.pop());
+		assertGroup(StandardOperator.BRACES, 1, queue.pop());
+		assertSame(StandardOperator.ASSIGN, queue.pop());
 	}
 
 	/** An example which parses all literals as {@link String}s. */
@@ -188,9 +188,9 @@ public class TestExamples extends AbstractTest {
 
 		// quick brown && fox && lazy dog && ||
 		assertNotNull(queue);
-		assertEquals(Arrays.asList("quick", "brown", Operators.LOGICAL_AND, "fox",
-			Operators.LOGICAL_AND, "lazy", "dog", Operators.LOGICAL_AND,
-			Operators.LOGICAL_OR), queue);
+		assertEquals(Arrays.asList("quick", "brown", StandardOperator.LOGICAL_AND, "fox",
+			StandardOperator.LOGICAL_AND, "lazy", "dog", StandardOperator.LOGICAL_AND,
+			StandardOperator.LOGICAL_OR), queue);
 	}
 
 	@Test
@@ -219,7 +219,7 @@ public class TestExamples extends AbstractTest {
 		assertEquals(3, queue.size());
 		assertVariable("shape.length", queue.pop());
 		assertVariable("shape.width", queue.pop());
-		assertSame(Operators.MUL, queue.pop());
+		assertSame(StandardOperator.MUL, queue.pop());
 	}
 
 	@Test
@@ -244,8 +244,8 @@ public class TestExamples extends AbstractTest {
 
 		// Create the list of available operators... but WITHOUT square brackets.
 		// Otherwise, the square bracket operator will influence the parsing.
-		final List<Operator> operators = Operators.standardList();
-		operators.remove(Operators.BRACKETS);
+		final List<Operator> operators = StandardOperator.standardList();
+		operators.remove(StandardOperator.BRACKETS);
 
 		// Now create the parser, with overridden identifier parsing logic.
 		final ExpressionParser parser = new ExpressionParser(operators, ",", ";", //
@@ -280,12 +280,12 @@ public class TestExamples extends AbstractTest {
 		assertEquals(8, queue.size());
 		assertEquals(2, queue.pop());
 		assertVariable("[check it out: aa.bb + cc.dd]", queue.pop());
-		assertSame(Operators.MUL, queue.pop());
+		assertSame(StandardOperator.MUL, queue.pop());
 		assertVariable("[z-y-x]", queue.pop());
 		assertVariable("x", queue.pop());
-		assertSame(Operators.ADD, queue.pop());
-		assertGroup(Operators.PARENS, 1, queue.pop());
-		assertSame(Operators.DIV, queue.pop());
+		assertSame(StandardOperator.ADD, queue.pop());
+		assertGroup(StandardOperator.PARENS, 1, queue.pop());
+		assertSame(StandardOperator.DIV, queue.pop());
 	}
 
 	// -- Customizing the evaluator --
@@ -318,8 +318,8 @@ public class TestExamples extends AbstractTest {
 	public void dollarSignPrefixedVariablesAreSpecial() {
 		// Create an expression parser with an additional $ unary operator.
 		final List<Operator> operators = new ArrayList<>();
-		operators.addAll(Operators.standardList());
-		final Operator dollar = new Operator("$", 1, Associativity.RIGHT, 100);
+		operators.addAll(StandardOperator.standardList());
+		final Operator dollar = Operator.create("$", 1, Associativity.RIGHT, 100);
 		operators.add(dollar);
 		final ExpressionParser parser = new ExpressionParser(operators);
 

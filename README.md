@@ -32,8 +32,8 @@ Expression parsers are as old as the hills; what makes this one different?
   needs&mdash;there is no assumption that your variables will consist of any
   particular data type, numerical or otherwise.
 * __Extensibility.__ The
-  [default operators](src/main/java/org/scijava/parsington/Operators.java), a
-  synthesis of Java and MATLAB syntax, work well. But if you need something
+  [default operators](src/main/java/org/scijava/parsington/StandardOperator.java),
+  a synthesis of Java and MATLAB syntax, work well. But if you need something
   else, you can define your own unary and binary operators with whatever
   symbols, precedence and associativity you desire.
 * __Clean, well-commented codebase with unit tests.__ Import the source into
@@ -156,8 +156,8 @@ The `postfix` built-in function lets you introspect a parsed postfix queue:
 6.5 : java.lang.Double
 7.8 : java.lang.Double
 2.3 : java.lang.Double
-^ : org.scijava.parsington.Operator
-* : org.scijava.parsington.Operator
+^ : org.scijava.parsington.StandardOperator
+* : org.scijava.parsington.StandardOperator
 > postfix('[1, 2f, 3d, 4., 5L, 123456789987654321, 9987654321234567899]')
 1 : java.lang.Integer
 2.0 : java.lang.Float
@@ -175,19 +175,19 @@ y : org.scijava.parsington.Variable
 <Fn> : org.scijava.parsington.Function
 x : org.scijava.parsington.Variable
 y : org.scijava.parsington.Variable
-* : org.scijava.parsington.Operator
-= : org.scijava.parsington.Operator
+* : org.scijava.parsington.StandardOperator
+= : org.scijava.parsington.StandardOperator
 > postfix('math.pow(q) = q^q')
 math : org.scijava.parsington.Variable
 pow : org.scijava.parsington.Variable
-. : org.scijava.parsington.Operator
+. : org.scijava.parsington.StandardOperator
 q : org.scijava.parsington.Variable
 (1) : org.scijava.parsington.Group
 <Fn> : org.scijava.parsington.Function
 q : org.scijava.parsington.Variable
 q : org.scijava.parsington.Variable
-^ : org.scijava.parsington.Operator
-= : org.scijava.parsington.Operator
+^ : org.scijava.parsington.StandardOperator
+= : org.scijava.parsington.StandardOperator
 ```
 
 The `tree` function is another way to introspect, in syntax tree form:

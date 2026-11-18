@@ -30,7 +30,7 @@
 package org.scijava.parsington.eval;
 
 import org.scijava.parsington.Operator;
-import org.scijava.parsington.Operators;
+import org.scijava.parsington.StandardOperator;
 import org.scijava.parsington.SyntaxTree;
 
 /**
@@ -47,7 +47,7 @@ public interface StandardTreeEvaluator extends StandardEvaluator,
 	@Override
 	default Object execute(final Operator op, final SyntaxTree tree) {
 		// Handle short-circuiting operators first.
-		if (op == Operators.LOGICAL_AND) {
+		if (op == StandardOperator.LOGICAL_AND) {
 			final Object leftValue = value(evaluate(tree.child(0)));
 			if (leftValue instanceof Boolean && !(Boolean) leftValue) {
 				// Left side is false, so entire expression will be false.
@@ -56,7 +56,7 @@ public interface StandardTreeEvaluator extends StandardEvaluator,
 			final Object rightValue = value(evaluate(tree.child(1)));
 			return execute(op, new Object[] {leftValue, rightValue});
 		}
-		else if (op == Operators.LOGICAL_OR) {
+		else if (op == StandardOperator.LOGICAL_OR) {
 			final Object leftValue = value(evaluate(tree.child(0)));
 			if (leftValue instanceof Boolean && (Boolean) leftValue) {
 				// Left side is true, so entire expression will be true.
@@ -65,10 +65,10 @@ public interface StandardTreeEvaluator extends StandardEvaluator,
 			final Object rightValue = value(evaluate(tree.child(1)));
 			return execute(op, new Object[] {leftValue, rightValue});
 		}
-		else if (op == Operators.QUESTION) {
+		else if (op == StandardOperator.QUESTION) {
 			final SyntaxTree conditional = tree.child(0);
 			final SyntaxTree consequent = tree.child(1);
-			if (consequent.token() != Operators.COLON || consequent.count() != 2) {
+			if (consequent.token() != StandardOperator.COLON || consequent.count() != 2) {
 				throw new IllegalArgumentException("Invalid ternary operator syntax");
 			}
 			final Object conditionalValue = value(evaluate(conditional));

@@ -70,10 +70,10 @@ public class ExpressionParser {
 	 * Creates an expression parser with the standard set of operators and default
 	 * separator symbols ({@code ,} for group elements, {@code ;} for statements).
 	 * 
-	 * @see Operators#standardList()
+	 * @see StandardOperator#standardList()
 	 */
 	public ExpressionParser() {
-		this(Operators.standardList());
+		this(StandardOperator.standardList());
 	}
 
 	/**
@@ -95,7 +95,7 @@ public class ExpressionParser {
 	public ExpressionParser(final String elementSeparator,
 		final String statementSeparator)
 	{
-		this(Operators.standardList(), elementSeparator, statementSeparator);
+		this(StandardOperator.standardList(), elementSeparator, statementSeparator);
 	}
 
 	/**
@@ -114,7 +114,7 @@ public class ExpressionParser {
 	public ExpressionParser(
 		final BiFunction<ExpressionParser, String, ParseOperation> parseOperationFactory)
 	{
-		this(Operators.standardList(), DEFAULT_ELEMENT_SEPARATOR,
+		this(StandardOperator.standardList(), DEFAULT_ELEMENT_SEPARATOR,
 			DEFAULT_STATEMENT_SEPARATOR, parseOperationFactory);
 	}
 

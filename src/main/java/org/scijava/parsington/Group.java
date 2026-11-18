@@ -39,9 +39,11 @@ package org.scijava.parsington;
  *
  * @author Curtis Rueden
  */
-public class Group extends Operator {
+public class Group implements Operator {
 
+	private final String initiator;
 	private final String terminator;
+	private final double precedence;
 
 	private int arity;
 
@@ -55,8 +57,9 @@ public class Group extends Operator {
 	public Group(final String initiator, final String terminator,
 		final double precedence)
 	{
-		super(initiator, 0, Associativity.NONE, precedence);
+		this.initiator = initiator;
 		this.terminator = terminator;
+		this.precedence = precedence;
 	}
 
 	// -- Group methods --
@@ -104,6 +107,16 @@ public class Group extends Operator {
 	}
 
 	@Override
+	public Associativity getAssociativity() {
+		return Associativity.NONE;
+	}
+
+	@Override
+	public double getPrecedence() {
+		return precedence;
+	}
+
+	@Override
 	public boolean isInfix() {
 		return true;
 	}
@@ -124,6 +137,13 @@ public class Group extends Operator {
 	@Override
 	public Group instance() {
 		return new Group(getToken(), getTerminator(), getPrecedence());
+	}
+
+	// -- Token methods --
+
+	@Override
+	public String getToken() {
+		return initiator;
 	}
 
 	// -- Object methods --

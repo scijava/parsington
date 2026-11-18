@@ -30,12 +30,13 @@
 package org.scijava.parsington.eval;
 
 import org.scijava.parsington.ExpressionParser;
-import org.scijava.parsington.Operators;
+import org.scijava.parsington.StandardOperator;
 
 /**
- * An expression evaluator for most {@link Operators standard operators} with
- * common built-in types (i.e.: {@link Boolean}s, {@link String}s and
- * {@link Number}s). Does not handle short circuiting of ternary expressions.
+ * An expression evaluator for most {@link StandardOperator standard
+ * operators} with common built-in types (i.e.: {@link Boolean}s,
+ * {@link String}s and {@link Number}s). Does not handle short circuiting of
+ * ternary expressions.
  * <p>
  * It is recommended to use {@link DefaultTreeEvaluator} instead, unless your
  * expression's syntax tree is so deep it exceeds the maximum recursion depth.

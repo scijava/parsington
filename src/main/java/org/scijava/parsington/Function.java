@@ -45,10 +45,43 @@ package org.scijava.parsington;
  *
  * @author Curtis Rueden
  */
-public class Function extends Operator {
+public class Function implements Operator {
+
+	private final double precedence;
 
 	public Function(final double precedence) {
-		super("<Fn>", 2, Associativity.LEFT, precedence);
+		this.precedence = precedence;
+	}
+
+	// -- Operator methods --
+
+	@Override
+	public int getArity() {
+		return 2;
+	}
+
+	@Override
+	public Associativity getAssociativity() {
+		return Associativity.LEFT;
+	}
+
+	@Override
+	public double getPrecedence() {
+		return precedence;
+	}
+
+	// -- Token methods --
+
+	@Override
+	public String getToken() {
+		return "<Fn>";
+	}
+
+	// -- Object methods --
+
+	@Override
+	public String toString() {
+		return getToken();
 	}
 
 }
