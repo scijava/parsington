@@ -32,6 +32,7 @@ package org.scijava.parsington;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.math.BigInteger;
@@ -127,176 +128,176 @@ public class LiteralsTest extends AbstractTest {
 
 	@Test
 	public void testParseHexInteger() {
-		assertNumber(0x123, Literals.parseHex("0x123"));
+		assertNumber(0x123, Literals.parseNumber("0x123"));
 		// Test explicit long.
-		assertNumber(0x123L, Literals.parseHex("0x123L"));
+		assertNumber(0x123L, Literals.parseNumber("0x123L"));
 		// Test implicit long.
-		assertNumber(0x123456789abcdefL, Literals.parseHex("0x123456789abcdef"));
+		assertNumber(0x123456789abcdefL, Literals.parseNumber("0x123456789abcdef"));
 		// Test BigInteger.
 		final String big = "123456789abcdeffedcba987654321";
-		final Number bigNum = Literals.parseHex("0x" + big);
+		final Number bigNum = Literals.parseNumber("0x" + big);
 		assertNumber(new BigInteger(big, 16), bigNum);
 	}
 
 	@Test
 	public void testParseHexNegativeInteger() {
-		assertNumber(-0x123, Literals.parseHex("-0x123"));
+		assertNumber(-0x123, Literals.parseNumber("-0x123"));
 		// Test explicit long.
-		assertNumber(-0x123L, Literals.parseHex("-0x123L"));
+		assertNumber(-0x123L, Literals.parseNumber("-0x123L"));
 		// Test implicit long.
-		assertNumber(-0x123456789abcdefL, Literals.parseHex("-0x123456789abcdef"));
+		assertNumber(-0x123456789abcdefL, Literals.parseNumber("-0x123456789abcdef"));
 		// Test BigInteger.
 		final String big = "123456789abcdeffedcba987654321";
-		final Number bigNum = Literals.parseHex("-0x" + big);
+		final Number bigNum = Literals.parseNumber("-0x" + big);
 		assertNumber(new BigInteger("-" + big, 16), bigNum);
 	}
 
 	@Test
 	public void testParseHexFloat() {
 		assertNumber(0xfedcba.98765432P-10f, //
-			Literals.parseHex("0xfedcba.98765432P-10f"));
+			Literals.parseNumber("0xfedcba.98765432P-10f"));
 		assertNumber(0x1.fffffffffffffP+1023, //
-			Literals.parseHex("0x1.fffffffffffffP+1023"));
-		assertNumber(0xff.fP0F, Literals.parseHex("0xff.fP0F"));
-		assertNumber(0x1P+1023, Literals.parseHex("0x1P+1023"));
-		assertNumber(0xfP102, Literals.parseHex("0xfP102"));
-		assertNumber(0xfP-102, Literals.parseHex("0xfP-102"));
-		assertNumber(0xffP-102, Literals.parseHex("0xffP-102"));
-		assertNumber(0x123.456P1, Literals.parseHex("0x123.456P1"));
-		assertNumber(0x123.456P0f, Literals.parseHex("0x123.456P0f"));
-		assertNumber(0x123.456P0d, Literals.parseHex("0x123.456P0d"));
-		assertNumber(0x123.456P-10d, Literals.parseHex("0x123.456P-10d"));
-		assertNumber(0x123.456P+009, Literals.parseHex("0x123.456P+009"));
+			Literals.parseNumber("0x1.fffffffffffffP+1023"));
+		assertNumber(0xff.fP0F, Literals.parseNumber("0xff.fP0F"));
+		assertNumber(0x1P+1023, Literals.parseNumber("0x1P+1023"));
+		assertNumber(0xfP102, Literals.parseNumber("0xfP102"));
+		assertNumber(0xfP-102, Literals.parseNumber("0xfP-102"));
+		assertNumber(0xffP-102, Literals.parseNumber("0xffP-102"));
+		assertNumber(0x123.456P1, Literals.parseNumber("0x123.456P1"));
+		assertNumber(0x123.456P0f, Literals.parseNumber("0x123.456P0f"));
+		assertNumber(0x123.456P0d, Literals.parseNumber("0x123.456P0d"));
+		assertNumber(0x123.456P-10d, Literals.parseNumber("0x123.456P-10d"));
+		assertNumber(0x123.456P+009, Literals.parseNumber("0x123.456P+009"));
 	}
 
 	@Test
 	public void testParseHexNegativeFloat() {
 		assertNumber(-0xfedcba.98765432P-10f, //
-			Literals.parseHex("-0xfedcba.98765432P-10f"));
+			Literals.parseNumber("-0xfedcba.98765432P-10f"));
 		assertNumber(-0x1.fffffffffffffP+1023, //
-			Literals.parseHex("-0x1.fffffffffffffP+1023"));
-		assertNumber(-0xff.fP0F, Literals.parseHex("-0xff.fP0F"));
-		assertNumber(-0x1P+1023, Literals.parseHex("-0x1P+1023"));
-		assertNumber(-0xfP102, Literals.parseHex("-0xfP102"));
-		assertNumber(-0xfP-102, Literals.parseHex("-0xfP-102"));
-		assertNumber(-0xffP-102, Literals.parseHex("-0xffP-102"));
-		assertNumber(-0x123.456P1, Literals.parseHex("-0x123.456P1"));
-		assertNumber(-0x123.456P0f, Literals.parseHex("-0x123.456P0f"));
-		assertNumber(-0x123.456P0d, Literals.parseHex("-0x123.456P0d"));
-		assertNumber(-0x123.456P-10d, Literals.parseHex("-0x123.456P-10d"));
-		assertNumber(-0x123.456P+009, Literals.parseHex("-0x123.456P+009"));
+			Literals.parseNumber("-0x1.fffffffffffffP+1023"));
+		assertNumber(-0xff.fP0F, Literals.parseNumber("-0xff.fP0F"));
+		assertNumber(-0x1P+1023, Literals.parseNumber("-0x1P+1023"));
+		assertNumber(-0xfP102, Literals.parseNumber("-0xfP102"));
+		assertNumber(-0xfP-102, Literals.parseNumber("-0xfP-102"));
+		assertNumber(-0xffP-102, Literals.parseNumber("-0xffP-102"));
+		assertNumber(-0x123.456P1, Literals.parseNumber("-0x123.456P1"));
+		assertNumber(-0x123.456P0f, Literals.parseNumber("-0x123.456P0f"));
+		assertNumber(-0x123.456P0d, Literals.parseNumber("-0x123.456P0d"));
+		assertNumber(-0x123.456P-10d, Literals.parseNumber("-0x123.456P-10d"));
+		assertNumber(-0x123.456P+009, Literals.parseNumber("-0x123.456P+009"));
 	}
 
 	@Test
 	public void testParseBinary() {
 		// NB: "0b..." syntax is only supported starting with Java 7.
-		assertNumber(33, Literals.parseBinary("0b100001"));
+		assertNumber(33, Literals.parseNumber("0b100001"));
 		// Test explicit long.
-		assertNumber(33L, Literals.parseBinary("0b100001L"));
+		assertNumber(33L, Literals.parseNumber("0b100001L"));
 		// Test implicit long.
-		assertNumber(194588677707L, Literals.parseBinary(
+		assertNumber(194588677707L, Literals.parseNumber(
 			"0b10110101001110011000111001011001001011"));
 		// Test BigInteger.
 		final String big =
 			"10110011100011110000111110000011111100000011111110000000"
 				+ "111111110000000011111111100000000011111111110000000000";
-		final Number bigNum = Literals.parseBinary("0b" + big);
+		final Number bigNum = Literals.parseNumber("0b" + big);
 		assertNumber(new BigInteger(big, 2), bigNum);
 	}
 
 	@Test
 	public void testParseBinaryNegative() {
 		// NB: "0b..." syntax is only supported starting with Java 7.
-		assertNumber(-33, Literals.parseBinary("-0b100001"));
+		assertNumber(-33, Literals.parseNumber("-0b100001"));
 		// Test explicit long.
-		assertNumber(-33L, Literals.parseBinary("-0b100001L"));
+		assertNumber(-33L, Literals.parseNumber("-0b100001L"));
 		// Test implicit long.
-		assertNumber(-194588677707L, Literals.parseBinary(
+		assertNumber(-194588677707L, Literals.parseNumber(
 			"-0b10110101001110011000111001011001001011"));
 		// Test BigInteger.
 		final String big =
 			"10110011100011110000111110000011111100000011111110000000"
 				+ "111111110000000011111111100000000011111111110000000000";
-		final Number bigNum = Literals.parseBinary("-0b" + big);
+		final Number bigNum = Literals.parseNumber("-0b" + big);
 		assertNumber(new BigInteger("-" + big, 2), bigNum);
 	}
 
 	@Test
 	public void testParseOctal() {
-		assertNumber(01234567, Literals.parseOctal("01234567"));
+		assertNumber(01234567, Literals.parseNumber("01234567"));
 		// Test explicit long.
-		assertNumber(01234567L, Literals.parseOctal("01234567L"));
+		assertNumber(01234567L, Literals.parseNumber("01234567L"));
 		// Test implicit long.
-		assertNumber(012345677654321L, Literals.parseOctal("012345677654321"));
+		assertNumber(012345677654321L, Literals.parseNumber("012345677654321"));
 		// Test BigInteger.
 		final String big = "1234567765432112345677654321";
-		final Number bigNum = Literals.parseOctal("0" + big);
+		final Number bigNum = Literals.parseNumber("0" + big);
 		assertNumber(new BigInteger(big, 8), bigNum);
 	}
 
 	@Test
 	public void testParseOctalNegative() {
-		assertNumber(-01234567, Literals.parseOctal("-01234567"));
+		assertNumber(-01234567, Literals.parseNumber("-01234567"));
 		// Test explicit long.
-		assertNumber(-01234567L, Literals.parseOctal("-01234567L"));
+		assertNumber(-01234567L, Literals.parseNumber("-01234567L"));
 		// Test implicit long.
-		assertNumber(-012345677654321L, Literals.parseOctal("-012345677654321"));
+		assertNumber(-012345677654321L, Literals.parseNumber("-012345677654321"));
 		// Test BigInteger.
 		final String big = "1234567765432112345677654321";
-		final Number bigNum = Literals.parseOctal("-0" + big);
+		final Number bigNum = Literals.parseNumber("-0" + big);
 		assertNumber(new BigInteger("-" + big, 8), bigNum);
 	}
 
 	@Test
 	public void testParseDecimal() {
-		assertNumber(123456789, Literals.parseDecimal("123456789"));
+		assertNumber(123456789, Literals.parseNumber("123456789"));
 		// Test explicit long.
-		assertNumber(123456789L, Literals.parseDecimal("123456789L"));
+		assertNumber(123456789L, Literals.parseNumber("123456789L"));
 		// Test implicit long.
-		assertNumber(123456787654321L, Literals.parseDecimal("123456787654321"));
+		assertNumber(123456787654321L, Literals.parseNumber("123456787654321"));
 		// Test BigInteger.
 		final String bigI = "1234567898765432123456789";
-		final Number bigInt = Literals.parseDecimal(bigI);
+		final Number bigInt = Literals.parseNumber(bigI);
 		assertNumber(new BigInteger(bigI), bigInt);
 		// Test explicit float.
-		assertNumber(1f, Literals.parseDecimal("1f"));
+		assertNumber(1f, Literals.parseNumber("1f"));
 		// Test explicit double.
-		assertNumber(1d, Literals.parseDecimal("1d"));
+		assertNumber(1d, Literals.parseNumber("1d"));
 		// Test implicit double.
-		assertNumber(1.0, Literals.parseDecimal("1.0"));
-		assertNumber(1., Literals.parseDecimal("1."));
+		assertNumber(1.0, Literals.parseNumber("1.0"));
+		assertNumber(1., Literals.parseNumber("1."));
 		// Test scientific notation.
-		assertNumber(1e2, Literals.parseDecimal("1e2"));
-		assertNumber(1.2e3, Literals.parseDecimal("1.2e3"));
-		assertNumber(4.5e-6, Literals.parseDecimal("4.5e-6"));
-		assertNumber(1.2e3f, Literals.parseDecimal("1.2e3f"));
-		assertNumber(4.5e-6f, Literals.parseDecimal("4.5e-6f"));
+		assertNumber(1e2, Literals.parseNumber("1e2"));
+		assertNumber(1.2e3, Literals.parseNumber("1.2e3"));
+		assertNumber(4.5e-6, Literals.parseNumber("4.5e-6"));
+		assertNumber(1.2e3f, Literals.parseNumber("1.2e3f"));
+		assertNumber(4.5e-6f, Literals.parseNumber("4.5e-6f"));
 	}
 
 	@Test
 	public void testParseDecimalNegative() {
-		assertNumber(-123456789, Literals.parseDecimal("-123456789"));
+		assertNumber(-123456789, Literals.parseNumber("-123456789"));
 		// Test explicit long.
-		assertNumber(-123456789L, Literals.parseDecimal("-123456789L"));
+		assertNumber(-123456789L, Literals.parseNumber("-123456789L"));
 		// Test implicit long.
-		assertNumber(-123456787654321L, Literals.parseDecimal("-123456787654321"));
+		assertNumber(-123456787654321L, Literals.parseNumber("-123456787654321"));
 		// Test BigInteger.
 		final String bigI = "-1234567898765432123456789";
-		final Number bigInt = Literals.parseDecimal(bigI);
+		final Number bigInt = Literals.parseNumber(bigI);
 		assertNumber(new BigInteger(bigI), bigInt);
 		// Test explicit float.
-		assertNumber(-1f, Literals.parseDecimal("-1f"));
+		assertNumber(-1f, Literals.parseNumber("-1f"));
 		// Test explicit double.
-		assertNumber(-1d, Literals.parseDecimal("-1d"));
+		assertNumber(-1d, Literals.parseNumber("-1d"));
 		// Test implicit double.
-		assertNumber(-1.0, Literals.parseDecimal("-1.0"));
-		assertNumber(-1., Literals.parseDecimal("-1."));
+		assertNumber(-1.0, Literals.parseNumber("-1.0"));
+		assertNumber(-1., Literals.parseNumber("-1."));
 		// Test scientific notation.
-		assertNumber(-1e2, Literals.parseDecimal("-1e2"));
-		assertNumber(-1.2e3, Literals.parseDecimal("-1.2e3"));
-		assertNumber(-4.5e-6, Literals.parseDecimal("-4.5e-6"));
-		assertNumber(-1.2e3f, Literals.parseDecimal("-1.2e3f"));
-		assertNumber(-4.5e-6f, Literals.parseDecimal("-4.5e-6f"));
+		assertNumber(-1e2, Literals.parseNumber("-1e2"));
+		assertNumber(-1.2e3, Literals.parseNumber("-1.2e3"));
+		assertNumber(-4.5e-6, Literals.parseNumber("-4.5e-6"));
+		assertNumber(-1.2e3f, Literals.parseNumber("-1.2e3f"));
+		assertNumber(-4.5e-6f, Literals.parseNumber("-4.5e-6f"));
 	}
 
 	@Test
@@ -317,6 +318,110 @@ public class LiteralsTest extends AbstractTest {
 		pos.set(3);
 		assertNumber(0x123L, Literals.parseNumber("ccc0x123Lccc", pos));
 		assertEquals(9, pos.get());
+
+		pos.set(1);
+		assertNumber(0b101, Literals.parseNumber("d0b101d", pos));
+		assertEquals(6, pos.get());
+
+		pos.set(0);
+		assertNumber(0755, Literals.parseNumber("0755+1", pos));
+		assertEquals(4, pos.get());
+	}
+
+	@Test
+	public void testParseNumberEdgeCases() {
+		// Octal only applies to integer literals, as in Java.
+		assertNumber(7.5, Literals.parseNumber("07.5"));
+		assertNumber(7e1, Literals.parseNumber("07e1"));
+		assertNumber(7f, Literals.parseNumber("07f"));
+		assertNumber(07L, Literals.parseNumber("07L"));
+		assertNumber(0, Literals.parseNumber("00"));
+		// Leading zero with non-octal digits falls back to decimal.
+		assertNumber(89, Literals.parseNumber("089"));
+
+		// Integer/long/BigInteger boundaries.
+		assertNumber(Integer.MAX_VALUE, Literals.parseNumber("2147483647"));
+		assertNumber(Integer.MIN_VALUE, Literals.parseNumber("-2147483648"));
+		assertNumber(2147483648L, Literals.parseNumber("2147483648"));
+		assertNumber(Long.MAX_VALUE, Literals.parseNumber("9223372036854775807"));
+		assertNumber(Long.MIN_VALUE, Literals.parseNumber("-9223372036854775808"));
+		assertNumber(new BigInteger("9223372036854775808"),
+			Literals.parseNumber("9223372036854775808"));
+		assertNumber(new BigInteger("-9223372036854775809"),
+			Literals.parseNumber("-9223372036854775809"));
+		assertNumber(0x7fffffffffffffffL, Literals.parseNumber("0x7fffffffffffffff"));
+		assertNumber(new BigInteger("8000000000000000", 16),
+			Literals.parseNumber("0x8000000000000000"));
+
+		final Position pos = new Position();
+
+		// An exponent marker without digits is not part of the literal.
+		assertNumber(1, Literals.parseNumber("1e", pos));
+		assertEquals(1, pos.get());
+		pos.set(0);
+		assertNumber(1, Literals.parseNumber("1e+x", pos));
+		assertEquals(1, pos.get());
+
+		// A prefix without digits is not part of the literal.
+		pos.set(0);
+		assertNumber(0, Literals.parseNumber("0x", pos));
+		assertEquals(1, pos.get());
+		pos.set(0);
+		assertNumber(0, Literals.parseNumber("0b2", pos));
+		assertEquals(1, pos.get());
+
+		// Hex floating point requires a binary exponent.
+		pos.set(0);
+		assertNumber(1, Literals.parseNumber("0x1.8", pos));
+		assertEquals(3, pos.get());
+		pos.set(0);
+		assertNumber(0x1.8p1, Literals.parseNumber("0x1.8p1L", pos));
+		assertEquals(7, pos.get());
+
+		// Binary literals accept only an L suffix.
+		pos.set(0);
+		assertNumber(1, Literals.parseNumber("0b1f", pos));
+		assertEquals(3, pos.get());
+
+		// Only ASCII digits are allowed.
+		assertNull(Literals.parseNumber("٣"));
+		pos.set(0);
+		assertNumber(1, Literals.parseNumber("1٣", pos));
+		assertEquals(1, pos.get());
+
+		// A leading decimal point is allowed, as in Java.
+		assertNumber(.5, Literals.parseNumber(".5"));
+		assertNumber(-.5, Literals.parseNumber("-.5"));
+		assertNumber(+.5, Literals.parseNumber("+.5"));
+		assertNumber(.5f, Literals.parseNumber(".5f"));
+		assertNumber(.5d, Literals.parseNumber(".5d"));
+		assertNumber(.5e2, Literals.parseNumber(".5e2"));
+		pos.set(0);
+		assertNumber(.25, Literals.parseNumber(".25.5", pos));
+		assertEquals(3, pos.get());
+
+		// Not numbers.
+		assertNull(Literals.parseNumber("x1"));
+		assertNull(Literals.parseNumber("-x"));
+		assertNull(Literals.parseNumber("-"));
+		assertNull(Literals.parseNumber("."));
+		assertNull(Literals.parseNumber("-."));
+		assertNull(Literals.parseNumber(".e5"));
+		assertNull(Literals.parseNumber(".f"));
+	}
+
+	@Test
+	public void testParseNumberInvalid() {
+		// Too large for a long, but forced to be one.
+		assertThrows(IllegalArgumentException.class,
+			() -> Literals.parseNumber("9223372036854775808L"));
+		assertThrows(IllegalArgumentException.class,
+			() -> Literals.parseNumber("0x10000000000000000L"));
+		// A decimal point cannot be combined with a long suffix.
+		assertThrows(IllegalArgumentException.class,
+			() -> Literals.parseNumber("1.5L"));
+		assertThrows(IllegalArgumentException.class,
+			() -> Literals.parseNumber(".5L"));
 	}
 
 	@Test

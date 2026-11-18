@@ -81,6 +81,26 @@ public class ExpressionParserTest extends AbstractTest {
 	}
 
 	@Test
+	public void testLeadingDecimalPoint() {
+		final ExpressionParser parser = new ExpressionParser();
+		final LinkedList<Object> queue = parser.parsePostfix("[.5, 1+.25]");
+		assertNotNull(queue);
+		assertEquals(5, queue.size());
+		assertNumber(.5, queue.pop());
+		assertNumber(1, queue.pop());
+		assertNumber(.25, queue.pop());
+		assertSame(Operators.ADD, queue.pop());
+		assertGroup(Operators.BRACKETS, 2, queue.pop());
+
+		// NB: A decimal point after an operand is still the dot operator.
+		final LinkedList<Object> dotted = parser.parsePostfix("a.b");
+		assertEquals(3, dotted.size());
+		assertVariable("a", dotted.pop());
+		assertVariable("b", dotted.pop());
+		assertSame(Operators.DOT, dotted.pop());
+	}
+
+	@Test
 	public void testVariables() {
 		final ExpressionParser parser = new ExpressionParser();
 		final LinkedList<Object> queue = parser.parsePostfix("x+y-_z");
