@@ -38,7 +38,7 @@ Expression parsers are as old as the hills; what makes this one different?
   symbols, precedence and associativity you desire.
 * __Clean, well-commented codebase with unit tests.__ Import the source into
   your favorite IDE and watch Parsington in action by putting a breakpoint
-  [here](src/main/java/org/scijava/parsington/ParseOperation.java#L70-L72).
+  [here](src/main/java/org/scijava/parsington/ParseOperation.java#L76-L78).
 
 ## History
 

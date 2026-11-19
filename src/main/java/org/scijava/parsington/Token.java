@@ -39,7 +39,6 @@ package org.scijava.parsington;
  * </p>
  *
  * @author Curtis Rueden
- * @see AbstractToken
  */
 public interface Token {
 

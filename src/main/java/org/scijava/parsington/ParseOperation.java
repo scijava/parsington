@@ -64,6 +64,8 @@ public class ParseOperation {
 	 * Parses the expression into an output queue in <a
 	 * href="https://en.wikipedia.org/wiki/Reverse_Polish_notation">Reverse
 	 * Polish notation</a> (i.e., postfix notation).
+	 *
+	 * @return The list of parsed tokens, in postfix order.
 	 */
 	public LinkedList<Object> parsePostfix() {
 		while (true) {
@@ -220,6 +222,9 @@ public class ParseOperation {
 	 * underscores, since many popular programming languages (e.g. Python and
 	 * Java) allow identifiers to begin with an underscore symbol.
 	 * </p>
+	 *
+	 * @param c The character to query.
+	 * @return True iff the character is allowed at the start of an identifier.
 	 */
 	protected boolean isIdentifierStart(char c) {
 		return c == '_' || Character.isUnicodeIdentifierStart(c);
@@ -231,6 +236,9 @@ public class ParseOperation {
 	 * The default implementation uses
 	 * {@link Character#isUnicodeIdentifierPart(char)}.
 	 * </p>
+	 *
+	 * @param c The character to query.
+	 * @return True iff the character is allowed within an identifier.
 	 */
 	protected boolean isIdentifierPart(char c) {
 		return Character.isUnicodeIdentifierPart(c);
@@ -292,6 +300,7 @@ public class ParseOperation {
 	/**
 	 * Attempts to parse the given character.
 	 *
+	 * @param c The character to parse, if it comes nexxt.
 	 * @return The character, or null if the next token is not that character.
 	 */
 	protected Character parseChar(final char c) {
@@ -305,6 +314,8 @@ public class ParseOperation {
 	/**
 	 * Attempts to parse the given characters.
 	 *
+	 * @param <CS> The type of the prospective character sequence.
+	 * @param cs The character sequence to parse, if it comes next.
 	 * @return The characters, or null if the next tokens are not those
 	 *         characters.
 	 */
@@ -319,6 +330,7 @@ public class ParseOperation {
 	/**
 	 * Parses a token of the given length.
 	 *
+	 * @param length The length of the token to parse.
 	 * @return The parsed token.
 	 */
 	protected String parseToken(final int length) {
